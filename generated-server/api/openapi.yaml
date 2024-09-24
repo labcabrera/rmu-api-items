@@ -1,0 +1,94 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: lab.cabrera@gmail.com
+    name: Luis Cabrera
+    url: https://github.com/labcabrera
+  description: RMU Items API
+  title: RMU Items API
+  version: 0.1.0
+servers:
+- url: http://localhost:3006
+tags:
+- description: Items
+  name: Items
+paths:
+  /items:
+    get:
+      operationId: findItems
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedContentItem'
+          description: OK
+      summary: Find items
+      tags:
+      - Items
+      x-eov-operation-handler: controllers/ItemsController
+  /items/{itemId}:
+    get:
+      operationId: findItemById
+      parameters:
+      - explode: false
+        in: path
+        name: itemId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedContentItem'
+          description: OK
+        "404":
+          description: Item not found
+      summary: Find item by id
+      x-eov-operation-handler: controllers/DefaultController
+components:
+  schemas:
+    PagedContentInfo:
+      properties:
+        size:
+          format: int32
+          type: integer
+        totalElements:
+          format: int64
+          type: integer
+        totalPages:
+          format: int32
+          type: integer
+        number:
+          format: int32
+          type: integer
+    PagedContentItem:
+      example:
+        content:
+        - name: name
+          id: 66545720ccc0b409343736b2
+        - name: name
+          id: 66545720ccc0b409343736b2
+      properties:
+        content:
+          items:
+            $ref: '#/components/schemas/Item'
+          type: array
+    Item:
+      example:
+        name: name
+        id: 66545720ccc0b409343736b2
+      properties:
+        id:
+          description: Item identifier
+          example: 66545720ccc0b409343736b2
+          type: string
+        name:
+          description: Item name
+          type: string
+      required:
+      - id
+      - name

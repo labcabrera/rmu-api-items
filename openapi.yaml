@@ -1,0 +1,84 @@
+openapi: 3.1.0
+info:
+  title: RMU Items API
+  description: RMU Items API
+  contact:
+    name: Luis Cabrera
+    url: https://github.com/labcabrera
+    email: lab.cabrera@gmail.com
+  version: 0.1.0
+servers:
+  - url: http://localhost:3006
+tags:
+  - name: Items
+    description: Items
+paths:
+  /items:
+    get:
+      tags:
+        - Items
+      summary: Find items
+      operationId: findItems
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedContentItem'
+  /items/{itemId}:
+    get:
+      summary: Find item by id
+      operationId: findItemById
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedContentItem'
+        '404':
+          description: Item not found
+components:
+  schemas:
+    PagedContentInfo:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+    PagedContentItem:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          description: Item identifier
+          example: 66545720ccc0b409343736b2
+        name:
+          type: string
+          description: Item name

@@ -1,0 +1,7 @@
+= RMU Items API
+
+Item API for https://github.com/labcabrera/rmu-fe-main
+
+:WARN Test project to test the status of the nodejs-express-server OpenAPI generator:
+
+https://openapi-generator.tech/docs/generators/nodejs-express-server
