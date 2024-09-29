@@ -76,9 +76,15 @@ const findById = (id) => {
     return item;
 }
 
-const findAll = (page, size) => {
-    const content = items.slice(page * size, (page + 1) * size);
-    return { content: content, pagination: { page: page, size: size, totalElements: items.length } };
+const findAll = (category, page, size) => {
+    const filtered = items.filter(e => {
+        if(category && e.category != category) {
+            return false;
+        }
+        return true;
+    });
+    const content = filtered.slice(page * size, (page + 1) * size);
+    return { content: content, pagination: { page: page, size: size, totalElements: filtered.length } };
 };
 
 module.exports = {

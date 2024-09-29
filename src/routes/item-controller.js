@@ -6,9 +6,10 @@ const errorService = require("../services/error-service");
 
 router.get('/', async (req, res) => {
     try {
+        const category = req.query.category;
         const page = req.query.page ? parseInt(req.query.page) : 0;
         const size = req.query.size ? parseInt(req.query.size) : 10;
-        const categories = itemService.findAll(page, size);
+        const categories = itemService.findAll(category, page, size);
         res.json(categories);
     } catch (error) {
         errorService.sendErrorResponse(res, error);
