@@ -73,12 +73,27 @@ components:
       type: object
       required:
         - id
-        - name
+        - category
       properties:
         id:
           type: string
           description: Item identifier
-          example: 66545720ccc0b409343736b2
-        name:
+          example: dager
+        category:
+          $ref: '#/components/schemas/ItemCategory'
+        weaponRange:
           type: string
-          description: Item name
+        weaponType:
+          type: string
+        attackTable:
+          type: string
+        skillId:
+          type: string
+          
+    ItemCategory:
+      type: string
+      description: Item category
+      enum:
+        - weapon
+        - armor
+        - generic

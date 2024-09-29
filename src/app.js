@@ -1,35 +1,37 @@
 const express = require('express');
-const swaggerUi = require('swagger-ui-express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const fs = require('fs');
-const YAML = require('yamljs');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yaml');
+const path = require('path');
 
 const app = express();
-const port = 3006;
 
-// Cargar el archivo de definición de API (api-definition.yaml)
-const swaggerDocument = YAML.load('./api-definition.yaml');
+const PORT = process.env.PORT || 3006;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/rmu-core';
 
-// Configurar la ruta para la documentación de Swagger
+const openapiFilePath = path.join(__dirname, '../openapi.yaml');
+const openapiFile = fs.readFileSync(openapiFilePath, 'utf8')
+const swaggerDocument = YAML.parse(openapiFile);
+
+app.use(express.json());
+app.use(cors());
+
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to ' + MONGO_URI))
+  .catch((err) => console.log('Error connecting to ' + MONGO_URI, err));
+
+const itemRouter = require('./routes/item-controller');
+
+app.use('/v1/items', itemRouter);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Implementar las rutas según la definición del API
-app.get('/usuarios', (req, res) => {
-    const usuarios = ['Juan', 'Maria', 'Pedro'];
-    res.json(usuarios);
+app.get('/', (req, res) => {
+  res.redirect('/api-docs');
 });
 
-app.get('/usuarios/:id', (req, res) => {
-    const { id } = req.params;
-    const usuarios = ['Juan', 'Maria', 'Pedro'];
-    if (id >= 0 && id < usuarios.length) {
-        res.json(usuarios[id]);
-    } else {
-        res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-});
-
-// Iniciar el servidor
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
-    console.log(`Documentación disponible en http://localhost:${port}/api-docs`);
+app.listen(PORT, () => {
+  console.log(`API started on ${PORT}`);
 });
