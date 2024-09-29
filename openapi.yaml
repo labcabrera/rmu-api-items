@@ -8,7 +8,7 @@ info:
     email: lab.cabrera@gmail.com
   version: 0.1.0
 servers:
-  - url: http://localhost:3006
+  - url: http://localhost:3006/v1
 tags:
   - name: Items
     description: Items
@@ -28,6 +28,8 @@ paths:
                 $ref: '#/components/schemas/PagedContentItem'
   /items/{itemId}:
     get:
+      tags:
+        - Items
       summary: Find item by id
       operationId: findItemById
       parameters:
@@ -42,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedContentItem'
+                $ref: '#/components/schemas/Item'
         '404':
           description: Item not found
 components:
@@ -53,15 +55,19 @@ components:
         size:
           type: integer
           format: int32
+          example: 10
         totalElements:
           type: integer
           format: int64
+          example: 325
         totalPages:
           type: integer
           format: int32
+          example: 12
         number:
           type: integer
           format: int32
+          example: 0
     PagedContentItem:
       type: object
       properties:
@@ -69,6 +75,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Item'
+        pagination:
+          $ref: '#/components/schemas/PagedContentInfo'
     Item:
       type: object
       required:
@@ -82,14 +90,13 @@ components:
         category:
           $ref: '#/components/schemas/ItemCategory'
         weaponRange:
-          type: string
+          $ref: '#/components/schemas/WeaponRange'
         weaponType:
-          type: string
+          $ref: '#/components/schemas/WeaponType'
         attackTable:
           type: string
         skillId:
           type: string
-          
     ItemCategory:
       type: string
       description: Item category
@@ -97,3 +104,15 @@ components:
         - weapon
         - armor
         - generic
+    WeaponRange:
+      type: string
+      description: Weapon range
+      enum:
+        - melee
+        - ranged
+    WeaponType:
+      type: string
+      description: Weapon type
+      enum:
+        - oneHand
+        - twoHands
