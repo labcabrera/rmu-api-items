@@ -266,11 +266,6 @@ const items = [
     { id: 'spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
     { id: 'long-spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
 
-    { id: 'target-shield', category: 'shield', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'melee-weapon:shield-bash' },
-    { id: 'normal-shield', category: 'shield', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'melee-weapon:shield-bash' },
-    { id: 'full-shield', category: 'shield', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'melee-weapon:shield-bash' },
-    { id: 'wall-shield', category: 'shield', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'melee-weapon:shield-bash' },
-
     { id: 'whip', category: 'weapon', weaponRange: 'melee', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'exotic-weapon' },
     { id: 'small-net', category: 'weapon', weaponRange: 'melee', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'exotic-weapon' },
     { id: 'net', category: 'weapon', weaponRange: 'melee', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'exotic-weapon' },
@@ -297,6 +292,282 @@ const items = [
     { id: 'heavy-rock', category: 'weapon', weaponRange: 'ranged', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: ':thrown' },
 
     { id: 'blowpipe', category: 'weapon', weaponRange: 'ranged', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: ':exotic-ranged' },
+
+    // Shields
+    {
+        id: 'target-shield',
+        category: 'shield',
+        weapon: {
+            type: 'oneHand',
+            attackTable: 'arming-sword:medium',
+            skillId: 'melee-weapon:shield-bash',
+            fumble: 0,
+            sizeAjustement: 0
+        },
+        shield: {
+            defensiveBonus: 15,
+            maxAttacksBlocked: 1
+        },
+        info: {
+            cost: {
+                value: 35,
+                type: 'bp'
+            },
+            strength: 50,
+            productionTime: 3
+        }
+    },
+    {
+        id: 'normal-shield',
+        category: 'shield',
+        weapon: {
+            type: 'oneHand',
+            attackTable: 'arming-sword:medium',
+            skillId: 'melee-weapon:shield-bash',
+            fumble: 0,
+            sizeAjustement: 0
+        },
+        shield: {
+            defensiveBonus: 20,
+            maxAttacksBlocked: 2
+        },
+        info: {
+            cost: {
+                value: 55,
+                type: 'bp'
+            },
+            strength: 55,
+            productionTime: 5
+        }
+    },
+    {
+        id:'full-shield',
+        category: 'shield',
+        weapon: {
+            type: 'oneHand',
+            attackTable: 'arming-sword:medium',
+            skillId: 'melee-weapon:shield-bash',
+            fumble: 0,
+            sizeAjustement: 0
+        },
+        shield: {
+            defensiveBonus: 25,
+            maxAttacksBlocked: 3
+        },
+        info: {
+            cost: {
+                value: 7,
+                type: 'sp'
+            },
+            strength: 60,
+            productionTime: 6
+        }
+    },
+    {
+        id: 'wall-shield',
+        category: 'shield',
+        weapon: {
+            type: 'oneHand',
+            attackTable: 'arming-sword:medium',
+            skillId: 'melee-weapon:shield-bash',
+            fumble: 0,
+            sizeAjustement: 0
+        },
+        shield: {
+            defensiveBonus: 30,
+            maxAttacksBlocked: 4
+        },
+        info: {
+            cost: {
+                value: 9,
+                type: 'sp'
+            },
+            strength: 66,
+            productionTime: 7
+        }
+    },
+
+    // Armor
+    {
+        id: 'heavy-cloth-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 2,
+            enc: 6,
+            maneuver: -10,
+            rangedPenalty: -5,
+            perception: -5
+        },info: {
+            cost: {
+                value: 95,
+                type: 'bp'
+            },
+            strength: 30,
+            weight: 11,
+            productionTime: 10
+        }
+    },
+    {
+        id: 'soft-leather-full-suit',
+        category: 'fullSuit',
+        armor: {
+            slot: 'body',
+            armorType: 3,
+            enc: 7,
+            maneuver: -15,
+            rangedPenalty: -5,
+            perception: -5
+        },info: {
+            cost: {
+                value: 10,
+                type: 'sp'
+            },
+            strength: 30,
+            weight: 13,
+            productionTime: 10
+        }
+    },
+    {
+        id: 'hide-scale-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 4,
+            enc: 11,
+            maneuver: -35,
+            rangedPenalty: -20,
+            perception: -10
+        },info: {
+            cost: {
+                value: 14,
+                type: 'sp'
+            },
+            strength: 35,
+            weight: 20,
+            productionTime: 15
+        }
+    },
+    {
+        id: 'laminar-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 5,
+            enc: 12,
+            maneuver: -45,
+            rangedPenalty: -20,
+            perception: -10
+        },info: {
+            cost: {
+                value: 36,
+                type: 'sp'
+            },
+            strength: 40,
+            weight: 22,
+            productionTime: 25
+        }
+    },
+    {
+        id: 'rigid-leather-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 6,
+            enc: 14,
+            maneuver: -50,
+            rangedPenalty: -20,
+            perception: -10
+        },info: {
+            cost: {
+                value: 34,
+                type: 'sp'
+            },
+            strength: 45,
+            weight: 26,
+            productionTime: 19
+        }
+    },
+    {
+        id: 'metal-scale-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 7,
+            enc: 19,
+            maneuver: -70,
+            rangedPenalty: -30,
+            perception: -15
+        },info: {
+            cost: {
+                value: 39,
+                type: 'sp'
+            },
+            strength: 50,
+            weight: 35,
+            productionTime: 29
+        }
+    },
+    {
+        id: 'mail-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 8,
+            enc: 21,
+            maneuver: -80,
+            rangedPenalty: -30,
+            perception: -15
+        },info: {
+            cost: {
+                value: 60,
+                type: 'sp'
+            },
+            strength: 55,
+            weight: 39,
+            productionTime: 58
+        }
+    },
+    {
+        id: 'brigandine-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 9,
+            enc: 23,
+            maneuver: -90,
+            rangedPenalty: -30,
+            perception: -15
+        },info: {
+            cost: {
+                value: 55,
+                type: 'sp'
+            },
+            strength: 70,
+            weight: 43,
+            productionTime: 37
+        }
+    },
+    {
+        id: 'plate-full-suit',
+        category: 'armor',
+        armor: {
+            slot: 'fullSuit',
+            armorType: 10,
+            enc: 25,
+            maneuver: -100,
+            rangedPenalty: -30,
+            perception: -15
+        },info: {
+            cost: {
+                value: 65,
+                type: 'sp'
+            },
+            strength: 75,
+            weight: 46,
+            productionTime: 44
+        }
+    }
 
 ];
 
