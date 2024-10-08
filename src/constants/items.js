@@ -52,7 +52,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:small',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
@@ -73,7 +73,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:medium',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
@@ -94,7 +94,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'rapier:small',
+            attackTable: 'rapier',
             skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
@@ -115,7 +115,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'rapier:medium',
+            attackTable: 'rapier',
             skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
@@ -136,7 +136,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'broadsword:medium',
+            attackTable: 'broadsword',
             skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
@@ -157,7 +157,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'scimitar:medium',
+            attackTable: 'scimitar',
             skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
@@ -178,7 +178,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'falchion:small',
+            attackTable: 'falchion',
             skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
@@ -199,7 +199,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'falchion:medium',
+            attackTable: 'falchion',
             skillId: 'melee-weapon@blade',
             fumble: 5,
             sizeAdjustment: 0
@@ -220,7 +220,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'broadword:big',
+            attackTable: 'broadword',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
@@ -241,7 +241,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'scimitar:big',
+            attackTable: 'scimitar',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
@@ -262,7 +262,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'twoHands',
-            attackTable: 'arming-sword:big',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
@@ -283,7 +283,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'twoHands',
-            attackTable: 'falchion:big',
+            attackTable: 'falchion',
             skillId: 'melee-weapon@greather-blade',
             fumble: 6,
             sizeAdjustment: 1
@@ -304,7 +304,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'flail:small',
+            attackTable: 'flail',
             skillId: 'melee-weapon@chain',
             fumble: 9,
             sizeAdjustment: 1
@@ -325,7 +325,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'flail:medium',
+            attackTable: 'flail',
             skillId: 'melee-weapon@chain',
             fumble: 10,
             sizeAdjustment: 0
@@ -346,7 +346,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'twoHands',
-            attackTable: 'flail:big',
+            attackTable: 'flail',
             skillId: 'melee-weapon@greater-chain',
             fumble: 10,
             sizeAdjustment: 1
@@ -367,7 +367,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'battle-axe:small',
+            attackTable: 'battle-axe',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: -1
@@ -415,7 +415,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'battle-axe:medium',
+            attackTable: 'battle-axe',
             skillId: 'melee-weapon@hafted',
             fumble: 5,
             sizeAdjustment: 0
@@ -436,7 +436,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'club:small',
+            attackTable: 'club',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: -1
@@ -457,7 +457,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'club:medium',
+            attackTable: 'club',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
@@ -478,7 +478,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'mace:small',
+            attackTable: 'mace',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
@@ -499,7 +499,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'mace:medium',
+            attackTable: 'mace',
             skillId: 'melee-weapon@hafted',
             fumble: 4,
             sizeAdjustment: 0
@@ -520,7 +520,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'figthing-stick:small',
+            attackTable: 'figthing-stick',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
@@ -541,7 +541,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'figthing-stick:medium',
+            attackTable: 'figthing-stick',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
@@ -562,7 +562,7 @@ const items = [
         category: 'weapon',
         weapon: {
             type: 'oneHand',
-            attackTable: 'war-hammer:medium',
+            attackTable: 'war-hammer',
             skillId: 'melee-weapon@hafted',
             fumble: 4,
             sizeAdjustment: 0
@@ -618,7 +618,7 @@ const items = [
         category: 'shield',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:medium',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
@@ -641,7 +641,7 @@ const items = [
         category: 'shield',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:medium',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
@@ -664,7 +664,7 @@ const items = [
         category: 'shield',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:medium',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
@@ -687,7 +687,7 @@ const items = [
         category: 'shield',
         weapon: {
             type: 'oneHand',
-            attackTable: 'arming-sword:medium',
+            attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
