@@ -5,7 +5,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'dagger',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: 0
         },
@@ -53,7 +53,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:small',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
         },
@@ -74,7 +74,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:medium',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -95,7 +95,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'rapier:small',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
         },
@@ -116,7 +116,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'rapier:medium',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -137,7 +137,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'broadsword:medium',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -158,7 +158,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'scimitar:medium',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -179,7 +179,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'falchion:small',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 3,
             sizeAdjustment: -1
         },
@@ -200,7 +200,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'falchion:medium',
-            skillId: 'melee-weapon:blade',
+            skillId: 'melee-weapon@blade',
             fumble: 5,
             sizeAdjustment: 0
         },
@@ -221,7 +221,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'broadword:big',
-            skillId: 'melee-weapon:greather-blade',
+            skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
         },
@@ -242,7 +242,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'scimitar:big',
-            skillId: 'melee-weapon:greather-blade',
+            skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
         },
@@ -263,7 +263,7 @@ const items = [
         weapon: {
             type: 'twoHands',
             attackTable: 'arming-sword:big',
-            skillId: 'melee-weapon:greather-blade',
+            skillId: 'melee-weapon@greather-blade',
             fumble: 5,
             sizeAdjustment: 1
         },
@@ -284,7 +284,7 @@ const items = [
         weapon: {
             type: 'twoHands',
             attackTable: 'falchion:big',
-            skillId: 'melee-weapon:greather-blade',
+            skillId: 'melee-weapon@greather-blade',
             fumble: 6,
             sizeAdjustment: 1
         },
@@ -305,7 +305,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'flail:small',
-            skillId: 'melee-weapon:chain',
+            skillId: 'melee-weapon@chain',
             fumble: 9,
             sizeAdjustment: 1
         },
@@ -326,7 +326,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'flail:medium',
-            skillId: 'melee-weapon:chain',
+            skillId: 'melee-weapon@chain',
             fumble: 10,
             sizeAdjustment: 0
         },
@@ -347,7 +347,7 @@ const items = [
         weapon: {
             type: 'twoHands',
             attackTable: 'flail:big',
-            skillId: 'melee-weapon:greater-chain',
+            skillId: 'melee-weapon@greater-chain',
             fumble: 10,
             sizeAdjustment: 1
         },
@@ -368,7 +368,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'battle-axe:small',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: -1
         },
@@ -416,7 +416,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'battle-axe:medium',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 5,
             sizeAdjustment: 0
         },
@@ -437,7 +437,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'club:small',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: -1
         },
@@ -458,7 +458,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'club:medium',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
         },
@@ -479,7 +479,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'mace:small',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
         },
@@ -500,7 +500,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'mace:medium',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -521,7 +521,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'figthing-stick:small',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
         },
@@ -542,7 +542,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'figthing-stick:medium',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 3,
             sizeAdjustment: 0
         },
@@ -563,7 +563,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'war-hammer:medium',
-            skillId: 'melee-weapon:hafted',
+            skillId: 'melee-weapon@hafted',
             fumble: 4,
             sizeAdjustment: 0
         },
@@ -579,11 +579,11 @@ const items = [
         }
     },
 
-    { id: 'glaive', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
-    { id: 'halberd', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
-    { id: 'poleaxe', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
-    { id: 'spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
-    { id: 'long-spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon:pole-arm' },
+    { id: 'glaive', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
+    { id: 'halberd', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
+    { id: 'poleaxe', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
+    { id: 'spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
+    { id: 'long-spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
 
     { id: 'whip', category: 'weapon', weaponRange: 'melee', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'exotic-weapon' },
     { id: 'small-net', category: 'weapon', weaponRange: 'melee', weaponType: 'oneHand', attackTable: 'scimitar-medium', skillId: 'exotic-weapon' },
@@ -619,7 +619,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:medium',
-            skillId: 'melee-weapon:shield-bash',
+            skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
         },
@@ -642,7 +642,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:medium',
-            skillId: 'melee-weapon:shield-bash',
+            skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
         },
@@ -665,7 +665,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:medium',
-            skillId: 'melee-weapon:shield-bash',
+            skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
         },
@@ -688,7 +688,7 @@ const items = [
         weapon: {
             type: 'oneHand',
             attackTable: 'arming-sword:medium',
-            skillId: 'melee-weapon:shield-bash',
+            skillId: 'melee-weapon@shield-bash',
             fumble: 0,
             sizeAdjustment: 0
         },
