@@ -3,38 +3,19 @@ const items = [
         id: 'dager',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'dagger',
             skillId: 'melee-weapon@blade',
             fumble: 3,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: true
         },
         weaponRange: [
-            {
-                from: 0,
-                to: 10,
-                bonus: 0
-            },
-            {
-                from: 10.1,
-                to: 20,
-                bonus: -10
-            },
-            {
-                from: 20.1,
-                to: 30,
-                bonus: -25
-            },
-            {
-                from: 30.1,
-                to: 40,
-                bonus: -50
-            },
-            {
-                from: 40.1,
-                to: 50,
-                bonus: -100
-            }
+            { from: 0, to: 10, bonus: 0 },
+            { from: 10.1, to: 20, bonus: -10 },
+            { from: 20.1, to: 30, bonus: -25 },
+            { from: 30.1, to: 40, bonus: -50 },
+            { from: 40.1, to: 50, bonus: -100 }
         ],
         info: {
             cost: {
@@ -42,8 +23,8 @@ const items = [
                 type: 'sp'
             },
             length: 1,
-            strength: 80,
             weight: 1,
+            strength: 80,
             productionTime: 1
         }
     },
@@ -51,11 +32,12 @@ const items = [
         id: 'short-sword',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@blade',
             fumble: 3,
-            sizeAdjustment: -1
+            sizeAdjustment: -1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -72,11 +54,12 @@ const items = [
         id: 'arming-sword',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@blade',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -93,11 +76,12 @@ const items = [
         id: 'epee',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'rapier',
             skillId: 'melee-weapon@blade',
             fumble: 3,
-            sizeAdjustment: -1
+            sizeAdjustment: -1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -105,8 +89,8 @@ const items = [
                 type: 'sp'
             },
             length: 3,
-            strength: 80,
             weight: 1.5,
+            strength: 80,
             productionTime: 5
         }
     },
@@ -114,11 +98,12 @@ const items = [
         id: 'rapier',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'rapier',
             skillId: 'melee-weapon@blade',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -126,8 +111,8 @@ const items = [
                 type: 'sp'
             },
             length: 4,
-            strength: 85,
             weight: 4,
+            strength: 85,
             productionTime: 7
         }
     },
@@ -139,7 +124,9 @@ const items = [
             attackTable: 'broadsword',
             skillId: 'melee-weapon@blade',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -156,11 +143,12 @@ const items = [
         id: 'scimitar',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'scimitar',
             skillId: 'melee-weapon@blade',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -168,8 +156,8 @@ const items = [
                 type: 'sp'
             },
             length: 3.5,
-            strength: 60,
             weight: 3,
+            strength: 60,
             productionTime: 3
         }
     },
@@ -177,11 +165,12 @@ const items = [
         id: 'machete',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'falchion',
             skillId: 'melee-weapon@blade',
             fumble: 3,
-            sizeAdjustment: -1
+            sizeAdjustment: -1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -189,8 +178,8 @@ const items = [
                 type: 'sp'
             },
             length: 1,
-            strength: 70,
             weight: 1.5,
+            strength: 70,
             productionTime: 1
         }
     },
@@ -198,11 +187,12 @@ const items = [
         id: 'falchion',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'falchion',
             skillId: 'melee-weapon@blade',
             fumble: 5,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -210,8 +200,8 @@ const items = [
                 type: 'sp'
             },
             length: 3.5,
-            strength: 60,
             weight: 3,
+            strength: 60,
             productionTime: 3
         }
     },
@@ -219,11 +209,12 @@ const items = [
         id: 'claymore',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'broadword',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 2,
+            throwable: false
         },
         info: {
             cost: {
@@ -231,8 +222,8 @@ const items = [
                 type: 'sp'
             },
             length: 5,
-            strength: 80,
             weight: 7,
+            strength: 80,
             productionTime: 5
         }
     },
@@ -240,11 +231,12 @@ const items = [
         id: 'long-scimitar',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'scimitar',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 2,
+            throwable: false
         },
         info: {
             cost: {
@@ -252,8 +244,8 @@ const items = [
                 type: 'sp'
             },
             length: 5,
-            strength: 80,
             weight: 6,
+            strength: 80,
             productionTime: 5
         }
     },
@@ -261,11 +253,12 @@ const items = [
         id: 'longsword',
         category: 'weapon',
         weapon: {
-            type: 'twoHands',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@greather-blade',
             fumble: 5,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 2,
+            throwable: false
         },
         info: {
             cost: {
@@ -282,11 +275,12 @@ const items = [
         id: 'great-falchion',
         category: 'weapon',
         weapon: {
-            type: 'twoHands',
             attackTable: 'falchion',
             skillId: 'melee-weapon@greather-blade',
             fumble: 6,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 2,
+            throwable: false
         },
         info: {
             cost: {
@@ -294,8 +288,8 @@ const items = [
                 type: 'sp'
             },
             length: 4.5,
-            strength: 80,
             weight: 7,
+            strength: 80,
             productionTime: 5
         }
     },
@@ -303,11 +297,12 @@ const items = [
         id: 'light-flail',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'flail',
             skillId: 'melee-weapon@chain',
             fumble: 9,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -315,8 +310,8 @@ const items = [
                 type: 'sp'
             },
             length: 3,
-            strength: 55,
             weight: 3,
+            strength: 55,
             productionTime: 1
         }
     },
@@ -324,11 +319,12 @@ const items = [
         id: 'flail',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'flail',
             skillId: 'melee-weapon@chain',
             fumble: 10,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -336,8 +332,8 @@ const items = [
                 type: 'sp'
             },
             length: 3.5,
-            strength: 65,
             weight: 6,
+            strength: 65,
             productionTime: 2
         }
     },
@@ -345,11 +341,12 @@ const items = [
         id: 'heavy-flail',
         category: 'weapon',
         weapon: {
-            type: 'twoHands',
             attackTable: 'flail',
             skillId: 'melee-weapon@greater-chain',
             fumble: 10,
-            sizeAdjustment: 1
+            sizeAdjustment: 1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -357,8 +354,8 @@ const items = [
                 type: 'sp'
             },
             length: 4,
-            strength: 60,
             weight: 6,
+            strength: 60,
             productionTime: 5
         }
     },
@@ -366,38 +363,19 @@ const items = [
         id: 'hand-axe',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'battle-axe',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: -1
+            sizeAdjustment: -1,
+            requiredHands: 1,
+            throwable: true
         },
         weaponRange: [
-            {
-                from: 0,
-                to: 15,
-                bonus: 0
-            },
-            {
-                from: 15.1,
-                to: 30,
-                bonus: -10
-            },
-            {
-                from: 30.1,
-                to: 45,
-                bonus: -25
-            },
-            {
-                from: 45.1,
-                to: 60,
-                bonus: -50
-            },
-            {
-                from: 60.1,
-                to: 75,
-                bonus: -100
-            }
+            { from: 0, to: 15, bonus: 0 },
+            { from: 15.1, to: 30, bonus: -10 },
+            { from: 30.1, to: 45, bonus: -25 },
+            { from: 45.1, to: 60, bonus: -50 },
+            { from: 60.1, to: 75, bonus: -100 }
         ],
         info: {
             cost: {
@@ -405,8 +383,8 @@ const items = [
                 type: 'sp'
             },
             length: 2,
-            strength: 55,
             weight: 1.5,
+            strength: 55,
             productionTime: 5
         }
     },
@@ -414,11 +392,12 @@ const items = [
         id: 'battle-axe',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'battle-axe',
             skillId: 'melee-weapon@hafted',
             fumble: 5,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -426,8 +405,8 @@ const items = [
                 type: 'sp'
             },
             length: 3,
-            strength: 55,
             weight: 3,
+            strength: 55,
             productionTime: 3
         }
     },
@@ -435,11 +414,12 @@ const items = [
         id: 'blackjack',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'club',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: -1
+            sizeAdjustment: -1,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -456,11 +436,12 @@ const items = [
         id: 'club',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'club',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -468,8 +449,8 @@ const items = [
                 type: 'cp'
             },
             length: 3,
-            strength: 35,
             weight: 3.5,
+            strength: 35,
             productionTime: 0.5
         }
     },
@@ -477,11 +458,12 @@ const items = [
         id: 'light-mace',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'mace',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -489,8 +471,8 @@ const items = [
                 type: 'sp'
             },
             length: 3.5,
-            strength: 55,
             weight: 4,
+            strength: 55,
             productionTime: 2
         }
     },
@@ -498,11 +480,12 @@ const items = [
         id: 'mace',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'mace',
             skillId: 'melee-weapon@hafted',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -510,8 +493,8 @@ const items = [
                 type: 'sp'
             },
             length: 1.5,
-            strength: 80,
             weight: 6,
+            strength: 80,
             productionTime: 2
         }
     },
@@ -519,11 +502,12 @@ const items = [
         id: 'ligth-stick',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'figthing-stick',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -531,20 +515,21 @@ const items = [
                 type: 'cp'
             },
             length: 2,
-            strength: 40,
             weight: 1.5,
-            productionTime: 1/24
+            strength: 40,
+            productionTime: 1 / 24
         }
     },
     {
         id: 'figthing-stick',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'figthing-stick',
             skillId: 'melee-weapon@hafted',
             fumble: 3,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -552,8 +537,8 @@ const items = [
                 type: 'cp'
             },
             length: 3,
-            strength: 45,
             weight: 3,
+            strength: 45,
             productionTime: 0.5
         }
     },
@@ -561,11 +546,12 @@ const items = [
         id: 'war-hammer',
         category: 'weapon',
         weapon: {
-            type: 'oneHand',
             attackTable: 'war-hammer',
             skillId: 'melee-weapon@hafted',
             fumble: 4,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         info: {
             cost: {
@@ -573,13 +559,34 @@ const items = [
                 type: 'sp'
             },
             length: 3,
-            strength: 65,
             weight: 3.5,
+            strength: 65,
             productionTime: 2
         }
     },
-
-    { id: 'glaive', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
+    //TODO
+    {
+        id: 'glaive',
+        category: 'weapon',
+        weapon: {
+            attackTable: 'xxxx',
+            skillId: 'melee-weapon@blade',
+            fumble: 3,
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: true
+        },
+        info: {
+            cost: {
+                value: 3,
+                type: 'sp'
+            },
+            length: 1,
+            weight: 1,
+            strength: 80,
+            productionTime: 1
+        }
+    },
     { id: 'halberd', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
     { id: 'poleaxe', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
     { id: 'spear', category: 'weapon', weaponRange: 'melee', weaponType: 'twoHands', attackTable: 'scimitar-medium', skillId: 'melee-weapon@pole-arm' },
@@ -617,11 +624,12 @@ const items = [
         id: 'target-shield',
         category: 'shield',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         shield: {
             defensiveBonus: 15,
@@ -632,6 +640,7 @@ const items = [
                 value: 35,
                 type: 'bp'
             },
+            weight: 1,
             strength: 50,
             productionTime: 3
         }
@@ -640,11 +649,12 @@ const items = [
         id: 'normal-shield',
         category: 'shield',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         shield: {
             defensiveBonus: 20,
@@ -655,6 +665,7 @@ const items = [
                 value: 55,
                 type: 'bp'
             },
+            weight: 1,
             strength: 55,
             productionTime: 5
         }
@@ -663,11 +674,12 @@ const items = [
         id: 'full-shield',
         category: 'shield',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         shield: {
             defensiveBonus: 25,
@@ -678,6 +690,7 @@ const items = [
                 value: 7,
                 type: 'sp'
             },
+            weight: 1,
             strength: 60,
             productionTime: 6
         }
@@ -686,11 +699,12 @@ const items = [
         id: 'wall-shield',
         category: 'shield',
         weapon: {
-            type: 'oneHand',
             attackTable: 'arming-sword',
             skillId: 'melee-weapon@shield-bash',
             fumble: 0,
-            sizeAdjustment: 0
+            sizeAdjustment: 0,
+            requiredHands: 1,
+            throwable: false
         },
         shield: {
             defensiveBonus: 30,
@@ -701,6 +715,7 @@ const items = [
                 value: 9,
                 type: 'sp'
             },
+            weight: 1,
             strength: 66,
             productionTime: 7
         }
@@ -729,9 +744,9 @@ const items = [
     },
     {
         id: 'soft-leather-full-suit',
-        category: 'fullSuit',
+        category: 'armor',
         armor: {
-            slot: 'body',
+            slot: 'fullSuit',
             armorType: 3,
             enc: 7,
             maneuver: -15,
