@@ -1,0 +1,24 @@
+{
+  "id": "heavy-cloth-helmet",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "head",
+    "at": 2,
+    "enc": 1000,
+    "maneuver": 0,
+    "rangedPenalty": 0,
+    "perception": -3,
+    "baseDifficulty": "e"
+  },
+  "info": {
+    "cost": {
+      "min": 0.63,
+      "average": 2.5,
+      "max": 10
+    },
+    "weigthPercent": 1,
+    "strength": 30,
+    "productionHours": 32
+  }
+}

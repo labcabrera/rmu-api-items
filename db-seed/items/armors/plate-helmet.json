@@ -1,0 +1,24 @@
+{
+  "id": "plate-helmet",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "head",
+    "at": 10,
+    "enc": 1000,
+    "maneuver": -10,
+    "rangedPenalty": 0,
+    "perception": -15,
+    "baseDifficulty": "h"
+  },
+  "info": {
+    "cost": {
+      "min": 3.75,
+      "average": 15,
+      "max": 60
+    },
+    "weigthPercent": 3,
+    "strength": 75,
+    "productionHours": 48
+  }
+}

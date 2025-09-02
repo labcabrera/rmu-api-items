@@ -1,0 +1,24 @@
+{
+  "id": "plate-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "chest",
+    "at": 10,
+    "enc": 1000,
+    "maneuver": -55,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "sf"
+  },
+  "info": {
+    "cost": {
+      "min": 4.5,
+      "average": 18,
+      "max": 72
+    },
+    "weigthPercent": 15,
+    "strength": 75,
+    "productionHours": 168
+  }
+}

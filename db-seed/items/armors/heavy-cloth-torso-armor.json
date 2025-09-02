@@ -1,0 +1,24 @@
+{
+  "id": "heavy-cloth-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "chest",
+    "at": 2,
+    "enc": 1000,
+    "maneuver": -5,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "m"
+  },
+  "info": {
+    "cost": {
+      "min": 0.25,
+      "average": 1,
+      "max": 4
+    },
+    "weigthPercent": 2,
+    "strength": 30,
+    "productionHours": 80
+  }
+}

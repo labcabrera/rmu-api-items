@@ -1,0 +1,32 @@
+{
+  "id": "short-bow",
+  "realm": "generic",
+  "category": "weapon",
+  "weapon": {
+    "attackTable": "short-bow",
+    "fumbleTable": "bows",
+    "skillId": "ranged-weapon@bow-CHECK",
+    "fumble": 4,
+    "sizeAdjustment": 0,
+    "requiredHands": 2,
+    "throwable": false,
+    "ranges": [
+      { "from": 0, "to": 60, "bonus": 20 },
+      { "from": 60.1, "to": 120, "bonus": 0 },
+      { "from": 120.1, "to": 180, "bonus": -25 },
+      { "from": 180.1, "to": 240, "bonus": -50 },
+      { "from": 240.1, "to": 300, "bonus": -100 }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 6,
+      "average": 6,
+      "max": 6
+    },
+    "length": 3,
+    "weight": 2,
+    "strength": 80,
+    "productionHours": 24
+  }
+}
