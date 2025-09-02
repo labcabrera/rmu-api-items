@@ -1,0 +1,18 @@
+{
+  "id": "wall-shield",
+  "realm": "generic",
+  "category": "shield",
+  "shield": {
+    "attacks": 4
+  },
+  "info": {
+    "cost": {
+      "min": 2.25,
+      "average": 9,
+      "max": 36
+    },
+    "weigth": 20,
+    "strength": 80,
+    "productionHours": 56
+  }
+}

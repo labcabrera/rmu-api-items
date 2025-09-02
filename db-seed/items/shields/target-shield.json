@@ -1,0 +1,18 @@
+{
+  "id": "target-shield",
+  "realm": "generic",
+  "category": "shield",
+  "shield": {
+    "attacks": 1
+  },
+  "info": {
+    "cost": {
+      "min": 0.88,
+      "average": 3.5,
+      "max": 14
+    },
+    "weigth": 4,
+    "strength": 65,
+    "productionHours": 24
+  }
+}

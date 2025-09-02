@@ -1,0 +1,16 @@
+{
+  "id": "cloak",
+  "realm": "generic",
+  "category": "clothes",
+  "info": {
+    "cost": {
+      "min": 0.9,
+      "average": 0.9,
+      "max": 0.9
+    },
+    "weigth": 2.5,
+    "strength": 35,
+    "productionHours": 8
+  },
+  "description": "Heavy linen or wool"
+}
