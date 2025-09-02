@@ -1,0 +1,24 @@
+{
+  "id": "plate-vambraces",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "arms",
+    "at": 10,
+    "enc": 1000,
+    "maneuver": -15,
+    "rangedPenalty": -30,
+    "perception": 0,
+    "baseDifficulty": "h"
+  },
+  "info": {
+    "cost": {
+      "min": 4,
+      "average": 16,
+      "max": 64
+    },
+    "weigthPercent": 3,
+    "strength": 75,
+    "productionHours": 64
+  }
+}
