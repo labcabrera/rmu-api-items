@@ -54,7 +54,7 @@ export class ItemWeapon {
   @Prop({ type: Boolean, required: true })
   throwable: boolean;
 
-  @Prop({ type: ItemWeaponRange, required: true })
+  @Prop({ type: [ItemWeaponRange], required: false })
   ranges: ItemWeaponRange[] | undefined;
 }
 
