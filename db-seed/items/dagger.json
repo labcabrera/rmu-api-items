@@ -1,0 +1,27 @@
+{
+  "id": "dagger",
+  "category": "weapon",
+  "weapon": {
+    "attackTable": "dagger",
+    "fumbleTable": "todo",
+    "skillId": "melee-weapon@blade",
+    "fumble": 3,
+    "sizeAdjustment": 0,
+    "requiredHands": 1,
+    "throwable": true,
+    "ranges": [
+      { "from": 0, "to": 10, "bonus": 0 },
+      { "from": 10.1, "to": 20, "bonus": -10 },
+      { "from": 20.1, "to": 30, "bonus": -25 },
+      { "from": 30.1, "to": 40, "bonus": -50 },
+      { "from": 40.1, "to": 50, "bonus": -100 }
+    ]
+  },
+  "info": {
+    "cost": 0.03,
+    "length": 1,
+    "weight": 1,
+    "strength": 80,
+    "productionHours": 8
+  }
+}

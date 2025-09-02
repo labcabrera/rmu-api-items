@@ -10,20 +10,20 @@ import { DeleteItemCommandHandler } from './application/commands/handlers/delete
 import { UpdateItemCommandHandler } from './application/commands/handlers/update-item.command.handler';
 import { GetItemQueryHandler } from './application/queries/handlers/get-item.query.handler';
 import { GetItemsQueryHandler } from './application/queries/handlers/get-items.query.handler';
-import { GameController } from './infrastructure/controllers/item.controller';
-import { KafkaGameProducerService } from './infrastructure/messaging/kafka-game-producer.service';
-import { GameModel, GameSchema } from './infrastructure/persistence/models/item-model';
-import { MongoGameRepository } from './infrastructure/persistence/repositories/mongo-item.repository';
+import { ItemController } from './infrastructure/controllers/item.controller';
+import { KafkaItemProducerService } from './infrastructure/messaging/kafka-item-producer.service';
+import { ItemModel, ItemSchema } from './infrastructure/persistence/models/item-model';
+import { MongoItemRepository } from './infrastructure/persistence/repositories/mongo-item.repository';
 
 @Module({
   imports: [
     TerminusModule,
     CqrsModule,
-    MongooseModule.forFeature([{ name: GameModel.name, schema: GameSchema }]),
+    MongooseModule.forFeature([{ name: ItemModel.name, schema: ItemSchema }]),
     AuthModule,
     SharedModule,
   ],
-  controllers: [GameController],
+  controllers: [ItemController],
   providers: [
     GetItemQueryHandler,
     GetItemsQueryHandler,
@@ -32,13 +32,13 @@ import { MongoGameRepository } from './infrastructure/persistence/repositories/m
     DeleteItemCommandHandler,
     {
       provide: 'ItemRepository',
-      useClass: MongoGameRepository,
+      useClass: MongoItemRepository,
     },
     {
       provide: 'ItemEventProducer',
-      useClass: KafkaGameProducerService,
+      useClass: KafkaItemProducerService,
     },
   ],
-  exports: ['GameRepository'],
+  exports: ['ItemRepository'],
 })
 export class ItemsModule {}

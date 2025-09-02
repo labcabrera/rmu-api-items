@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { ItemsModule } from './modules/items/items.module';
 import { SharedModule } from './modules/shared/shared.module';
-import { GamesModule } from './modules/games/games.module';
-import { CharactersModule } from './modules/characters/characters.module';
-import { FactionsModule } from './modules/factions/factions.module';
 
 @Module({
   imports: [
@@ -16,7 +14,7 @@ import { FactionsModule } from './modules/factions/factions.module';
       envFilePath: '.env',
       validationSchema: Joi.object({
         PORT: Joi.number().positive().default(3001),
-        RMU_MONGO_STRATEGIC_URI: Joi.string().required(),
+        RMU_MONGO_ITEMS_URI: Joi.string().required(),
         RMU_API_CORE_URI: Joi.string().required(),
         RMU_API_ITEMS_URI: Joi.string().required(),
         RMU_IAM_JWK_URI: Joi.string().uri().required(),
@@ -37,9 +35,7 @@ import { FactionsModule } from './modules/factions/factions.module';
     }),
     AuthModule,
     SharedModule,
-    GamesModule,
-    FactionsModule,
-    CharactersModule,
+    ItemsModule,
   ],
 })
 export class AppModule {}
