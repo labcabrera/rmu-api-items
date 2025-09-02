@@ -15,13 +15,11 @@ Person(user, "User")
 Boundary(frontend, "RMO Frontend") {
     System_Ext(rmu_fe_host, "RMO Frontend Host", "Node.js / JS")
     System_Ext(rmu_fe_strategic, "Strategic microfrontend", "Node / JS")
-    System_Ext(rmu_fe_tactical, "Tactical microfrontend", "Node / JS")
 }
 
 Boundary(apis, "RMO APIs") {
-    System(rmu_api_strategic, "Strategic API", "NestJS")
-    System_Ext(rmu_api_core, "Core API", "NestJS")
-    System_Ext(rmu_api_items, "Items API", "NestJS")
+    System(rmu_api_items, "Items API", "NestJS")
+    System_Ext(rmu_api_strategic, "Strategic API", "NestJS")
 }
 
 Boundary(infrastructure, "Infrastructure") {
@@ -36,20 +34,17 @@ Rel(user, keycloak, "Login", "HTTP")
 ' Frontends
 
 Rel(rmu_fe_host, rmu_fe_strategic, "Load strategic microfrontend", "Module federation")
-Rel(rmu_fe_host, rmu_fe_tactical, "Load tactical microfrontend", "Module federation")
 Rel(rmu_fe_host, keycloak, "Authenticate user", "OIDC")
 
-Rel(rmu_fe_strategic, rmu_api_strategic, "Fetch data", "HTTP / JWT")
-Rel(rmu_fe_tactical, rmu_api_strategic, "Fetch data", "HTTP / JWT")
+Rel(rmu_fe_strategic, rmu_api_items, "Fetch data", "HTTP / JWT")
 
-Rel(rmu_api_strategic, rmu_api_core, "Fetch data", "HTTP / JWT")
 Rel(rmu_api_strategic, rmu_api_items, "Fetch data", "HTTP / JWT")
 
-Rel(rmu_api_strategic, mongodb, "Read/Write data", "mongoose")
+Rel(rmu_api_items, mongodb, "Read/Write data", "mongoose")
 
-Rel(rmu_api_strategic, keycloak, "Read JWK", "HTTP")
+Rel(rmu_api_items, keycloak, "Read JWK", "HTTP")
 
-Rel(rmu_api_strategic, kafka, "Publish events", "")
+Rel(rmu_api_items, kafka, "Publish events", "")
 
 SHOW_LEGEND()
 
