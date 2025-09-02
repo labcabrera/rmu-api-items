@@ -21,6 +21,7 @@ export class ItemDto {
     const dto = new ItemDto();
     dto.id = entity.id;
     dto.realm = entity.realm;
+    dto.category = entity.category;
     dto.weapon = entity.weapon ? ItemWeaponDto.fromEntity(entity.weapon) : undefined;
     dto.armor = entity.armor ? ItemArmorDto.fromEntity(entity.armor) : undefined;
     dto.shield = entity.shield;
