@@ -3,14 +3,15 @@
 set -a
 source ../.env
 set -e
-
 DEFAULT_BASE_URL="http://localhost:3006/v1"
 DEFAULT_CONTENT_TYPE="application/json"
 
 read_access_token() {
     echo "Fetching access token from ${RMU_IAM_TOKEN_URI}"
+    echo " Client: ${RMU_IAM_CLIENT_ID}"
+    echo " Secret: ${RMU_IAM_CLIENT_SECRET}"
 
-    ACCESS_TOKEN=$(curl --location "${RMU_IAM_TOKEN_URI}" -v \
+    ACCESS_TOKEN=$(curl --location "${RMU_IAM_TOKEN_URI}" --silent \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data-urlencode 'grant_type=password' \
         --data-urlencode "client_id=${RMU_IAM_CLIENT_ID}" \
@@ -19,7 +20,7 @@ read_access_token() {
         --data-urlencode "password=${RMU_IAM_PASSWORD}" \
         | jq -r '.access_token')
 
-        echo $ACCESS_TOKEN
+    echo "Token: $ACCESS_TOKEN"
         
     export ACCESS_TOKEN
 }
