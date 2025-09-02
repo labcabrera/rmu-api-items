@@ -4,7 +4,7 @@
   "category": "weapon",
   "weapon": {
     "attackTable": "dagger",
-    "fumbleTable": "todo",
+    "fumbleTable": "one-handed-melee",
     "skillId": "melee-weapon@blade",
     "fumble": 3,
     "sizeAdjustment": 0,
