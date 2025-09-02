@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as item from 'src/modules/items/domain/entities/item';
-import { ItemArmor, ItemInfo, ItemWeapon } from './item-childs.model';
+import { ItemArmor, ItemInfo, ItemShield, ItemWeapon } from './item-childs.model';
 
 export type ItemDocument = ItemModel & Document;
 
@@ -21,6 +21,9 @@ export class ItemModel {
 
   @Prop({ type: ItemArmor, required: false })
   armor: ItemArmor | undefined;
+
+  @Prop({ type: ItemShield, required: false })
+  shield: ItemShield | undefined;
 
   @Prop({ type: ItemInfo, required: true })
   info: ItemInfo;

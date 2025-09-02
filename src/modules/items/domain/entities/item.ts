@@ -1,4 +1,4 @@
-export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'other';
+export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'clothes' | 'other';
 export type ArmorSlot = 'chest' | 'head';
 export type DifficultyCode = 'c' | 's' | 'r' | 'e' | 'l' | 'm' | 'h' | 'vh' | 'xh' | 'sf' | 'a' | 'ni';
 
@@ -8,6 +8,7 @@ export interface Item {
   category: ItemCategory;
   weapon: ItemWeapon | undefined;
   armor: ItemArmor | undefined;
+  shield: ItemShield | undefined;
   info: ItemInfo;
   description: string | undefined;
   owner: string;
@@ -49,6 +50,10 @@ export interface ItemArmor {
   rangedPenalty: number;
   perception: number;
   baseDifficulty: DifficultyCode;
+}
+
+export interface ItemShield {
+  attacks: number;
 }
 
 export interface ItemCost {

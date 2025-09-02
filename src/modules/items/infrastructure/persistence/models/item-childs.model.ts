@@ -96,3 +96,9 @@ export class ItemArmor {
   @Prop({ type: String, required: true })
   baseDifficulty: item.DifficultyCode;
 }
+
+@Schema({ _id: false })
+export class ItemShield {
+  @Prop({ type: Number, required: true })
+  attacks: number;
+}

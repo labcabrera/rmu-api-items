@@ -1,4 +1,5 @@
 import { ItemArmor, ItemCategory, ItemInfo, ItemWeapon } from '../../domain/entities/item';
+import { ItemShield } from '../../infrastructure/persistence/models/item-childs.model';
 
 export class CreateItemCommand {
   id: string;
@@ -6,6 +7,7 @@ export class CreateItemCommand {
   category: ItemCategory;
   weapon: ItemWeapon | undefined;
   armor: ItemArmor | undefined;
+  shield: ItemShield | undefined;
   info: ItemInfo;
   description: string | undefined;
   userId: string;

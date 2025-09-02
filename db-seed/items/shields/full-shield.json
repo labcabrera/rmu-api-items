@@ -1,0 +1,18 @@
+{
+  "id": "full-shield",
+  "realm": "generic",
+  "category": "shield",
+  "shield": {
+    "attacks": 3
+  },
+  "info": {
+    "cost": {
+      "min": 1.75,
+      "average": 7,
+      "max": 28
+    },
+    "weigth": 12,
+    "strength": 75,
+    "productionHours": 48
+  }
+}

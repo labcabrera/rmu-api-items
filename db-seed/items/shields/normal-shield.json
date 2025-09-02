@@ -1,0 +1,18 @@
+{
+  "id": "normal-shield",
+  "realm": "generic",
+  "category": "shield",
+  "shield": {
+    "attacks": 2
+  },
+  "info": {
+    "cost": {
+      "min": 1.38,
+      "average": 5.5,
+      "max": 14
+    },
+    "weigth": 8,
+    "strength": 70,
+    "productionHours": 40
+  }
+}

@@ -37,6 +37,8 @@ export class CreateItemCommandHandler implements ICommandHandler<CreateItemComma
           throw new ValidationError('Required weapon info');
         } else if (command.armor) {
           throw new ValidationError('Armor info not allowed');
+        } else if (command.shield) {
+          throw new ValidationError('Armor info not allowed');
         }
         break;
       case 'armor':
@@ -44,6 +46,17 @@ export class CreateItemCommandHandler implements ICommandHandler<CreateItemComma
           throw new ValidationError('Required armor info');
         } else if (command.weapon) {
           throw new ValidationError('Weapon info not allowed');
+        } else if (command.shield) {
+          throw new ValidationError('Weapon info not allowed');
+        }
+        break;
+      case 'shield':
+        if (!command.shield) {
+          throw new ValidationError('Required shield info');
+        } else if (command.weapon) {
+          throw new ValidationError('Weapon info not allowed');
+        } else if (command.armor) {
+          throw new ValidationError('Armor info not allowed');
         }
         break;
       default:

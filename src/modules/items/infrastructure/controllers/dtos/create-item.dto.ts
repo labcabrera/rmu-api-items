@@ -4,6 +4,7 @@ import { CreateItemCommand } from 'src/modules/items/application/commands/create
 import * as item from 'src/modules/items/domain/entities/item';
 import { ItemArmorDto } from './item-armor.dto';
 import { ItemInfoDto } from './item-info.dto';
+import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
 
 export class CreateItemDto {
@@ -32,10 +33,16 @@ export class CreateItemDto {
   @IsOptional()
   armor: ItemArmorDto | undefined;
 
+  @ApiProperty({ description: 'Shield info if available' })
+  @IsObject()
+  @IsOptional()
+  shield: ItemShieldDto | undefined;
+
+  @ApiProperty({ description: 'Generic item information' })
   @IsObject()
   info: ItemInfoDto;
 
-  @ApiProperty({ description: 'Game description', example: 'A thrilling campaign set in Middle-earth' })
+  @ApiProperty({ description: 'Item description', example: 'Some item description' })
   @IsString()
   @IsOptional()
   description: string | undefined;
@@ -47,6 +54,7 @@ export class CreateItemDto {
     cmd.category = dto.category;
     cmd.weapon = dto.weapon;
     cmd.armor = dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined;
+    cmd.shield = dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined;
     cmd.info = ItemInfoDto.toEntity(dto.info);
     cmd.userId = userId;
     cmd.roles = roles;
