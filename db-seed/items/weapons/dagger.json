@@ -19,7 +19,11 @@
     ]
   },
   "info": {
-    "cost": 0.03,
+    "cost": {
+      "min": 3,
+      "average": 1,
+      "max": 80
+    },
     "length": 1,
     "weight": 1,
     "strength": 80,

@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { CreateItemCommand } from 'src/modules/items/application/commands/create-item.command';
 import * as item from 'src/modules/items/domain/entities/item';
-import { ItemInfoDto, ItemWeaponDto } from './item.dto';
+import { ItemArmorDto } from './item-armor.dto';
+import { ItemInfoDto } from './item-info.dto';
+import { ItemWeaponDto } from './item-weapon.dto';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
@@ -23,7 +25,12 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Weapon info if available' })
   @IsObject()
   @IsOptional()
-  weapon: ItemWeaponDto;
+  weapon: ItemWeaponDto | undefined;
+
+  @ApiProperty({ description: 'Armor info if available' })
+  @IsObject()
+  @IsOptional()
+  armor: ItemArmorDto | undefined;
 
   @IsObject()
   info: ItemInfoDto;
@@ -39,6 +46,7 @@ export class CreateItemDto {
     cmd.realm = dto.realm;
     cmd.category = dto.category;
     cmd.weapon = dto.weapon;
+    cmd.armor = dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined;
     cmd.info = ItemInfoDto.toEntity(dto.info);
     cmd.userId = userId;
     cmd.roles = roles;

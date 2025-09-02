@@ -65,7 +65,7 @@ send_file_to_service() {
 
 initialize_items() {
     echo "Initializing items..."   
-    for item_file in items/*.json; do
+    for item_file in $(find items -type f -o -type d); do
         if [ -f "$item_file" ]; then
             send_file_to_service "$item_file" "items"
             echo ""

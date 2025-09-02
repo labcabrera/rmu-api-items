@@ -1,0 +1,24 @@
+{
+  "id": "heavy-cloth-greaves",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "legs",
+    "at": 2,
+    "enc": 1000,
+    "maneuver": -3,
+    "rangedPenalty": -5,
+    "perception": 0,
+    "baseDifficulty": "e"
+  },
+  "info": {
+    "cost": {
+      "min": 0.75,
+      "average": 3,
+      "max": 12
+    },
+    "weigthPercent": 2,
+    "strength": 30,
+    "productionHours": 16
+  }
+}

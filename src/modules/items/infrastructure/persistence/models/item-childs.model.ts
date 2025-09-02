@@ -2,15 +2,30 @@ import { Prop, Schema } from '@nestjs/mongoose';
 import * as item from 'src/modules/items/domain/entities/item';
 
 @Schema({ _id: false })
+export class ItemCost {
+  @Prop({ type: Number, required: true })
+  min: number;
+
+  @Prop({ type: Number, required: true })
+  average: number;
+
+  @Prop({ type: Number, required: true })
+  max: number;
+}
+
+@Schema({ _id: false })
 export class ItemInfo {
-  @Prop({ type: Number, required: false })
-  cost: number;
+  @Prop({ type: ItemCost, required: false })
+  cost: ItemCost;
 
   @Prop({ type: Number, required: false })
   length: number;
 
   @Prop({ type: Number, required: false })
   weight: number;
+
+  @Prop({ type: Number, required: false })
+  weigthPercent: number;
 
   @Prop({ type: Number, required: false })
   strength: number;
@@ -77,4 +92,7 @@ export class ItemArmor {
 
   @Prop({ type: Number, required: true })
   perception: number;
+
+  @Prop({ type: String, required: true })
+  baseDifficulty: item.DifficultyCode;
 }

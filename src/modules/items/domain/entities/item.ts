@@ -1,5 +1,6 @@
 export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'other';
 export type ArmorSlot = 'chest' | 'head';
+export type DifficultyCode = 'c' | 's' | 'r' | 'e' | 'l' | 'm' | 'h' | 'vh' | 'xh' | 'sf' | 'a' | 'ni';
 
 export interface Item {
   id: string;
@@ -15,9 +16,10 @@ export interface Item {
 }
 
 export interface ItemInfo {
-  cost: number | undefined;
+  cost: ItemCost | undefined;
   length: number | undefined;
   weight: number | undefined;
+  weigthPercent: number | undefined;
   strength: number | undefined;
   productionHours: number | undefined;
 }
@@ -46,4 +48,11 @@ export interface ItemArmor {
   maneuver: number;
   rangedPenalty: number;
   perception: number;
+  baseDifficulty: DifficultyCode;
+}
+
+export interface ItemCost {
+  min: number;
+  average: number;
+  max: number;
 }
