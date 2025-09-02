@@ -1,6 +1,6 @@
 const items = [
     {
-        id: 'dager',
+        id: 'dagger',
         category: 'weapon',
         weapon: {
             attackTable: 'dagger',
