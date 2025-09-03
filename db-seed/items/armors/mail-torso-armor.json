@@ -1,0 +1,24 @@
+{
+  "id": "mail-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 8,
+    "enc": 1000,
+    "maneuver": -41,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "vh"
+  },
+  "info": {
+    "cost": {
+      "min": 4,
+      "average": 16,
+      "max": 64
+    },
+    "weightPercent": 11,
+    "strength": 55,
+    "productionHours": 280
+  }
+}

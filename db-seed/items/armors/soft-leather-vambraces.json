@@ -1,0 +1,24 @@
+{
+  "id": "soft-leather-vambraces",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "arms",
+    "at": 10,
+    "enc": 1000,
+    "maneuver": -3,
+    "rangedPenalty": -5,
+    "perception": 0,
+    "baseDifficulty": "e"
+  },
+  "info": {
+    "cost": {
+      "min": 0.75,
+      "average": 3,
+      "max": 12
+    },
+    "weightPercent": 1,
+    "strength": 30,
+    "productionHours": 16
+  }
+}

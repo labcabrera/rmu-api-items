@@ -1,0 +1,24 @@
+{
+  "id": "rigid-leather-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 6,
+    "enc": 1000,
+    "maneuver": -17,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "h"
+  },
+  "info": {
+    "cost": {
+      "min": 1,
+      "average": 4,
+      "max": 16
+    },
+    "weightPercent": 7,
+    "strength": 45,
+    "productionHours": 32
+  }
+}
