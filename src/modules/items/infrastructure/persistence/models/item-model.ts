@@ -28,6 +28,9 @@ export class ItemModel {
   @Prop({ type: ItemInfo, required: true })
   info: ItemInfo;
 
+  @Prop({ required: true })
+  stackable: boolean;
+
   @Prop({ type: String, required: false })
   description: string | undefined;
 

@@ -1,0 +1,16 @@
+{
+  "id": "scabbard-belt",
+  "realm": "generic",
+  "category": "clothes",
+  "info": {
+    "cost": {
+      "min": 2.5,
+      "average": 2.5,
+      "max": 2.5
+    },
+    "weight": 1,
+    "strength": 45,
+    "productionHours": 8
+  },
+  "description": "Holds one 1-h weapon"
+}

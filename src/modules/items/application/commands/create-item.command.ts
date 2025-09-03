@@ -9,6 +9,7 @@ export class CreateItemCommand {
   armor: ItemArmor | undefined;
   shield: ItemShield | undefined;
   info: ItemInfo;
+  stackable: boolean;
   description: string | undefined;
   userId: string;
   roles: string[];

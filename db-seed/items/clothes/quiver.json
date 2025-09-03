@@ -1,5 +1,5 @@
 {
-  "id": "belt-leather",
+  "id": "quiver",
   "realm": "generic",
   "category": "clothes",
   "info": {
@@ -9,7 +9,8 @@
       "max": 0.1
     },
     "weight": 0.5,
-    "strength": 45,
-    "productionHours": 2
-  }
+    "strength": 15,
+    "productionHours": 8
+  },
+  "description": "Hold 20 arrows/bolts"
 }

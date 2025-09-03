@@ -10,6 +10,7 @@ export interface Item {
   armor: ItemArmor | undefined;
   shield: ItemShield | undefined;
   info: ItemInfo;
+  stackable: boolean;
   description: string | undefined;
   owner: string;
   createdAt: Date;

@@ -1,0 +1,16 @@
+{
+  "id": "weapon-belt",
+  "realm": "generic",
+  "category": "clothes",
+  "info": {
+    "cost": {
+      "min": 0.5,
+      "average": 0.5,
+      "max": 0.5
+    },
+    "weight": 1,
+    "strength": 25,
+    "productionHours": 4
+  },
+  "description": "Holds 2 scabbards, 3 pouches"
+}

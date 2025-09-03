@@ -7,7 +7,7 @@
     "at": 2,
     "enc": 1000,
     "maneuver": -3,
-    "rangedPenalty": -5,
+    "rangedPenalty": 0,
     "perception": 0,
     "baseDifficulty": "e"
   },

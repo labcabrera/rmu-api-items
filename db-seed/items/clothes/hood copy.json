@@ -1,0 +1,16 @@
+{
+  "id": "tunic",
+  "realm": "generic",
+  "category": "clothes",
+  "info": {
+    "cost": {
+      "min": 0.6,
+      "average": 0.6,
+      "max": 0.6
+    },
+    "weight": 2,
+    "strength": 35,
+    "productionHours": 16
+  },
+  "description": ""
+}

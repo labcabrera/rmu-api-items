@@ -1,0 +1,16 @@
+{
+  "id": "hood",
+  "realm": "generic",
+  "category": "clothes",
+  "info": {
+    "cost": {
+      "min": 0.16,
+      "average": 0.16,
+      "max": 0.16
+    },
+    "weight": 0.5,
+    "strength": 20,
+    "productionHours": 4
+  },
+  "description": "Covers head & shoulders"
+}

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { CreateItemCommand } from 'src/modules/items/application/commands/create-item.command';
 import * as item from 'src/modules/items/domain/entities/item';
 import { ItemArmorDto } from './item-armor.dto';
@@ -42,6 +42,11 @@ export class CreateItemDto {
   @IsObject()
   info: ItemInfoDto;
 
+  @ApiProperty({ description: 'Is the item stackable?' })
+  @IsOptional()
+  @IsBoolean()
+  stackable: boolean = false;
+
   @ApiProperty({ description: 'Item description', example: 'Some item description' })
   @IsString()
   @IsOptional()
@@ -55,6 +60,7 @@ export class CreateItemDto {
     cmd.weapon = dto.weapon;
     cmd.armor = dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined;
     cmd.shield = dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined;
+    cmd.stackable = dto.stackable;
     cmd.info = ItemInfoDto.toEntity(dto.info);
     cmd.userId = userId;
     cmd.roles = roles;
