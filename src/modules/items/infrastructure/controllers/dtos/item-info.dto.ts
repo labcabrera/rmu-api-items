@@ -33,6 +33,7 @@ export class ItemInfoDto {
     dto.productionHours = entity.productionHours;
     dto.strength = entity.strength;
     dto.weight = entity.weight;
+    dto.weightPercent = entity.weightPercent;
     return dto;
   }
 
@@ -41,7 +42,7 @@ export class ItemInfoDto {
       cost: dto.cost ? ItemCostDto.toEntity(dto.cost) : undefined,
       length: dto.length,
       weight: dto.weight,
-      weigthPercent: dto.weightPercent,
+      weightPercent: dto.weightPercent,
       strength: dto.strength,
       productionHours: dto.productionHours,
     };

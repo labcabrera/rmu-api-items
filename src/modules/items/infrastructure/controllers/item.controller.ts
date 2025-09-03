@@ -15,7 +15,7 @@ import { GetItemsQuery } from '../../application/queries/get-items.query';
 import { Item } from '../../domain/entities/item';
 import { CreateItemDto } from './dtos/create-item.dto';
 import { ItemDto, ItemPageDto } from './dtos/item.dto';
-import { UpdateItemDto } from './dtos/update-game.dto';
+import { UpdateItemDto } from './dtos/update-item.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('v1/items')
@@ -51,7 +51,7 @@ export class ItemController {
   }
 
   @Post('')
-  @ApiOperation({ operationId: 'createItem', summary: 'Create a new game' })
+  @ApiOperation({ operationId: 'createItem', summary: 'Create a new item' })
   @ApiOkResponse({ type: ItemDto, description: 'Success' })
   @ApiUnauthorizedResponse({ description: 'Invalid or missing authentication token', type: ErrorDto })
   @ApiResponse({ status: 400, description: 'Bad request, invalid data', type: ErrorDto })
@@ -63,7 +63,7 @@ export class ItemController {
   }
 
   @Patch(':id')
-  @ApiOperation({ operationId: 'updateItem', summary: 'Update game by id' })
+  @ApiOperation({ operationId: 'updateItem', summary: 'Update item by id' })
   @ApiOkResponse({ type: ItemDto, description: 'Success' })
   @ApiUnauthorizedResponse({ description: 'Invalid or missing authentication token', type: ErrorDto })
   @ApiNotFoundResponse({ description: 'Item not found', type: ErrorDto })
@@ -77,7 +77,7 @@ export class ItemController {
 
   @Delete(':id')
   @HttpCode(204)
-  @ApiOperation({ operationId: 'deleteItem', summary: 'Delete game by id' })
+  @ApiOperation({ operationId: 'deleteItem', summary: 'Delete item by id' })
   @ApiNotFoundResponse({ description: 'Item not found', type: ErrorDto })
   async delete(@Param('id') id: string, @Request() req) {
     const command = new DeleteItemCommand(id, undefined, req.user!.id as string, req.user!.roles as string[]);

@@ -16,22 +16,22 @@ export class ItemCost {
 @Schema({ _id: false })
 export class ItemInfo {
   @Prop({ type: ItemCost, required: false })
-  cost: ItemCost;
+  cost: ItemCost | undefined;
 
   @Prop({ type: Number, required: false })
-  length: number;
+  length: number | undefined;
 
   @Prop({ type: Number, required: false })
-  weight: number;
+  weight: number | undefined;
 
   @Prop({ type: Number, required: false })
-  weigthPercent: number;
+  weightPercent: number | undefined;
 
   @Prop({ type: Number, required: false })
-  strength: number;
+  strength: number | undefined;
 
   @Prop({ type: Number, required: false })
-  productionHours: number;
+  productionHours: number | undefined;
 }
 
 @Schema({ _id: false })

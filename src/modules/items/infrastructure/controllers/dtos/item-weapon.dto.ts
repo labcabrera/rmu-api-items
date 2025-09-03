@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ItemWeapon, ItemWeaponRange } from '../../persistence/models/item-childs.model';
 
 export class ItemWeaponDto {
@@ -38,6 +38,9 @@ export class ItemWeaponDto {
   @IsNotEmpty()
   throwable: boolean;
 
+  @ApiProperty({ description: 'Weapon ranges', required: false })
+  @IsOptional()
+  @IsArray()
   ranges: ItemWeaponRangeDto[] | undefined;
 
   static fromEntity(entity: ItemWeapon): ItemWeaponDto {
@@ -49,6 +52,7 @@ export class ItemWeaponDto {
     dto.sizeAdjustment = entity.sizeAdjustment;
     dto.requiredHands = entity.requiredHands;
     dto.throwable = entity.throwable;
+    dto.ranges = entity.ranges?.map((range) => ItemWeaponRangeDto.fromEntity(range));
     return dto;
   }
 }
