@@ -4,7 +4,7 @@
   "category": "armor",
   "armor": {
     "slot": "arms",
-    "at": 10,
+    "at": 3,
     "enc": 1000,
     "maneuver": -3,
     "rangedPenalty": -5,
