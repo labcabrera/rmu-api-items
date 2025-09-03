@@ -1,5 +1,5 @@
 export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'clothes' | 'other';
-export type ArmorSlot = 'chest' | 'head';
+export type ArmorSlot = 'body' | 'head' | 'legs' | 'arms';
 export type DifficultyCode = 'c' | 's' | 'r' | 'e' | 'l' | 'm' | 'h' | 'vh' | 'xh' | 'sf' | 'a' | 'ni';
 
 export interface Item {

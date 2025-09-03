@@ -3,7 +3,7 @@
   "realm": "generic",
   "category": "armor",
   "armor": {
-    "slot": "chest",
+    "slot": "body",
     "at": 10,
     "enc": 1000,
     "maneuver": -55,
