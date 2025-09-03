@@ -1,0 +1,16 @@
+{
+  "id": "gold-coin",
+  "realm": "generic",
+  "category": "coins",
+  "info": {
+    "cost": {
+      "min": 1,
+      "average": 1,
+      "max": 1
+    },
+    "weight": 0.02,
+    "strength": 10,
+    "productionHours": 2
+  },
+  "stackable": true
+}
