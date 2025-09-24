@@ -1,5 +1,6 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import * as item from 'src/modules/items/domain/entities/item';
+import type { ArmorSlot } from 'src/modules/items/domain/value-objects/armor-slot.vo';
+import type { DifficultyCode } from 'src/modules/items/domain/value-objects/difficulty-code.vo';
 
 @Schema({ _id: false })
 export class ItemCost {
@@ -76,7 +77,7 @@ export class ItemWeapon {
 @Schema({ _id: false })
 export class ItemArmor {
   @Prop({ type: String, required: true })
-  slot: item.ArmorSlot;
+  slot: ArmorSlot;
 
   @Prop({ type: Number, required: true })
   at: number;
@@ -94,7 +95,7 @@ export class ItemArmor {
   perception: number;
 
   @Prop({ type: String, required: true })
-  baseDifficulty: item.DifficultyCode;
+  baseDifficulty: DifficultyCode;
 }
 
 @Schema({ _id: false })

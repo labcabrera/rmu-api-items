@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import * as item from 'src/modules/items/domain/entities/item';
 import { ItemArmor, ItemInfo, ItemShield, ItemWeapon } from './item-childs.model';
+import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 
 export type ItemDocument = ItemModel & Document;
 
@@ -14,7 +14,7 @@ export class ItemModel {
   realm: string;
 
   @Prop({ required: true })
-  category: item.ItemCategory;
+  category: ItemCategory;
 
   @Prop({ type: ItemWeapon, required: false })
   weapon: ItemWeapon | undefined;
