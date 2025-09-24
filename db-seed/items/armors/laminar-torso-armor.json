@@ -1,0 +1,24 @@
+{
+  "id": "laminar-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 5,
+    "enc": 1000,
+    "maneuver": -15,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "vh"
+  },
+  "info": {
+    "cost": {
+      "min": 1.75,
+      "average": 7,
+      "max": 28
+    },
+    "weightPercent": 5,
+    "strength": 40,
+    "productionHours": 80
+  }
+}

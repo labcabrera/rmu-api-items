@@ -1,0 +1,15 @@
+{
+  "id": "waterskin",
+  "realm": "generic",
+  "category": "tools",
+  "info": {
+    "cost": {
+      "min": 0.01,
+      "average": 0.01,
+      "max": 0.01
+    },
+    "weight": 0.25,
+    "strength": 25,
+    "productionHours": 6
+  }
+}

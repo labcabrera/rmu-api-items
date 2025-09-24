@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { KafkaProducerService } from 'src/modules/shared/infrastructure/messaging/kafka-producer.service';
-import { Item } from '../../domain/entities/item';
+import { Item } from '../../domain/aggregates/item.aggregate';
 import { ItemCreatedEvent, ItemDeletedEvent, ItemUpdatedEvent } from '../../domain/events/item.events';
 
 @Injectable()

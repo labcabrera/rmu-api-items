@@ -1,0 +1,24 @@
+{
+  "id": "brigandine-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 9,
+    "enc": 1000,
+    "maneuver": -48,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "xh"
+  },
+  "info": {
+    "cost": {
+      "min": 3,
+      "average": 12,
+      "max": 48
+    },
+    "weightPercent": 13,
+    "strength": 70,
+    "productionHours": 112
+  }
+}

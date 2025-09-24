@@ -1,0 +1,15 @@
+{
+  "id": "lantern",
+  "realm": "generic",
+  "category": "tools",
+  "info": {
+    "cost": {
+      "min": 1.2,
+      "average": 1.2,
+      "max": 1.2
+    },
+    "weight": 1,
+    "strength": 10,
+    "productionHours": 32
+  }
+}

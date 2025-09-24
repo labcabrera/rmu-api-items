@@ -1,0 +1,16 @@
+{
+  "id": "arrow",
+  "realm": "generic",
+  "category": "ammunition",
+  "info": {
+    "cost": {
+      "min": 0.02,
+      "average": 0.02,
+      "max": 0.02
+    },
+    "weight": 0.125,
+    "strength": 55,
+    "productionHours": 0.4
+  },
+  "stackable": true
+}

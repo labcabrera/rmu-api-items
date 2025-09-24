@@ -1,0 +1,15 @@
+{
+  "id": "pole",
+  "realm": "generic",
+  "category": "tools",
+  "info": {
+    "cost": {
+      "min": 0.05,
+      "average": 0.05,
+      "max": 0.05
+    },
+    "weight": 7,
+    "strength": 30,
+    "productionHours": 24
+  }
+}

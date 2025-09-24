@@ -8,8 +8,8 @@
       "average": 0.1,
       "max": 0.1
     },
-    "weigth": 0.5,
+    "weight": 0.5,
     "strength": 45,
-    "productionHours": 8
+    "productionHours": 2
   }
 }

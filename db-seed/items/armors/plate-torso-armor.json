@@ -3,7 +3,7 @@
   "realm": "generic",
   "category": "armor",
   "armor": {
-    "slot": "chest",
+    "slot": "body",
     "at": 10,
     "enc": 1000,
     "maneuver": -55,
@@ -17,7 +17,7 @@
       "average": 18,
       "max": 72
     },
-    "weigthPercent": 15,
+    "weightPercent": 15,
     "strength": 75,
     "productionHours": 168
   }

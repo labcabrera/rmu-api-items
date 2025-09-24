@@ -1,0 +1,24 @@
+{
+  "id": "hide-scale-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 4,
+    "enc": 1000,
+    "maneuver": -12,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "h"
+  },
+  "info": {
+    "cost": {
+      "min": 0.75,
+      "average": 3,
+      "max": 12
+    },
+    "weightPercent": 4,
+    "strength": 35,
+    "productionHours": 32
+  }
+}

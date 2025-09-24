@@ -1,0 +1,24 @@
+{
+  "id": "soft-leather-torso-armor",
+  "realm": "generic",
+  "category": "armor",
+  "armor": {
+    "slot": "body",
+    "at": 3,
+    "enc": 1000,
+    "maneuver": -7,
+    "rangedPenalty": 0,
+    "perception": 0,
+    "baseDifficulty": "m"
+  },
+  "info": {
+    "cost": {
+      "min": 0.25,
+      "average": 1,
+      "max": 4
+    },
+    "weightPercent": 2,
+    "strength": 30,
+    "productionHours": 16
+  }
+}
