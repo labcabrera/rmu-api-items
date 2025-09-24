@@ -14,13 +14,19 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
   ) {}
 
   async execute(command: UpdateItemCommand): Promise<Item> {
-    const current = await this.itemRepository.findById(command.id);
-    if (!current) {
+    const item = await this.itemRepository.findById(command.id);
+    if (!item) {
       throw new NotFoundError('Item', command.id);
     }
-    //TODO
-    const partial: Partial<Item> = { ...command, updatedAt: new Date() };
-    const updated = await this.itemRepository.update(command.id, partial);
+    item.update({
+      weapon: command.weapon,
+      armor: command.armor,
+      shield: command.shield,
+      info: command.info,
+      stackable: command.stackable,
+      description: command.description,
+    });
+    const updated = await this.itemRepository.update(command.id, item);
     updated.getUncommittedEvents().forEach((event) => this.itemEventBus.publish(event));
     return updated;
   }

@@ -5,7 +5,8 @@ import { ItemInfo } from '../value-objects/item-info.vo';
 import { ItemShield } from '../value-objects/item-shield.vo';
 import { ItemWeapon } from '../value-objects/item-weapon.vo';
 import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
-import { ItemCreatedEvent } from '../events/item.events';
+import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
+import { ValidationError } from 'src/modules/shared/domain/errors';
 
 export interface ItemProps {
   id: string;
@@ -41,6 +42,25 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   }
 
   public static create(props: Omit<ItemProps, 'createdAt' | 'updatedAt'>): Item {
+    switch (props.category) {
+      case 'weapon':
+        if (!props.weapon) {
+          throw new Error('Weapon is required for weapon items');
+        }
+        break;
+      case 'armor':
+        if (!props.armor) {
+          throw new Error('Armor is required for armor items');
+        }
+        break;
+      case 'shield':
+        if (!props.shield) {
+          throw new Error('Shield is required for shield items');
+        }
+        break;
+      default:
+        throw new Error('Invalid item category');
+    }
     const item = new Item(
       props.id,
       props.realm,
@@ -55,7 +75,8 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       new Date(),
       undefined,
     );
-    this.apply(new ItemCreatedEvent(item));
+    item.validate();
+    this.apply(new ItemCreatedEvent(item.toProps()));
     return item;
   }
 
@@ -74,6 +95,45 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.createdAt,
       props.updatedAt,
     );
+  }
+
+  update(props: Partial<Omit<ItemProps, 'id' | 'realm' | 'createdAt' | 'owner'>>): void {
+    const { category, weapon, armor, shield, info, stackable, description } = props;
+    if (category) this.category = category;
+    if (weapon) this.weapon = weapon;
+    if (armor) this.armor = armor;
+    if (shield) this.shield = shield;
+    if (info) this.info = info;
+    if (stackable !== undefined) this.stackable = stackable;
+    if (description !== undefined) this.description = description;
+    this.validate();
+    this.updatedAt = new Date();
+    this.apply(new ItemUpdatedEvent(this.toProps()));
+  }
+
+  validate(): void {
+    switch (this.category) {
+      case 'weapon':
+        if (!this.weapon) {
+          throw new ValidationError('Weapon is required for weapon items');
+        }
+        break;
+      case 'armor':
+        if (!this.armor) {
+          throw new ValidationError('Armor is required for armor items');
+        }
+        break;
+      case 'shield':
+        if (!this.shield) {
+          throw new ValidationError('Shield is required for shield items');
+        }
+        break;
+      default:
+        throw new ValidationError('Invalid item category');
+    }
+    if (!this.info) {
+      throw new ValidationError('Info is required for all items');
+    }
   }
 
   toProps(): ItemProps {
