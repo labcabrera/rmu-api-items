@@ -5,7 +5,7 @@
   "weapon": {
     "attackTable": "short-bow",
     "fumbleTable": "bows",
-    "skillId": "ranged-weapon@bow-CHECK",
+    "skillId": "ranged-weapon@bow",
     "fumble": 4,
     "sizeAdjustment": 0,
     "requiredHands": 2,
