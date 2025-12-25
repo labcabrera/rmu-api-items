@@ -1,0 +1,25 @@
+{
+  "id": "spear-1h",
+  "realm": "generic",
+  "category": "weapon",
+  "weapon": {
+    "attackTable": "spear-1h",
+    "fumbleTable": "one-handed-melee",
+    "skillId": "melee-weapon@pole-arm",
+    "fumble": 4,
+    "sizeAdjustment": 0,
+    "requiredHands": 1,
+    "throwable": false
+  },
+  "info": {
+    "cost": {
+      "min": 0.9,
+      "average": 0.9,
+      "max": 0.9
+    },
+    "length": 6,
+    "weight": 4.5,
+    "strength": 35,
+    "productionHours": 24
+  }
+}

@@ -76,7 +76,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       undefined,
     );
     item.validate();
-    this.apply(new ItemCreatedEvent(item.toProps()));
+    item.apply(new ItemCreatedEvent(item.toProps()));
     return item;
   }
 
