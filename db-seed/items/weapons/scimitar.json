@@ -4,7 +4,7 @@
   "category": "weapon",
   "weapon": {
     "attackTable": "scimitar",
-    "fumbleTable": "one-handed-melee",
+    "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
     "fumble": 4,
     "sizeAdjustment": 0,

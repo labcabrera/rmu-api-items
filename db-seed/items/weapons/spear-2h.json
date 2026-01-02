@@ -4,7 +4,7 @@
   "category": "weapon",
   "weapon": {
     "attackTable": "spear-2h",
-    "fumbleTable": "one-handed-melee",
+    "fumbleTable": "melee-two-hand",
     "skillId": "melee-weapon@pole-arm",
     "fumble": 4,
     "sizeAdjustment": 1,
