@@ -6,6 +6,8 @@ import { RsqlParser } from 'src/modules/shared/infrastructure/messaging/rsql-par
 import { NotFoundError } from 'src/modules/shared/domain/errors';
 import { ItemRepository } from 'src/modules/items/application/ports/item.repository';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
+import { ItemWeapon as ItemWeaponVO } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemWeaponMode as ItemWeaponModeVO } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
 import { ItemDocument, ItemModel } from '../persistence/models/item-model';
 
 @Injectable()
@@ -51,11 +53,21 @@ export class MongoItemRepository implements ItemRepository {
   }
 
   private mapToEntity(doc: ItemDocument): Item {
+    const weapon = doc.weapon
+      ? new ItemWeaponVO(
+          doc.weapon.skillId,
+          doc.weapon.fumble,
+          (doc.weapon.modes ?? []).map(
+            (m) => new ItemWeaponModeVO(m.type, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
+          ),
+        )
+      : undefined;
+
     return Item.fromProps({
       id: doc._id,
       realm: doc.realm,
       category: doc.category,
-      weapon: doc.weapon,
+      weapon,
       armor: doc.armor,
       shield: doc.shield,
       info: doc.info,

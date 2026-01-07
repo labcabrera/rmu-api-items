@@ -6,6 +6,10 @@ import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { CreateItemCommand } from 'src/modules/items/application/cqrs/commands/create-item.command';
+import { ItemWeapon as ItemWeaponVO } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemWeaponMode as ItemWeaponModeVO } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
+import type { AttackTable } from 'src/modules/items/domain/value-objects/attack-table.vo';
+import type { FumbleTable } from 'src/modules/items/domain/value-objects/fumble-table.vo';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
@@ -53,12 +57,30 @@ export class CreateItemDto {
   description: string | undefined;
 
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
+    const weapon = dto.weapon
+      ? new ItemWeaponVO(
+          dto.weapon.skillId,
+          dto.weapon.fumble,
+          (dto.weapon.modes ?? []).map(
+            (m) =>
+              new ItemWeaponModeVO(
+                m.type,
+                m.attackTable as unknown as AttackTable,
+                m.fumbleTable as unknown as FumbleTable,
+                m.sizeAdjustment,
+                m.ranges,
+                m.alternativeTable as unknown as AttackTable | undefined,
+              ),
+          ),
+        )
+      : undefined;
+
     return CreateItemCommand.create(
       {
         id: dto.id,
         realm: dto.realm,
         category: dto.category,
-        weapon: dto.weapon,
+        weapon,
         armor: dto.armor,
         shield: dto.shield,
         info: dto.info,

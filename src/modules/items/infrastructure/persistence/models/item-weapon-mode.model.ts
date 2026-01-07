@@ -9,10 +9,10 @@ export class ItemWeaponMode {
   @Prop({ type: String, required: true })
   type: WeaponMode;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: String, required: true })
   attackTable: AttackTable;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: String, required: true })
   fumbleTable: FumbleTable;
 
   @Prop({ type: Number, required: true })

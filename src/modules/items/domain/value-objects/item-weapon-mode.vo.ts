@@ -11,5 +11,9 @@ export class ItemWeaponMode {
     public readonly sizeAdjustment: number,
     public readonly ranges: ItemWeaponRange[] | undefined,
     public readonly alternativeTable: AttackTable | undefined,
-  ) {}
+  ) {
+    if (ranges && ranges.length === 0) {
+      this.ranges = undefined;
+    }
+  }
 }

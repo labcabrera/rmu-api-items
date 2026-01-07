@@ -47,6 +47,13 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
         if (!props.weapon) {
           throw new Error('Weapon is required for weapon items');
         }
+        if (!props.weapon.modes || props.weapon.modes.length === 0) {
+          throw new Error('At least one weapon mode is required for weapon items');
+        }
+        props.weapon.modes.forEach((mode) => {
+          if (!mode.attackTable) throw new Error('Attack table is required for each weapon mode');
+          if (!mode.fumbleTable) throw new Error('Fumble table is required for each weapon mode');
+        });
         break;
       case 'armor':
         if (!props.armor) {
