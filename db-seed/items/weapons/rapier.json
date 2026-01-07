@@ -1,25 +1,25 @@
 {
-  "id": "arming-sword",
+  "id": "rapier",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "arming-sword",
+    "attackTable": "rapier",
     "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
-    "fumble": 3,
+    "fumble": 4,
     "sizeAdjustment": 0,
     "requiredHands": 1,
     "throwable": false
   },
   "info": {
     "cost": {
-      "min": 0.18,
-      "average": 0.18,
-      "max": 0.18
+      "min": 0.22,
+      "average": 0.22,
+      "max": 0.22
     },
     "length": 4,
-    "weight": 2.5,
-    "strength": 70,
-    "productionHours": 32
+    "weight": 2,
+    "strength": 85,
+    "productionHours": 48
   }
 }

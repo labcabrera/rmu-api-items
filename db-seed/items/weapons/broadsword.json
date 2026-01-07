@@ -1,11 +1,11 @@
 {
-  "id": "spear-1h",
+  "id": "broadsword",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "spear-1h",
+    "attackTable": "broadsword",
     "fumbleTable": "melee-one-hand",
-    "skillId": "melee-weapon@pole-arm",
+    "skillId": "melee-weapon@blade",
     "fumble": 4,
     "sizeAdjustment": 0,
     "requiredHands": 1,
@@ -13,13 +13,13 @@
   },
   "info": {
     "cost": {
-      "min": 0.9,
-      "average": 0.9,
-      "max": 0.9
+      "min": 0.18,
+      "average": 0.18,
+      "max": 0.18
     },
-    "length": 6,
-    "weight": 4.5,
-    "strength": 35,
-    "productionHours": 24
+    "length": 3,
+    "weight": 3,
+    "strength": 80,
+    "productionHours": 32
   }
 }

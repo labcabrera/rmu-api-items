@@ -1,0 +1,25 @@
+{
+  "id": "arming-sword",
+  "realm": "generic",
+  "category": "weapon",
+  "weapon": {
+    "attackTable": "claymore",
+    "fumbleTable": "melee-two-hands",
+    "skillId": "melee-weapon@blade",
+    "fumble": 5,
+    "sizeAdjustment": 0,
+    "requiredHands": 2,
+    "throwable": false
+  },
+  "info": {
+    "cost": {
+      "min": 0.21,
+      "average": 0.21,
+      "max": 0.21
+    },
+    "length": 5,
+    "weight": 5,
+    "strength": 80,
+    "productionHours": 40
+  }
+}

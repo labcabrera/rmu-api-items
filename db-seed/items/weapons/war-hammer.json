@@ -1,0 +1,25 @@
+{
+  "id": "war-hammer",
+  "realm": "generic",
+  "category": "weapon",
+  "weapon": {
+    "attackTable": "war-hammer",
+    "fumbleTable": "melee-two-hands",
+    "skillId": "melee-weapon@greater-hafted",
+    "fumble": 4,
+    "sizeAdjustment": 0,
+    "requiredHands": 1,
+    "throwable": false
+  },
+  "info": {
+    "cost": {
+      "min": 0.15,
+      "average": 0.15,
+      "max": 0.15
+    },
+    "length": 3,
+    "weight": 3.5,
+    "strength": 65,
+    "productionHours": 16
+  }
+}

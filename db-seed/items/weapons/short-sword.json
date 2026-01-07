@@ -7,7 +7,7 @@
     "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
     "fumble": 3,
-    "sizeAdjustment": 0,
+    "sizeAdjustment": -1,
     "requiredHands": 1,
     "throwable": false
   },
@@ -17,8 +17,8 @@
       "average": 0.18,
       "max": 0.18
     },
-    "length": 4,
-    "weight": 2.5,
+    "length": 2,
+    "weight": 3,
     "strength": 70,
     "productionHours": 32
   }

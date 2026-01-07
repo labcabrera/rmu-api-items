@@ -1,15 +1,20 @@
 {
-  "id": "spear-2h",
+  "id": "poleaxe-1h",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "spear-2h",
-    "fumbleTable": "melee-two-hand",
     "skillId": "melee-weapon@pole-arm",
     "fumble": 4,
-    "sizeAdjustment": 1,
-    "requiredHands": 2,
-    "throwable": false
+    "throwable": false,
+    "modes": [
+      {
+        "type": "two-hands",
+        "attackTable": "war-hammer",
+        "fumbleTable": "melee-two-hands",
+        "sizeAdjustment": 0,
+        "alternativeTable": "spear"
+      }
+    ]
   },
   "info": {
     "cost": {
