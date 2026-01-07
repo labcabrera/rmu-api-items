@@ -1,10 +1,8 @@
 {
-  "id": "spear-1h",
+  "id": "spear",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "spear",
-    "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@pole-arm",
     "fumble": 4,
     "throwable": false,
@@ -18,7 +16,7 @@
       {
         "type": "two-hands",
         "attackTable": "spear",
-        "fumbleTable": "melee-two-hand",
+        "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 1
       }
     ]

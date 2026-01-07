@@ -5,7 +5,6 @@
   "weapon": {
     "skillId": "melee-weapon@pole-arm",
     "fumble": 4,
-    "throwable": false,
     "modes": [
       {
         "type": "two-hands",

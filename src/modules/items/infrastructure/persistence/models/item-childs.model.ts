@@ -48,33 +48,6 @@ export class ItemWeaponRange {
 }
 
 @Schema({ _id: false })
-export class ItemWeapon {
-  @Prop({ type: String, required: true })
-  attackTable: string;
-
-  @Prop({ type: String, required: true })
-  fumbleTable: string;
-
-  @Prop({ type: String, required: true })
-  skillId: string;
-
-  @Prop({ type: Number, required: true })
-  fumble: number;
-
-  @Prop({ type: Number, required: true })
-  sizeAdjustment: number;
-
-  @Prop({ type: Number, required: true })
-  requiredHands: number;
-
-  @Prop({ type: Boolean, required: true })
-  throwable: boolean;
-
-  @Prop({ type: [ItemWeaponRange], required: false })
-  ranges: ItemWeaponRange[] | undefined;
-}
-
-@Schema({ _id: false })
 export class ItemArmor {
   @Prop({ type: String, required: true })
   slot: ArmorSlot;

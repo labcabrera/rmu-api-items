@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ItemArmor, ItemInfo, ItemShield, ItemWeapon } from './item-childs.model';
+import { ItemArmor, ItemInfo, ItemShield } from './item-childs.model';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
+import { ItemWeapon } from './item-weapon.model';
 
 export type ItemDocument = ItemModel & Document;
 

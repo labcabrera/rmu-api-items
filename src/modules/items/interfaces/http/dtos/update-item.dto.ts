@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
 import { UpdateItemCommand } from 'src/modules/items/application/cqrs/commands/update-item.command';
-import { ItemArmor, ItemInfo, ItemShield, ItemWeapon } from 'src/modules/items/infrastructure/persistence/models/item-childs.model';
+import { ItemArmor } from 'src/modules/items/domain/value-objects/item-armor.vo';
+import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
+import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.vo';
+import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
 
 export class UpdateItemDto {
   @ApiProperty({ description: 'Item weapon', required: false })
