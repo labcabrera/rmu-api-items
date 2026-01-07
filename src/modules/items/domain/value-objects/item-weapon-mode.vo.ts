@@ -7,10 +7,10 @@ import { AttackType } from './attack-type.vo';
 export class ItemWeaponMode {
   constructor(
     public readonly type: WeaponMode,
+    public readonly attackTypes: AttackType[],
     public readonly attackTable: AttackTable,
     public readonly fumbleTable: FumbleTable,
     public readonly sizeAdjustment: number,
-    public readonly attackTypes: AttackType[],
     public readonly ranges: ItemWeaponRange[] | undefined,
     public readonly alternativeTable: AttackTable | undefined,
   ) {

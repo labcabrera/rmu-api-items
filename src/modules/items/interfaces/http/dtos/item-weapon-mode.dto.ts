@@ -13,6 +13,10 @@ export class ItemWeaponModeDto {
   @IsNotEmpty()
   type: WeaponMode;
 
+  @ApiProperty({ description: 'Attack types', required: true })
+  @IsArray()
+  attackTypes: AttackType[];
+
   @ApiProperty({ description: 'Attack table', example: 'dagger' })
   @IsString()
   @IsNotEmpty()
@@ -27,10 +31,6 @@ export class ItemWeaponModeDto {
   @IsNumber()
   @IsNotEmpty()
   sizeAdjustment: number;
-
-  @ApiProperty({ description: 'Attack types', required: true })
-  @IsArray()
-  attackTypes: AttackType[];
 
   @ApiProperty({ description: 'Weapon ranges', required: false })
   @IsOptional()
@@ -57,10 +57,10 @@ export class ItemWeaponModeDto {
   static toEntity(dto: ItemWeaponModeDto): ItemWeaponMode {
     return new ItemWeaponMode(
       dto.type,
+      dto.attackTypes,
       dto.attackTable,
       dto.fumbleTable,
       dto.sizeAdjustment,
-      dto.attackTypes,
       dto.ranges?.map((range) => ItemWeaponRangeDto.toEntity(range)),
       dto.alternativeTable,
     );

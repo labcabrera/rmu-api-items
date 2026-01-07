@@ -59,7 +59,7 @@ export class MongoItemRepository implements ItemRepository {
           doc.weapon.fumble,
           (doc.weapon.modes ?? []).map(
             (m) =>
-              new ItemWeaponModeVO(m.type, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.attackTypes, m.ranges, m.alternativeTable),
+              new ItemWeaponModeVO(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
           ),
         )
       : undefined;
