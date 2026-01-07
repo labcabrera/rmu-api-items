@@ -1,9 +1,9 @@
 {
-  "id": "arming-sword",
+  "id": "claymore",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "skillId": "melee-weapon@blade",
+    "skillId": "melee-weapon@greater-blade",
     "fumble": 5,
     "modes": [
       {
