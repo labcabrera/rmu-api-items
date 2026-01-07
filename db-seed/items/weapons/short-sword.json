@@ -1,15 +1,19 @@
 {
-  "id": "arming-sword",
+  "id": "short-sword",
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "arming-sword",
-    "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
     "fumble": 3,
-    "sizeAdjustment": -1,
-    "requiredHands": 1,
-    "throwable": false
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "arming-sword",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": -1
+      }
+    ]
   },
   "info": {
     "cost": {

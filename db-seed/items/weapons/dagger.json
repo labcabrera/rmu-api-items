@@ -8,7 +8,7 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackModes": ["melee", "thrown"],
+        "attackTypes": ["melee", "thrown"],
         "attackTable": "dagger",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0,

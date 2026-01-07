@@ -3,13 +3,17 @@
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "claymore",
-    "fumbleTable": "melee-two-hands",
     "skillId": "melee-weapon@blade",
     "fumble": 5,
-    "sizeAdjustment": 0,
-    "requiredHands": 2,
-    "throwable": false
+    "modes": [
+      {
+        "type": "two-hands",
+        "attackTypes": ["melee"],
+        "attackTable": "claymore",
+        "fumbleTable": "melee-two-hands",
+        "sizeAdjustment": 0
+      }
+    ]
   },
   "info": {
     "cost": {

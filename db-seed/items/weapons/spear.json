@@ -8,12 +8,14 @@
     "modes": [
       {
         "type": "one-hand",
+        "attackTypes": ["melee"],
         "attackTable": "spear",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0
       },
       {
         "type": "two-hands",
+        "attackTypes": ["melee"],
         "attackTable": "spear",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 1

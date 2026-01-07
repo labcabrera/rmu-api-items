@@ -8,6 +8,7 @@
     "modes": [
       {
         "type": "two-hands",
+        "attackTypes": ["melee"],
         "attackTable": "war-hammer",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 0,

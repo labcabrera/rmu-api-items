@@ -3,19 +3,23 @@
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "broadsword",
-    "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
     "fumble": 4,
-    "sizeAdjustment": 0,
-    "requiredHands": 1,
-    "throwable": false
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "broadsword",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": 0
+      }
+    ]
   },
   "info": {
     "cost": {
-      "min": 0.18,
-      "average": 0.18,
-      "max": 0.18
+      "min": 0.1,
+      "average": 0.1,
+      "max": 0.1
     },
     "length": 3,
     "weight": 3,

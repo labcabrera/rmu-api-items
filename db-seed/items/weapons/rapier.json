@@ -3,13 +3,17 @@
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "attackTable": "rapier",
-    "fumbleTable": "melee-one-hand",
     "skillId": "melee-weapon@blade",
     "fumble": 4,
-    "sizeAdjustment": 0,
-    "requiredHands": 1,
-    "throwable": false
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "rapier",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": 0
+      }
+    ]
   },
   "info": {
     "cost": {
