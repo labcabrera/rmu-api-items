@@ -25,4 +25,8 @@ export class ItemWeaponRangeDto {
     dto.bonus = entity.bonus;
     return dto;
   }
+
+  static toEntity(dto: ItemWeaponRangeDto): ItemWeaponRange {
+    return new ItemWeaponRange(dto.from, dto.to, dto.bonus);
+  }
 }

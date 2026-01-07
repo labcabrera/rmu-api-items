@@ -23,4 +23,12 @@ export class ItemWeaponDto {
     dto.modes = entity.modes.map((e) => ItemWeaponModeDto.fromEntity(e));
     return dto;
   }
+
+  static toEntity(dto: ItemWeaponDto): ItemWeapon {
+    return new ItemWeapon(
+      dto.skillId,
+      dto.fumble,
+      dto.modes.map((e) => ItemWeaponModeDto.toEntity(e)),
+    );
+  }
 }
