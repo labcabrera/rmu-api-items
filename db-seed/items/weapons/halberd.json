@@ -1,0 +1,30 @@
+{
+  "id": "halberd",
+  "realm": "generic",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "melee-weapon@hafted",
+    "fumble": 7,
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "battle-axe",
+        "fumbleTable": "melee-two-hands",
+        "sizeAdjustment": 1,
+        "alternativeTable": "spear"
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.08,
+      "average": 0.08,
+      "max": 0.08
+    },
+    "length": 7,
+    "weight": 5,
+    "strength": 55,
+    "productionHours": 16
+  }
+}
