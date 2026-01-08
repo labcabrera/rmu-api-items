@@ -3,7 +3,7 @@
   "realm": "generic",
   "category": "weapon",
   "weapon": {
-    "skillId": "melee-weapon@hafted",
+    "skillId": "melee-weapon@pole-arm",
     "fumble": 7,
     "modes": [
       {
