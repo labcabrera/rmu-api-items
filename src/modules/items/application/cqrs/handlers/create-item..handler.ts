@@ -19,6 +19,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     if (current) {
       throw new ConflictError(`Item ${command.id} already exists`);
     }
+    //TODO check realm existence. Update realm model (realm -> realmId)
     const item = Item.create({
       id: command.id,
       realm: command.realm,
