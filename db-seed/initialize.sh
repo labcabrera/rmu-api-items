@@ -1,27 +1,18 @@
 #!/bin/bash
 
-set -a
-source ../.env
 set -e
-DEFAULT_BASE_URL="http://localhost:3006/v1"
-DEFAULT_CONTENT_TYPE="application/json"
+set -a
+source ./.env
+set -e
 
 read_access_token() {
-    echo "Fetching access token from ${RMU_IAM_TOKEN_URI}"
-    echo " Client: ${RMU_IAM_CLIENT_ID}"
-    echo " Secret: ${RMU_IAM_CLIENT_SECRET}"
-
-    ACCESS_TOKEN=$(curl --location "${RMU_IAM_TOKEN_URI}" --silent \
+    echo "Fetching access token from Keycloak..."
+    ACCESS_TOKEN=$(curl --silent --location "${KEYCLOAK_TOKEN_URI}" \
         --header 'Content-Type: application/x-www-form-urlencoded' \
-        --data-urlencode 'grant_type=password' \
-        --data-urlencode "client_id=${RMU_IAM_CLIENT_ID}" \
-        --data-urlencode "client_secret=${RMU_IAM_CLIENT_SECRET}" \
-        --data-urlencode "username=${RMU_IAM_USERNAME}" \
-        --data-urlencode "password=${RMU_IAM_PASSWORD}" \
-        | jq -r '.access_token')
-
-    echo "Token: $ACCESS_TOKEN"
-        
+        --data-urlencode 'grant_type=client_credentials' \
+        --data-urlencode "client_id=${KEYCLOAK_CLIENT_ID}" \
+        --data-urlencode "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
+        | jq -r '.access_token') \
     export ACCESS_TOKEN
 }
 
@@ -42,7 +33,7 @@ send_file_to_service() {
     local url="$DEFAULT_BASE_URL/$endpoint"
 
     curl -X POST \
-         -H "Content-Type: $DEFAULT_CONTENT_TYPE" \
+         -H "Content-Type: application/json" \
          -H "Accept: application/json" \
          -H "Authorization: Bearer $ACCESS_TOKEN" \
          -d @"$filename" \
