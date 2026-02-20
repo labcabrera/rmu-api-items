@@ -2,7 +2,7 @@
 
 set -e
 set -a
-source ./.env
+source .env
 set -e
 
 read_access_token() {
