@@ -6,8 +6,8 @@ import { RsqlParser } from 'src/modules/shared/infrastructure/messaging/rsql-par
 import { NotFoundError } from 'src/modules/shared/domain/errors';
 import { ItemRepository } from 'src/modules/items/application/ports/item.repository';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import { ItemWeapon as ItemWeaponVO } from 'src/modules/items/domain/value-objects/item-weapon.vo';
-import { ItemWeaponMode as ItemWeaponModeVO } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
+import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemWeaponMode } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
 import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
 import { ItemDocument, ItemModel } from '../persistence/models/item-model';
 
@@ -35,7 +35,7 @@ export class MongoItemRepository implements ItemRepository {
   }
 
   async save(item: Item): Promise<Item> {
-    const props = { ...item.toProps(), _id: item.id } as any;
+    const props = { ...item.toProps(), _id: item.id };
     const model = new this.gameModel(props);
     await model.save();
     return this.mapToEntity(model);
@@ -56,12 +56,11 @@ export class MongoItemRepository implements ItemRepository {
 
   private mapToEntity(doc: ItemDocument): Item {
     const weapon = doc.weapon
-      ? new ItemWeaponVO(
+      ? new ItemWeapon(
           doc.weapon.skillId,
           doc.weapon.fumble,
           (doc.weapon.modes ?? []).map(
-            (m) =>
-              new ItemWeaponModeVO(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
+            (m) => new ItemWeaponMode(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
           ),
         )
       : undefined;
