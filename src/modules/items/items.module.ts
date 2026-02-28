@@ -14,6 +14,8 @@ import { DeleteItemHandler } from './application/cqrs/handlers/delete-item.handl
 import { UpdateItemHandler } from './application/cqrs/handlers/update-item.handler';
 import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
 import { ApiRealmAdapter } from './infrastructure/api-clients/api.realm.adapter';
+import { AddItemModifierHandler } from './application/cqrs/handlers/add-item-modifier.handler';
+import { DeleteItemModifierHandler } from './application/cqrs/handlers/delete-item-modifier.handler';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { ApiRealmAdapter } from './infrastructure/api-clients/api.realm.adapter'
     CreateItemHandler,
     UpdateItemHandler,
     DeleteItemHandler,
+    AddItemModifierHandler,
+    DeleteItemModifierHandler,
     {
       provide: 'ItemRepository',
       useClass: MongoItemRepository,

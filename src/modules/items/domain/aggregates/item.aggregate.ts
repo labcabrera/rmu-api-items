@@ -9,6 +9,8 @@ import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { ValidationError } from 'src/modules/shared/domain/errors';
 import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity.vo';
+import { randomUUID } from 'crypto';
+import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
 
 export interface ItemProps {
   id: string;
@@ -167,6 +169,23 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     if (!this.info) {
       throw new ValidationError('Info is required for all items');
     }
+  }
+
+  addModifier(type: ItemModifierType, modifier: string | undefined, value: number | undefined) {
+    const id = randomUUID();
+    const newModifier = new ItemModifier(id, type, modifier, value);
+    if (!this.modifiers) {
+      this.modifiers = [newModifier];
+    } else {
+      this.modifiers.push(newModifier);
+    }
+    this.apply(new ItemUpdatedEvent(this.toProps()));
+  }
+
+  removeModifier(modifierId: string) {
+    if (!this.modifiers) return;
+    this.modifiers = this.modifiers.filter((m) => m.id !== modifierId);
+    this.apply(new ItemUpdatedEvent(this.toProps()));
   }
 
   toProps(): ItemProps {

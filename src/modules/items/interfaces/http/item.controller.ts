@@ -15,6 +15,8 @@ import { UpdateItemDto } from './dtos/update-item.dto';
 import { CreateItemCommand } from '../../application/cqrs/commands/create-item.command';
 import { DeleteItemCommand } from '../../application/cqrs/commands/delete-item.command';
 import { UpdateItemCommand } from '../../application/cqrs/commands/update-item.command';
+import { AddItemModifierDto } from './dtos/add-item-modifier.dto';
+import { AddItemModifierCommand } from '../../application/cqrs/commands/add-item-modifier.command';
 
 @UseGuards(JwtAuthGuard)
 @Controller('v1/items')
@@ -81,5 +83,30 @@ export class ItemController {
   async delete(@Param('id') id: string, @Request() req) {
     const command = new DeleteItemCommand(id, undefined, req.user!.id as string, req.user!.roles as string[]);
     await this.commandBus.execute(command);
+  }
+
+  @Post(':id/modifiers')
+  @ApiOperation({ operationId: 'addItemModifier', summary: 'Add a modifier to an item' })
+  @ApiOkResponse({ type: ItemDto, description: 'Success' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or missing authentication token', type: ErrorDto })
+  @ApiNotFoundResponse({ description: 'Item not found', type: ErrorDto })
+  @ApiResponse({ status: 400, description: 'Bad request, invalid data', type: ErrorDto })
+  async addModifier(@Param('id') id: string, @Body() modifierDto: AddItemModifierDto, @Request() req) {
+    const user = req.user!;
+    const command = AddItemModifierDto.toCommand(id, modifierDto, user.id as string, user.roles as string[]);
+    const item = await this.commandBus.execute<AddItemModifierCommand, Item>(command);
+    return ItemDto.fromEntity(item);
+  }
+
+  @Delete(':id/modifiers/:modifierId')
+  @ApiOperation({ operationId: 'removeItemModifier', summary: 'Remove a modifier from an item' })
+  @ApiOkResponse({ type: ItemDto, description: 'Success' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or missing authentication token', type: ErrorDto })
+  @ApiNotFoundResponse({ description: 'Item not found', type: ErrorDto })
+  async removeModifier(@Param('id') id: string, @Param('modifierId') modifierId: string, @Request() req) {
+    const user = req.user!;
+    const command = new DeleteItemCommand(id, modifierId, user.id as string, user.roles as string[]);
+    const item = await this.commandBus.execute<DeleteItemCommand, Item>(command);
+    return ItemDto.fromEntity(item);
   }
 }
