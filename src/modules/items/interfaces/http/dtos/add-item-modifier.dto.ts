@@ -19,13 +19,6 @@ export class AddItemModifierDto {
   value: number | undefined;
 
   static toCommand(itemId: string, dto: AddItemModifierDto, userId: string, roles: string[]): AddItemModifierCommand {
-    return {
-      itemId,
-      type: dto.type,
-      modifier: dto.modifier,
-      value: dto.value,
-      userId,
-      roles,
-    };
+    return new AddItemModifierCommand(itemId, dto.type, dto.modifier, dto.value, userId, roles);
   }
 }

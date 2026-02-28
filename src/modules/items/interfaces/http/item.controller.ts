@@ -17,6 +17,7 @@ import { DeleteItemCommand } from '../../application/cqrs/commands/delete-item.c
 import { UpdateItemCommand } from '../../application/cqrs/commands/update-item.command';
 import { AddItemModifierDto } from './dtos/add-item-modifier.dto';
 import { AddItemModifierCommand } from '../../application/cqrs/commands/add-item-modifier.command';
+import { DeleteItemModifierCommand } from '../../application/cqrs/commands/delete-item-modifier.command';
 
 @UseGuards(JwtAuthGuard)
 @Controller('v1/items')
@@ -105,8 +106,8 @@ export class ItemController {
   @ApiNotFoundResponse({ description: 'Item not found', type: ErrorDto })
   async removeModifier(@Param('id') id: string, @Param('modifierId') modifierId: string, @Request() req) {
     const user = req.user!;
-    const command = new DeleteItemCommand(id, modifierId, user.id as string, user.roles as string[]);
-    const item = await this.commandBus.execute<DeleteItemCommand, Item>(command);
+    const command = new DeleteItemModifierCommand(id, modifierId, user.id as string, user.roles as string[]);
+    const item = await this.commandBus.execute<DeleteItemModifierCommand, Item>(command);
     return ItemDto.fromEntity(item);
   }
 }

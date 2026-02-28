@@ -19,7 +19,7 @@ export class DeleteItemModifierHandler implements ICommandHandler<DeleteItemModi
 
     item.removeModifier(command.modifierId);
 
-    const saved = await this.itemRepository.save(item);
+    const saved = await this.itemRepository.update(command.itemId, item);
     item.getUncommittedEvents().forEach((event) => this.itemEventBus.publish(event));
     return saved;
   }
