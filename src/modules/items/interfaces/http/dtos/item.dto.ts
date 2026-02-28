@@ -18,6 +18,7 @@ export class ItemDto {
   info: ItemInfoDto;
   stackable: boolean | undefined;
   description: string | undefined;
+  imageUrl: string | undefined;
   owner: string;
 
   static fromEntity(entity: Item): ItemDto {
@@ -31,6 +32,7 @@ export class ItemDto {
     dto.info = ItemInfoDto.fromEntity(entity.info);
     dto.stackable = entity.stackable;
     dto.description = entity.description;
+    dto.imageUrl = entity.imageUrl;
     dto.owner = entity.owner;
     return dto;
   }

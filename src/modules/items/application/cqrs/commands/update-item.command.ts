@@ -12,6 +12,7 @@ export class UpdateItemCommand {
     public readonly info: ItemInfo | undefined,
     public readonly stackable: boolean | undefined,
     public readonly description: string | undefined,
+    public readonly imageUrl: string | undefined,
     public readonly userId: string,
     public readonly roles: string[],
   ) {}

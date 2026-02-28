@@ -1,9 +1,6 @@
 {
   "id": "hand-axe",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@hafted",
@@ -11,9 +8,7 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": [
-          "melee"
-        ],
+        "attackTypes": ["melee"],
         "attackTable": "battle-axe",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": -1

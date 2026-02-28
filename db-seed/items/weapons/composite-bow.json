@@ -1,9 +1,6 @@
 {
   "id": "composite-bow",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "weapon",
   "weapon": {
     "skillId": "ranged-weapon@bow",
@@ -11,9 +8,7 @@
     "modes": [
       {
         "type": "two-hands",
-        "attackTypes": [
-          "ranged"
-        ],
+        "attackTypes": ["ranged"],
         "attackTable": "short-bow",
         "fumbleTable": "bows",
         "sizeAdjustment": 0,

@@ -1,9 +1,6 @@
 {
   "id": "metal-scale-torso-armor",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "armor",
   "armor": {
     "slot": "body",

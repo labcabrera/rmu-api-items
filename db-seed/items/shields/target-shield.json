@@ -1,9 +1,6 @@
 {
   "id": "target-shield",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "shield",
   "shield": {
     "attacks": 1

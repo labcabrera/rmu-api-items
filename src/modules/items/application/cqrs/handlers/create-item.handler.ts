@@ -34,6 +34,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       info: command.info,
       stackable: command.stackable,
       description: command.description,
+      imageUrl: command.imageUrl,
       owner: command.userId,
     });
     const saved = await this.itemRepository.save(item);

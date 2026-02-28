@@ -52,6 +52,11 @@ export class CreateItemDto {
   @IsOptional()
   description: string | undefined;
 
+  @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
+  @IsString()
+  @IsOptional()
+  imageUrl: string | undefined;
+
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
     return new CreateItemCommand(
       dto.id,
@@ -63,6 +68,7 @@ export class CreateItemDto {
       ItemInfoDto.toEntity(dto.info),
       dto.stackable,
       dto.description,
+      dto.imageUrl,
       userId,
       roles,
     );

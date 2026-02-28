@@ -1,9 +1,6 @@
 {
   "id": "belt-leather",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "clothes",
   "info": {
     "cost": {

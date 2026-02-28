@@ -36,6 +36,9 @@ export class ItemModel {
   @Prop({ type: String, required: false })
   description: string | undefined;
 
+  @Prop({ type: String, required: false })
+  imageUrl: string | undefined;
+
   @Prop({ required: true })
   owner: string;
 

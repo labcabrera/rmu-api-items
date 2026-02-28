@@ -75,6 +75,7 @@ export class MongoItemRepository implements ItemRepository {
       info: doc.info,
       stackable: doc.stackable,
       description: doc.description,
+      imageUrl: (doc as any).imageUrl,
       owner: doc.owner,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,

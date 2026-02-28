@@ -37,7 +37,23 @@ export class UpdateItemDto {
   @IsOptional()
   description: string | undefined;
 
+  @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
+  @IsString()
+  @IsOptional()
+  imageUrl: string | undefined;
+
   static toCommand(itemId: string, dto: UpdateItemDto, userId: string, roles: string[]): UpdateItemCommand {
-    return new UpdateItemCommand(itemId, dto.weapon, dto.armor, dto.shield, dto.info, dto.stackable, dto.description, userId, roles);
+    return new UpdateItemCommand(
+      itemId,
+      dto.weapon,
+      dto.armor,
+      dto.shield,
+      dto.info,
+      dto.stackable,
+      dto.description,
+      dto.imageUrl,
+      userId,
+      roles,
+    );
   }
 }

@@ -1,9 +1,6 @@
 {
   "id": "war-mattock",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@greater-hafted",
@@ -11,9 +8,7 @@
     "modes": [
       {
         "type": "two-hands",
-        "attackTypes": [
-          "melee"
-        ],
+        "attackTypes": ["melee"],
         "attackTable": "war-hammer",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 1

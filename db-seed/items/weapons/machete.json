@@ -1,9 +1,6 @@
 {
   "id": "machete",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@blade",
@@ -11,9 +8,7 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": [
-          "melee"
-        ],
+        "attackTypes": ["melee"],
         "attackTable": "falchion",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": -1

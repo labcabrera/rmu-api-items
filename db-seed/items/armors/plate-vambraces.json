@@ -1,9 +1,6 @@
 {
   "id": "plate-vambraces",
-  "realm": {
-    "realmId": "generic",
-    "realmName": "Generic"
-  },
+  "realmId": "$REALM_ID",
   "category": "armor",
   "armor": {
     "slot": "arms",

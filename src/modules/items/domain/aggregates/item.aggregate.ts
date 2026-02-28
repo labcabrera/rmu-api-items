@@ -19,6 +19,7 @@ export interface ItemProps {
   info: ItemInfo;
   stackable: boolean;
   description?: string;
+  imageUrl?: string;
   owner: string;
   createdAt: Date;
   updatedAt?: Date;
@@ -35,6 +36,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     public info: ItemInfo,
     public stackable: boolean,
     public description: string | undefined,
+    public imageUrl: string | undefined,
     public owner: string,
     public createdAt: Date,
     public updatedAt: Date | undefined,
@@ -69,6 +71,10 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
           throw new ValidationError('Shield is required for shield items');
         }
         break;
+      case 'clothes':
+      case 'ammunition':
+      case 'other':
+        break;
       default:
         throw new ValidationError('Invalid item category');
     }
@@ -82,6 +88,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.info,
       props.stackable,
       props.description,
+      props.imageUrl,
       props.owner,
       new Date(),
       undefined,
@@ -102,6 +109,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.info,
       props.stackable,
       props.description,
+      props.imageUrl,
       props.owner,
       props.createdAt,
       props.updatedAt,
@@ -109,7 +117,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   }
 
   update(props: Partial<Omit<ItemProps, 'id' | 'realm' | 'createdAt' | 'owner'>>): void {
-    const { category, weapon, armor, shield, info, stackable, description } = props;
+    const { category, weapon, armor, shield, info, stackable, description, imageUrl } = props;
     if (category) this.category = category;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
@@ -117,6 +125,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     if (info) this.info = info;
     if (stackable !== undefined) this.stackable = stackable;
     if (description !== undefined) this.description = description;
+    if (imageUrl !== undefined) this.imageUrl = imageUrl;
     this.validate();
     this.updatedAt = new Date();
     this.apply(new ItemUpdatedEvent(this.toProps()));
@@ -139,6 +148,10 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
           throw new ValidationError('Shield is required for shield items');
         }
         break;
+      case 'clothes':
+      case 'ammunition':
+      case 'other':
+        break;
       default:
         throw new ValidationError('Invalid item category');
     }
@@ -158,6 +171,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       info: this.info,
       stackable: this.stackable,
       description: this.description,
+      imageUrl: this.imageUrl,
       owner: this.owner,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

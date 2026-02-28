@@ -9,7 +9,7 @@ import { GetItemsHandler } from './application/cqrs/handlers/get-items.handler';
 import { KafkaItemEventBusAdapter } from './infrastructure/messaging/kafka.item-event-bus.adapter';
 import { ItemModel, ItemSchema } from './infrastructure/persistence/models/item-model';
 import { ItemController } from './interfaces/http/item.controller';
-import { CreateItemHandler } from './application/cqrs/handlers/create-item..handler';
+import { CreateItemHandler } from './application/cqrs/handlers/create-item.handler';
 import { DeleteItemHandler } from './application/cqrs/handlers/delete-item.handler';
 import { UpdateItemHandler } from './application/cqrs/handlers/update-item.handler';
 import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
