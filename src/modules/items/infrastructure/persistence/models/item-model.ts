@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import { ItemArmor, ItemInfo, ItemShield } from './item-childs.model';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { ItemWeapon } from './item-weapon.model';
+import { NamedEntity } from 'src/modules/shared/infrastructure/persistence/models/named-item.model';
 
 export type ItemDocument = ItemModel & Document;
 
@@ -12,7 +13,7 @@ export class ItemModel {
   _id: string;
 
   @Prop({ required: true })
-  realm: string;
+  realm: NamedEntity;
 
   @Prop({ required: true })
   category: ItemCategory;

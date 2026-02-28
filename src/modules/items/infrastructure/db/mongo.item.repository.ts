@@ -67,7 +67,7 @@ export class MongoItemRepository implements ItemRepository {
 
     return Item.fromProps({
       id: doc._id,
-      realm: { id: doc.realm, name: doc.realm },
+      realm: doc.realm,
       category: doc.category,
       weapon,
       armor: doc.armor,

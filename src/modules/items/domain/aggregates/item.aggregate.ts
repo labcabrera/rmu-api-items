@@ -46,31 +46,31 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     switch (props.category) {
       case 'weapon':
         if (!props.weapon) {
-          throw new Error('Weapon is required for weapon items');
+          throw new ValidationError('Weapon is required for weapon items');
         }
         if (!props.weapon.modes || props.weapon.modes.length === 0) {
-          throw new Error('At least one weapon mode is required for weapon items');
+          throw new ValidationError('At least one weapon mode is required for weapon items');
         }
         props.weapon.modes.forEach((mode) => {
-          if (!mode.attackTable) throw new Error('Attack table is required for each weapon mode');
-          if (!mode.fumbleTable) throw new Error('Fumble table is required for each weapon mode');
-          if (!mode.attackTypes || mode.attackTypes.length === 0) {
-            throw new Error('At least one attack type is required for each weapon mode');
-          }
+          if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
+          if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
+          // if (!mode.attackTypes || mode.attackTypes.length === 0) {
+          //   throw new ValidationError('At least one attack type is required for each weapon mode');
+          // }
         });
         break;
       case 'armor':
         if (!props.armor) {
-          throw new Error('Armor is required for armor items');
+          throw new ValidationError('Armor is required for armor items');
         }
         break;
       case 'shield':
         if (!props.shield) {
-          throw new Error('Shield is required for shield items');
+          throw new ValidationError('Shield is required for shield items');
         }
         break;
       default:
-        throw new Error('Invalid item category');
+        throw new ValidationError('Invalid item category');
     }
     const item = new Item(
       props.id,
