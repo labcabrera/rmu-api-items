@@ -12,8 +12,24 @@ read_access_token() {
         --data-urlencode 'grant_type=client_credentials' \
         --data-urlencode "client_id=${KEYCLOAK_CLIENT_ID}" \
         --data-urlencode "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
-        | jq -r '.access_token') \
+        | jq -r '.access_token // empty')
+
+    # Validate token presence
+    if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+        echo "Error: Unable to obtain access token from Keycloak" >&2
+        return 1
+    fi
+
+    # Basic JWT structure check (should have at least two dots)
+    DOTS_COUNT=$(printf '%s' "${ACCESS_TOKEN}" | awk -F'.' '{print NF-1}')
+    if [ -z "${DOTS_COUNT}" ] || [ "${DOTS_COUNT}" -lt 2 ]; then
+        echo "Error: Received access token does not look like a JWT" >&2
+        return 1
+    fi
+
     export ACCESS_TOKEN
+    echo "Access token obtained"
+    return 0
 }
 
 send_file_to_service() {
@@ -65,5 +81,9 @@ initialize_items() {
     echo "Items data initialization completed"
 }
 
-read_access_token
-initialize_items
+if read_access_token; then
+    initialize_items
+else
+    echo "Initialization aborted: invalid or missing access token." >&2
+    exit 1
+fi

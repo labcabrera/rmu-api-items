@@ -1,6 +1,9 @@
 {
   "id": "soft-leather-torso-armor",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "armor",
   "armor": {
     "slot": "body",

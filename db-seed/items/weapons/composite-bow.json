@@ -1,6 +1,9 @@
 {
   "id": "composite-bow",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "ranged-weapon@bow",
@@ -8,16 +11,38 @@
     "modes": [
       {
         "type": "two-hands",
-        "attackTypes": ["ranged"],
+        "attackTypes": [
+          "ranged"
+        ],
         "attackTable": "short-bow",
         "fumbleTable": "bows",
         "sizeAdjustment": 0,
         "ranges": [
-          { "from": 0, "to": 100, "bonus": 0 },
-          { "from": 100.1, "to": 200, "bonus": -10 },
-          { "from": 200.1, "to": 300, "bonus": -25 },
-          { "from": 300.1, "to": 400, "bonus": -50 },
-          { "from": 400.1, "to": 500, "bonus": -100 }
+          {
+            "from": 0,
+            "to": 100,
+            "bonus": 0
+          },
+          {
+            "from": 100.1,
+            "to": 200,
+            "bonus": -10
+          },
+          {
+            "from": 200.1,
+            "to": 300,
+            "bonus": -25
+          },
+          {
+            "from": 300.1,
+            "to": 400,
+            "bonus": -50
+          },
+          {
+            "from": 400.1,
+            "to": 500,
+            "bonus": -100
+          }
         ]
       }
     ]

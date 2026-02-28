@@ -34,7 +34,8 @@ export class MongoItemRepository implements ItemRepository {
   }
 
   async save(item: Item): Promise<Item> {
-    const model = new this.gameModel({ ...item.toProps(), _id: item.id });
+    const props = { ...item.toProps(), _id: item.id } as any;
+    const model = new this.gameModel(props);
     await model.save();
     return this.mapToEntity(model);
   }
@@ -66,7 +67,7 @@ export class MongoItemRepository implements ItemRepository {
 
     return Item.fromProps({
       id: doc._id,
-      realm: doc.realm,
+      realm: { id: doc.realm, name: doc.realm },
       category: doc.category,
       weapon,
       armor: doc.armor,

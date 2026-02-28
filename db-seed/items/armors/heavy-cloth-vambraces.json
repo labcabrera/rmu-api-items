@@ -1,6 +1,9 @@
 {
   "id": "heavy-cloth-vambraces",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "armor",
   "armor": {
     "slot": "arms",

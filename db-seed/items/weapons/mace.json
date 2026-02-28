@@ -1,6 +1,9 @@
 {
   "id": "mace",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@hafted",
@@ -8,7 +11,9 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "mace",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0

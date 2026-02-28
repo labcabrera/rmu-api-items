@@ -1,6 +1,9 @@
 {
   "id": "wall-shield",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "shield",
   "shield": {
     "attacks": 4

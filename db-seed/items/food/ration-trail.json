@@ -1,6 +1,9 @@
 {
   "id": "ration-trail",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "food",
   "info": {
     "cost": {

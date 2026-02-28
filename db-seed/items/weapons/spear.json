@@ -1,6 +1,9 @@
 {
   "id": "spear",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@pole-arm",
@@ -8,14 +11,18 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "spear",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0
       },
       {
         "type": "two-hands",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "spear",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 1

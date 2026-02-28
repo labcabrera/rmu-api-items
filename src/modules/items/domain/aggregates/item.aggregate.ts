@@ -7,10 +7,11 @@ import { ItemWeapon } from '../value-objects/item-weapon.vo';
 import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { ValidationError } from 'src/modules/shared/domain/errors';
+import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity.vo';
 
 export interface ItemProps {
   id: string;
-  realm: string;
+  realm: NamedEntity;
   category: ItemCategory;
   weapon?: ItemWeapon;
   armor?: ItemArmor;
@@ -26,7 +27,7 @@ export interface ItemProps {
 export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   constructor(
     public id: string,
-    public realm: string,
+    public realm: NamedEntity,
     public category: ItemCategory,
     public weapon: ItemWeapon | undefined,
     public armor: ItemArmor | undefined,

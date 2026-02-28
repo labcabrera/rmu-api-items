@@ -1,6 +1,9 @@
 {
   "id": "gold-coin",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "coins",
   "info": {
     "cost": {

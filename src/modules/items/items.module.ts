@@ -13,6 +13,7 @@ import { CreateItemHandler } from './application/cqrs/handlers/create-item..hand
 import { DeleteItemHandler } from './application/cqrs/handlers/delete-item.handler';
 import { UpdateItemHandler } from './application/cqrs/handlers/update-item.handler';
 import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
+import { ApiRealmAdapter } from './infrastructure/api-clients/api.realm.adapter';
 
 @Module({
   imports: [
@@ -36,6 +37,10 @@ import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
     {
       provide: 'ItemEventProducer',
       useClass: KafkaItemEventBusAdapter,
+    },
+    {
+      provide: 'RealmPort',
+      useClass: ApiRealmAdapter,
     },
   ],
   exports: ['ItemRepository'],

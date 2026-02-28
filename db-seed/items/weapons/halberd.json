@@ -1,6 +1,9 @@
 {
   "id": "halberd",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@pole-arm",
@@ -8,7 +11,9 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "battle-axe",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 1,

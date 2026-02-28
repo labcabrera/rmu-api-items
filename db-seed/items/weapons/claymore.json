@@ -1,6 +1,9 @@
 {
   "id": "claymore",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@greater-blade",
@@ -8,7 +11,9 @@
     "modes": [
       {
         "type": "two-hands",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "claymore",
         "fumbleTable": "melee-two-hands",
         "sizeAdjustment": 0

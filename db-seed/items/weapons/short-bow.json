@@ -1,6 +1,9 @@
 {
   "id": "short-bow",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "ranged-weapon@bow",
@@ -8,15 +11,33 @@
     "modes": [
       {
         "type": "two-hands",
-        "attackTypes": ["ranged"],
+        "attackTypes": [
+          "ranged"
+        ],
         "attackTable": "short-bow",
         "fumbleTable": "bows",
         "sizeAdjustment": 0,
         "ranges": [
-          { "from": 0, "to": 120, "bonus": 0 },
-          { "from": 120.1, "to": 180, "bonus": -25 },
-          { "from": 180.1, "to": 240, "bonus": -50 },
-          { "from": 240.1, "to": 300, "bonus": -100 }
+          {
+            "from": 0,
+            "to": 120,
+            "bonus": 0
+          },
+          {
+            "from": 120.1,
+            "to": 180,
+            "bonus": -25
+          },
+          {
+            "from": 180.1,
+            "to": 240,
+            "bonus": -50
+          },
+          {
+            "from": 240.1,
+            "to": 300,
+            "bonus": -100
+          }
         ]
       }
     ]

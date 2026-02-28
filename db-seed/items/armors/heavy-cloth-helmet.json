@@ -1,6 +1,9 @@
 {
   "id": "heavy-cloth-helmet",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "armor",
   "armor": {
     "slot": "head",

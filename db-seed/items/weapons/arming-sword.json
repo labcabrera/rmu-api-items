@@ -1,6 +1,9 @@
 {
   "id": "arming-sword",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@blade",
@@ -8,7 +11,9 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "arming-sword",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0

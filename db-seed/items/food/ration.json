@@ -1,6 +1,9 @@
 {
   "id": "ration",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "food",
   "info": {
     "cost": {

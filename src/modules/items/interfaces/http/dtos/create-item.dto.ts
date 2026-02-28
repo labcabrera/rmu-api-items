@@ -6,8 +6,6 @@ import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { CreateItemCommand } from 'src/modules/items/application/cqrs/commands/create-item.command';
-import { ItemWeapon as ItemWeaponVO } from 'src/modules/items/domain/value-objects/item-weapon.vo';
-import { ItemWeaponModeDto } from './item-weapon-mode.dto';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
@@ -18,7 +16,7 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Realm identifier from core module', example: 'lotr' })
   @IsString()
   @IsNotEmpty()
-  realm: string;
+  realmId: string;
 
   @ApiProperty({ description: 'Item category', example: 'weapon' })
   @IsString()
@@ -55,19 +53,16 @@ export class CreateItemDto {
   description: string | undefined;
 
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
-    return CreateItemCommand.create(
-      {
-        id: dto.id,
-        realm: dto.realm,
-        category: dto.category,
-        weapon: dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : undefined,
-        armor: dto.armor,
-        shield: dto.shield,
-        info: dto.info,
-        stackable: dto.stackable,
-        description: dto.description,
-        owner: userId,
-      },
+    return new CreateItemCommand(
+      dto.id,
+      dto.realmId,
+      dto.category,
+      dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : undefined,
+      dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined,
+      dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined,
+      ItemInfoDto.toEntity(dto.info),
+      dto.stackable,
+      dto.description,
       userId,
       roles,
     );

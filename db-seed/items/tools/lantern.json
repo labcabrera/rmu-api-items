@@ -1,6 +1,9 @@
 {
   "id": "lantern",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "tools",
   "info": {
     "cost": {

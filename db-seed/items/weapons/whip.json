@@ -1,6 +1,9 @@
 {
   "id": "whip",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "weapon",
   "weapon": {
     "skillId": "melee-weapon@exotic",
@@ -8,7 +11,9 @@
     "modes": [
       {
         "type": "one-hand",
-        "attackTypes": ["melee"],
+        "attackTypes": [
+          "melee"
+        ],
         "attackTable": "whip",
         "fumbleTable": "melee-one-hand",
         "sizeAdjustment": 0

@@ -1,6 +1,9 @@
 {
   "id": "heavy-cloth-greaves",
-  "realm": "generic",
+  "realm": {
+    "realmId": "generic",
+    "realmName": "Generic"
+  },
   "category": "armor",
   "armor": {
     "slot": "legs",

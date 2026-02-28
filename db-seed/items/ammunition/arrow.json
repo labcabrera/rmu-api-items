@@ -1,6 +1,6 @@
 {
   "id": "arrow",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "ammunition",
   "info": {
     "cost": {
