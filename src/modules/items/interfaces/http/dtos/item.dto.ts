@@ -4,6 +4,7 @@ import { ItemArmorDto } from './item-armor.dto';
 import { ItemInfoDto } from './item-info.dto';
 import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
+import { ItemModifierDto } from './item-modifier.dto';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
 import { NamedEntityDto } from 'src/modules/shared/infrastructure/controller/named-entity.dto';
@@ -33,6 +34,9 @@ export class ItemDto {
   @ApiProperty({ description: 'Is the item stackable?' })
   stackable: boolean | undefined;
 
+  @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
+  modifiers: ItemModifierDto[] | undefined;
+
   @ApiProperty({ description: 'Item description', example: 'Some item description' })
   description: string | undefined;
 
@@ -52,6 +56,7 @@ export class ItemDto {
     dto.shield = entity.shield ? ItemShieldDto.fromEntity(entity.shield) : undefined;
     dto.info = ItemInfoDto.fromEntity(entity.info);
     dto.stackable = entity.stackable;
+    dto.modifiers = entity.modifiers ? entity.modifiers.map((m) => ItemModifierDto.fromEntity(m)) : undefined;
     dto.description = entity.description;
     dto.imageUrl = entity.imageUrl;
     dto.owner = entity.owner;

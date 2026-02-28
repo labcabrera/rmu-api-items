@@ -4,6 +4,7 @@ import { ItemArmorDto } from './item-armor.dto';
 import { ItemInfoDto } from './item-info.dto';
 import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
+import { ItemModifierDto } from './item-modifier.dto';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { CreateItemCommand } from 'src/modules/items/application/cqrs/commands/create-item.command';
 
@@ -47,6 +48,10 @@ export class CreateItemDto {
   @IsBoolean()
   stackable: boolean = false;
 
+  @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
+  @IsOptional()
+  modifiers: ItemModifierDto[] | undefined;
+
   @ApiProperty({ description: 'Item description', example: 'Some item description' })
   @IsString()
   @IsOptional()
@@ -67,6 +72,7 @@ export class CreateItemDto {
       dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined,
       ItemInfoDto.toEntity(dto.info),
       dto.stackable,
+      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,
       userId,

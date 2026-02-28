@@ -4,6 +4,7 @@ import { ItemCategory } from '../value-objects/item-category.vo';
 import { ItemInfo } from '../value-objects/item-info.vo';
 import { ItemShield } from '../value-objects/item-shield.vo';
 import { ItemWeapon } from '../value-objects/item-weapon.vo';
+import { ItemModifier } from '../value-objects/item-modifier.vo';
 import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { ValidationError } from 'src/modules/shared/domain/errors';
@@ -18,6 +19,7 @@ export interface ItemProps {
   shield?: ItemShield;
   info: ItemInfo;
   stackable: boolean;
+  modifiers?: ItemModifier[];
   description?: string;
   imageUrl?: string;
   owner: string;
@@ -35,6 +37,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     public shield: ItemShield | undefined,
     public info: ItemInfo,
     public stackable: boolean,
+    public modifiers: ItemModifier[] | undefined,
     public description: string | undefined,
     public imageUrl: string | undefined,
     public owner: string,
@@ -56,9 +59,6 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
         props.weapon.modes.forEach((mode) => {
           if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
           if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
-          // if (!mode.attackTypes || mode.attackTypes.length === 0) {
-          //   throw new ValidationError('At least one attack type is required for each weapon mode');
-          // }
         });
         break;
       case 'armor':
@@ -90,6 +90,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.shield,
       props.info,
       props.stackable,
+      props.modifiers,
       props.description,
       props.imageUrl,
       props.owner,
@@ -111,6 +112,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.shield,
       props.info,
       props.stackable,
+      props.modifiers,
       props.description,
       props.imageUrl,
       props.owner,
@@ -120,13 +122,14 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   }
 
   update(props: Partial<Omit<ItemProps, 'id' | 'realm' | 'createdAt' | 'owner'>>): void {
-    const { category, weapon, armor, shield, info, stackable, description, imageUrl } = props;
+    const { category, weapon, armor, shield, info, stackable, modifiers, description, imageUrl } = props;
     if (category) this.category = category;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
     if (shield) this.shield = shield;
     if (info) this.info = info;
     if (stackable !== undefined) this.stackable = stackable;
+    if (modifiers !== undefined) this.modifiers = modifiers;
     if (description !== undefined) this.description = description;
     if (imageUrl !== undefined) this.imageUrl = imageUrl;
     this.validate();
@@ -176,6 +179,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       shield: this.shield,
       info: this.info,
       stackable: this.stackable,
+      modifiers: this.modifiers,
       description: this.description,
       imageUrl: this.imageUrl,
       owner: this.owner,

@@ -3,6 +3,7 @@ import { ItemCategory } from 'src/modules/items/domain/value-objects/item-catego
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
 import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.vo';
 import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
 
 export class CreateItemCommand {
   public constructor(
@@ -14,6 +15,7 @@ export class CreateItemCommand {
     public readonly shield: ItemShield | undefined,
     public readonly info: ItemInfo,
     public readonly stackable: boolean,
+    public readonly modifiers: ItemModifier[] | undefined,
     public readonly description: string | undefined,
     public readonly imageUrl: string | undefined,
     public readonly userId: string,

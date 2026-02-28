@@ -8,6 +8,7 @@ import { ItemRepository } from 'src/modules/items/application/ports/item.reposit
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
 import { ItemWeapon as ItemWeaponVO } from 'src/modules/items/domain/value-objects/item-weapon.vo';
 import { ItemWeaponMode as ItemWeaponModeVO } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
+import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
 import { ItemDocument, ItemModel } from '../persistence/models/item-model';
 
 @Injectable()
@@ -65,6 +66,8 @@ export class MongoItemRepository implements ItemRepository {
         )
       : undefined;
 
+    const modifiers = doc.modifiers ? doc.modifiers.map((m) => new ItemModifier(m.id, m.type, m.modifier, m.value)) : undefined;
+
     return Item.fromProps({
       id: doc._id,
       realm: doc.realm,
@@ -75,7 +78,8 @@ export class MongoItemRepository implements ItemRepository {
       info: doc.info,
       stackable: doc.stackable,
       description: doc.description,
-      imageUrl: (doc as any).imageUrl,
+      modifiers,
+      imageUrl: doc.imageUrl,
       owner: doc.owner,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,

@@ -5,6 +5,7 @@ import { ItemArmor } from 'src/modules/items/domain/value-objects/item-armor.vo'
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
 import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.vo';
 import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemModifierDto } from './item-modifier.dto';
 
 export class UpdateItemDto {
   @ApiProperty({ description: 'Item weapon', required: false })
@@ -32,6 +33,10 @@ export class UpdateItemDto {
   @IsBoolean()
   stackable: boolean | undefined;
 
+  @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
+  @IsOptional()
+  modifiers: ItemModifierDto[] | undefined;
+
   @ApiProperty({ description: 'Item description', example: 'Some description.' })
   @IsString()
   @IsOptional()
@@ -50,6 +55,7 @@ export class UpdateItemDto {
       dto.shield,
       dto.info,
       dto.stackable,
+      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,
       userId,

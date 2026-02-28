@@ -4,6 +4,7 @@ import { ItemArmor, ItemInfo, ItemShield } from './item-childs.model';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { ItemWeapon } from './item-weapon.model';
 import { NamedEntity } from 'src/modules/shared/infrastructure/persistence/models/named-item.model';
+import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
 
 export type ItemDocument = ItemModel & Document;
 
@@ -32,6 +33,9 @@ export class ItemModel {
 
   @Prop({ required: true })
   stackable!: boolean;
+
+  @Prop({ type: [ItemModifier], required: false })
+  modifiers: ItemModifier[] | undefined;
 
   @Prop({ type: String, required: false })
   description: string | undefined;

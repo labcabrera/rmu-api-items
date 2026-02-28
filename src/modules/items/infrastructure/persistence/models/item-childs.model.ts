@@ -5,13 +5,13 @@ import type { DifficultyCode } from 'src/modules/items/domain/value-objects/diff
 @Schema({ _id: false })
 export class ItemCost {
   @Prop({ type: Number, required: true })
-  min: number;
+  min!: number;
 
   @Prop({ type: Number, required: true })
-  average: number;
+  average!: number;
 
   @Prop({ type: Number, required: true })
-  max: number;
+  max!: number;
 }
 
 @Schema({ _id: false })
@@ -38,41 +38,41 @@ export class ItemInfo {
 @Schema({ _id: false })
 export class ItemWeaponRange {
   @Prop({ type: Number, required: true })
-  from: number;
+  from!: number;
 
   @Prop({ type: Number, required: true })
-  to: number;
+  to!: number;
 
   @Prop({ type: Number, required: true })
-  bonus: number;
+  bonus!: number;
 }
 
 @Schema({ _id: false })
 export class ItemArmor {
   @Prop({ type: String, required: true })
-  slot: ArmorSlot;
+  slot!: ArmorSlot;
 
   @Prop({ type: Number, required: true })
-  at: number;
+  at!: number;
 
   @Prop({ type: Number, required: true })
-  enc: number;
+  enc!: number;
 
   @Prop({ type: Number, required: true })
-  maneuver: number;
+  maneuver!: number;
 
   @Prop({ type: Number, required: true })
-  rangedPenalty: number;
+  rangedPenalty!: number;
 
   @Prop({ type: Number, required: true })
-  perception: number;
+  perception!: number;
 
   @Prop({ type: String, required: true })
-  baseDifficulty: DifficultyCode;
+  baseDifficulty!: DifficultyCode;
 }
 
 @Schema({ _id: false })
 export class ItemShield {
   @Prop({ type: Number, required: true })
-  attacks: number;
+  attacks!: number;
 }
