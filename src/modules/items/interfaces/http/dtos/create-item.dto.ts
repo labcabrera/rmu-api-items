@@ -11,36 +11,36 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
   @IsString()
   @IsNotEmpty()
-  id: string;
+  id!: string;
 
   @ApiProperty({ description: 'Realm identifier from core module', example: 'lotr' })
   @IsString()
   @IsNotEmpty()
-  realmId: string;
+  realmId!: string;
 
   @ApiProperty({ description: 'Item category', example: 'weapon' })
   @IsString()
   @IsNotEmpty()
-  category: ItemCategory;
+  category!: ItemCategory;
 
   @ApiProperty({ description: 'Weapon info if available' })
   @IsObject()
   @IsOptional()
-  weapon: ItemWeaponDto | undefined;
+  weapon!: ItemWeaponDto | undefined;
 
   @ApiProperty({ description: 'Armor info if available' })
   @IsObject()
   @IsOptional()
-  armor: ItemArmorDto | undefined;
+  armor!: ItemArmorDto | undefined;
 
   @ApiProperty({ description: 'Shield info if available' })
   @IsObject()
   @IsOptional()
-  shield: ItemShieldDto | undefined;
+  shield!: ItemShieldDto | undefined;
 
   @ApiProperty({ description: 'Generic item information' })
   @IsObject()
-  info: ItemInfoDto;
+  info!: ItemInfoDto;
 
   @ApiProperty({ description: 'Is the item stackable?' })
   @IsOptional()

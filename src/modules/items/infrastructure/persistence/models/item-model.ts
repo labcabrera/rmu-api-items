@@ -10,13 +10,13 @@ export type ItemDocument = ItemModel & Document;
 @Schema({ collection: 'items', versionKey: false })
 export class ItemModel {
   @Prop({ required: true })
-  _id: string;
+  _id!: string;
 
   @Prop({ required: true })
-  realm: NamedEntity;
+  realm!: NamedEntity;
 
   @Prop({ required: true })
-  category: ItemCategory;
+  category!: ItemCategory;
 
   @Prop({ type: ItemWeapon, required: false })
   weapon: ItemWeapon | undefined;
@@ -28,10 +28,10 @@ export class ItemModel {
   shield: ItemShield | undefined;
 
   @Prop({ type: ItemInfo, required: true })
-  info: ItemInfo;
+  info!: ItemInfo;
 
   @Prop({ required: true })
-  stackable: boolean;
+  stackable!: boolean;
 
   @Prop({ type: String, required: false })
   description: string | undefined;
@@ -39,11 +39,11 @@ export class ItemModel {
   @Prop({ type: String, required: false })
   imageUrl: string | undefined;
 
-  @Prop({ required: true })
-  owner: string;
+  @Prop({ type: String, required: true })
+  owner!: string;
 
-  @Prop({ required: true })
-  createdAt: Date;
+  @Prop({ type: Date, required: true })
+  createdAt!: Date;
 
   @Prop({ type: Date, required: false })
   updatedAt: Date | undefined;

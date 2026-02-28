@@ -4,22 +4,43 @@ import { ItemArmorDto } from './item-armor.dto';
 import { ItemInfoDto } from './item-info.dto';
 import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
-import { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
+import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
 import { NamedEntityDto } from 'src/modules/shared/infrastructure/controller/named-entity.dto';
 
 export class ItemDto {
-  id: string;
-  realm: NamedEntityDto;
-  category: ItemCategory;
+  @ApiProperty({ description: 'Item identifier', example: 'dagger' })
+  id!: string;
+
+  @ApiProperty({ description: 'Realm information' })
+  realm!: NamedEntityDto;
+
+  @ApiProperty({ description: 'Item category', example: 'weapon' })
+  category!: ItemCategory;
+
+  @ApiProperty({ description: 'Weapon info if available' })
   weapon: ItemWeaponDto | undefined;
+
+  @ApiProperty({ description: 'Armor info if available' })
   armor: ItemArmorDto | undefined;
+
+  @ApiProperty({ description: 'Shield info if available' })
   shield: ItemShieldDto | undefined;
-  info: ItemInfoDto;
+
+  @ApiProperty({ description: 'Generic item information' })
+  info!: ItemInfoDto;
+
+  @ApiProperty({ description: 'Is the item stackable?' })
   stackable: boolean | undefined;
+
+  @ApiProperty({ description: 'Item description', example: 'Some item description' })
   description: string | undefined;
+
+  @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
   imageUrl: string | undefined;
-  owner: string;
+
+  @ApiProperty({ description: 'Owner of the item', example: 'user123' })
+  owner!: string;
 
   static fromEntity(entity: Item): ItemDto {
     const dto = new ItemDto();
@@ -44,7 +65,8 @@ export class ItemPageDto {
     description: 'Items',
     isArray: true,
   })
-  content: ItemDto[];
+  content!: ItemDto[];
+
   @ApiProperty({ type: PaginationDto, description: 'Pagination information' })
-  pagination: PaginationDto;
+  pagination!: PaginationDto;
 }
