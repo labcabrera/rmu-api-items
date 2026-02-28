@@ -62,32 +62,38 @@ send_file_to_service() {
         fi
     fi
 
-    echo "$payload" | curl -X POST \
+    # Send payload and capture response body + HTTP status
+    resp=$(echo "$payload" | curl -X POST \
          -H "Content-Type: application/json" \
          -H "Accept: application/json" \
          -H "Authorization: Bearer $ACCESS_TOKEN" \
          -d @- \
          "$url" \
-         -s --show-error \
-         -w "\nHTTP Status: %{http_code}\nTotal Time: %{time_total}s\n"
+         -s --show-error -w "\n%{http_code}")
 
-    local exit_code=$?
-    
-    if [ ! $exit_code -eq 0 ]; then
-        echo "Failed '$filename'"
+    # Separate body and status (status is last line)
+    http_code=$(printf '%s' "$resp" | tail -n1)
+    body=$(printf '%s' "$resp" | sed '$d')
+
+    # Determine success (2xx). On success, do not log anything.
+    if [[ "$http_code" =~ ^2 ]]; then
+        return 0
+    else
+        # On error, print body (if any) and status
+        if [ -n "$body" ]; then
+            echo "$body" >&2
+        fi
+        echo "HTTP Status: $http_code" >&2
+        echo "Failed '$filename'" >&2
+        return 1
     fi
-
-    return $exit_code
 }
-
-
 
 initialize_items() {
     echo "Initializing items..."   
     for item_file in $(find "$ITEMS_DIR" -type f -o -type d); do
         if [ -f "$item_file" ]; then
-            send_file_to_service "$item_file" "items"
-            echo ""
+                send_file_to_service "$item_file" "items"
         fi
     done
     echo "Items data initialization completed"

@@ -74,6 +74,9 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       case 'clothes':
       case 'ammunition':
       case 'other':
+      case 'coins':
+      case 'food':
+      case 'tools':
         break;
       default:
         throw new ValidationError('Invalid item category');
@@ -151,6 +154,9 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       case 'clothes':
       case 'ammunition':
       case 'other':
+      case 'coins':
+      case 'food':
+      case 'tools':
         break;
       default:
         throw new ValidationError('Invalid item category');
