@@ -14,7 +14,6 @@ export class CreateItemCommand {
     public readonly armor: ItemArmor | undefined,
     public readonly shield: ItemShield | undefined,
     public readonly info: ItemInfo,
-    public readonly stackable: boolean,
     public readonly modifiers: ItemModifier[] | undefined,
     public readonly description: string | undefined,
     public readonly imageUrl: string | undefined,

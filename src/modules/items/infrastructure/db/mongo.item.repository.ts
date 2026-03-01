@@ -75,7 +75,6 @@ export class MongoItemRepository implements ItemRepository {
       armor: doc.armor,
       shield: doc.shield,
       info: doc.info,
-      stackable: doc.stackable,
       description: doc.description,
       modifiers,
       imageUrl: doc.imageUrl,

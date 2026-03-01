@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsObject, IsOptional, IsString } from 'class-validator';
 import { UpdateItemCommand } from 'src/modules/items/application/cqrs/commands/update-item.command';
 import { ItemArmor } from 'src/modules/items/domain/value-objects/item-armor.vo';
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
@@ -28,11 +28,6 @@ export class UpdateItemDto {
   @IsObject()
   info: ItemInfo | undefined;
 
-  @ApiProperty({ description: 'Is item stackable', example: true, required: false })
-  @IsOptional()
-  @IsBoolean()
-  stackable: boolean | undefined;
-
   @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
   @IsOptional()
   modifiers: ItemModifierDto[] | undefined;
@@ -54,7 +49,7 @@ export class UpdateItemDto {
       dto.armor,
       dto.shield,
       dto.info,
-      dto.stackable,
+
       dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,

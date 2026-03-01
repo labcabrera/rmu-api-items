@@ -31,9 +31,6 @@ export class ItemModel {
   @Prop({ type: ItemInfo, required: true })
   info!: ItemInfo;
 
-  @Prop({ required: true })
-  stackable!: boolean;
-
   @Prop({ type: [ItemModifier], required: false })
   modifiers: ItemModifier[] | undefined;
 

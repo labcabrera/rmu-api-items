@@ -9,7 +9,8 @@
       "max": 0.0071
     },
     "weight": 2
+  ,
+    "stackable": true
   },
-  "stackable": true,
   "description": "A basic food ration"
 }

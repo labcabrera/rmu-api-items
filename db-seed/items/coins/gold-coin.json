@@ -10,6 +10,7 @@
     },
     "weight": 0.02,
     "productionHours": 2
-  },
-  "stackable": true
+  ,
+    "stackable": true
+  }
 }

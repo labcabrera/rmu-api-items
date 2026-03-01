@@ -23,7 +23,6 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       armor: command.armor,
       shield: command.shield,
       info: command.info,
-      stackable: command.stackable,
       modifiers: command.modifiers,
       description: command.description,
       imageUrl: command.imageUrl,

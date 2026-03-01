@@ -32,7 +32,6 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       armor: command.armor,
       shield: command.shield,
       info: command.info,
-      stackable: command.stackable,
       description: command.description,
       imageUrl: command.imageUrl,
       owner: command.userId,

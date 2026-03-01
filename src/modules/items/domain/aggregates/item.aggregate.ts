@@ -20,7 +20,6 @@ export interface ItemProps {
   armor?: ItemArmor;
   shield?: ItemShield;
   info: ItemInfo;
-  stackable: boolean;
   modifiers?: ItemModifier[];
   description?: string;
   imageUrl?: string;
@@ -38,7 +37,6 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     public armor: ItemArmor | undefined,
     public shield: ItemShield | undefined,
     public info: ItemInfo,
-    public stackable: boolean,
     public modifiers: ItemModifier[] | undefined,
     public description: string | undefined,
     public imageUrl: string | undefined,
@@ -91,7 +89,6 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.armor,
       props.shield,
       props.info,
-      props.stackable,
       props.modifiers,
       props.description,
       props.imageUrl,
@@ -113,7 +110,6 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.armor,
       props.shield,
       props.info,
-      props.stackable,
       props.modifiers,
       props.description,
       props.imageUrl,
@@ -124,13 +120,12 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   }
 
   update(props: Partial<Omit<ItemProps, 'id' | 'realm' | 'createdAt' | 'owner'>>): void {
-    const { category, weapon, armor, shield, info, stackable, modifiers, description, imageUrl } = props;
+    const { category, weapon, armor, shield, info, modifiers, description, imageUrl } = props;
     if (category) this.category = category;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
     if (shield) this.shield = shield;
     if (info) this.info = info;
-    if (stackable !== undefined) this.stackable = stackable;
     if (modifiers !== undefined) this.modifiers = modifiers;
     if (description !== undefined) this.description = description;
     if (imageUrl !== undefined) this.imageUrl = imageUrl;
@@ -197,7 +192,6 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       armor: this.armor,
       shield: this.shield,
       info: this.info,
-      stackable: this.stackable,
       modifiers: this.modifiers,
       description: this.description,
       imageUrl: this.imageUrl,

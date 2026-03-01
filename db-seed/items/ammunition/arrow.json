@@ -10,7 +10,7 @@
     },
     "weight": 0.125,
     "strength": 55,
-    "productionHours": 0.4
-  },
-  "stackable": true
+    "productionHours": 0.4,
+    "stackable": true
+  }
 }

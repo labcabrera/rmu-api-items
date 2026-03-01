@@ -11,7 +11,6 @@ export class UpdateItemCommand {
     public readonly armor: ItemArmor | undefined,
     public readonly shield: ItemShield | undefined,
     public readonly info: ItemInfo | undefined,
-    public readonly stackable: boolean | undefined,
     public readonly modifiers: ItemModifier[] | undefined,
     public readonly description: string | undefined,
     public readonly imageUrl: string | undefined,

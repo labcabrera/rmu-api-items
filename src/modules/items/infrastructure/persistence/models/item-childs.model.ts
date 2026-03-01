@@ -33,6 +33,9 @@ export class ItemInfo {
 
   @Prop({ type: Number, required: false })
   productionHours: number | undefined;
+
+  @Prop({ type: Boolean, required: false })
+  stackable: boolean | undefined;
 }
 
 @Schema({ _id: false })

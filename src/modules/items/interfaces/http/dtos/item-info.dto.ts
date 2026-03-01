@@ -1,4 +1,4 @@
-import { IsNumber, IsObject, IsOptional } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsBoolean } from 'class-validator';
 import { ItemCost } from 'src/modules/items/domain/value-objects/item-cost.vo';
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
 
@@ -27,6 +27,10 @@ export class ItemInfoDto {
   @IsNumber()
   productionHours: number | undefined;
 
+  @IsOptional()
+  @IsBoolean()
+  stackable: boolean | undefined;
+
   static fromEntity(entity: ItemInfo): ItemInfoDto {
     const dto = new ItemInfoDto();
     dto.cost = entity.cost;
@@ -35,6 +39,7 @@ export class ItemInfoDto {
     dto.strength = entity.strength;
     dto.weight = entity.weight;
     dto.weightPercent = entity.weightPercent;
+    dto.stackable = entity.stackable;
     return dto;
   }
 
@@ -46,6 +51,7 @@ export class ItemInfoDto {
       weightPercent: dto.weightPercent,
       strength: dto.strength,
       productionHours: dto.productionHours,
+      stackable: dto.stackable,
     };
   }
 }

@@ -31,9 +31,6 @@ export class ItemDto {
   @ApiProperty({ description: 'Generic item information' })
   info!: ItemInfoDto;
 
-  @ApiProperty({ description: 'Is the item stackable?' })
-  stackable: boolean | undefined;
-
   @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
   modifiers: ItemModifierDto[] | undefined;
 
@@ -55,7 +52,6 @@ export class ItemDto {
     dto.armor = entity.armor ? ItemArmorDto.fromEntity(entity.armor) : undefined;
     dto.shield = entity.shield ? ItemShieldDto.fromEntity(entity.shield) : undefined;
     dto.info = ItemInfoDto.fromEntity(entity.info);
-    dto.stackable = entity.stackable;
     dto.modifiers = entity.modifiers ? entity.modifiers.map((m) => ItemModifierDto.fromEntity(m)) : undefined;
     dto.description = entity.description;
     dto.imageUrl = entity.imageUrl;
