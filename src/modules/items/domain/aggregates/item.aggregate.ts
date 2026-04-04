@@ -14,7 +14,7 @@ import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
 
 export interface ItemProps {
   id: string;
-  realm: NamedEntity;
+  realm: NamedEntity | null;
   category: ItemCategory;
   weapon?: ItemWeapon;
   armor?: ItemArmor;
@@ -31,7 +31,7 @@ export interface ItemProps {
 export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
   constructor(
     public id: string,
-    public realm: NamedEntity,
+    public realm: NamedEntity | null,
     public category: ItemCategory,
     public weapon: ItemWeapon | undefined,
     public armor: ItemArmor | undefined,

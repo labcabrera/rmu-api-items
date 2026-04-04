@@ -8,7 +8,7 @@ import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifi
 export class CreateItemCommand {
   public constructor(
     public readonly id: string,
-    public readonly realmId: string,
+    public readonly realmId: string | undefined,
     public readonly category: ItemCategory,
     public readonly weapon: ItemWeapon | undefined,
     public readonly armor: ItemArmor | undefined,

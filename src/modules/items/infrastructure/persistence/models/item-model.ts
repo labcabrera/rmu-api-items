@@ -13,8 +13,8 @@ export class ItemModel {
   @Prop({ required: true })
   _id!: string;
 
-  @Prop({ required: true })
-  realm!: NamedEntity;
+  @Prop({ type: NamedEntity, required: false })
+  realm: NamedEntity | null;
 
   @Prop({ required: true })
   category!: ItemCategory;

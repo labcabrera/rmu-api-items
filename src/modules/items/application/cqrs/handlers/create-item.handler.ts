@@ -5,7 +5,8 @@ import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors
 import { CreateItemCommand } from '../commands/create-item.command';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
-import type { RealmPort } from '../../ports/realm.port';
+import type { Realm, RealmPort } from '../../ports/realm.port';
+import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity.vo';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
@@ -21,8 +22,12 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     const current = await this.itemRepository.findById(command.id);
     if (current) throw new ConflictError(`Item ${command.id} already exists`);
 
-    const realm = await this.realmPort.fetchRealmById(command.realmId);
-    if (!realm) throw new ValidationError(`Realm ${command.realmId} does not exist`);
+    let realm: NamedEntity | null = null;
+    if (command.realmId) {
+      const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
+      if (!realmEntity) throw new ValidationError(`Realm ${command.realmId} does not exist`);
+      realm = new NamedEntity(realmEntity.id, realmEntity.name);
+    }
 
     const item = Item.create({
       id: command.id,

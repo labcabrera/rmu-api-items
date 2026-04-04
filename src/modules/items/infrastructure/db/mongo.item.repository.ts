@@ -27,7 +27,7 @@ export class MongoItemRepository implements ItemRepository {
     const skip = page * size;
     const mongoQuery = this.rsqlParser.parse(rsql);
     const [gamesDocs, totalElements] = await Promise.all([
-      this.gameModel.find(mongoQuery).skip(skip).limit(size).sort({ name: 1 }),
+      this.gameModel.find(mongoQuery).skip(skip).limit(size).sort({ _id: 1 }),
       this.gameModel.countDocuments(mongoQuery),
     ]);
     const content = gamesDocs.map((doc) => this.mapToEntity(doc));

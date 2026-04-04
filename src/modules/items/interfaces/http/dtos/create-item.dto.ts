@@ -14,10 +14,10 @@ export class CreateItemDto {
   @IsNotEmpty()
   id!: string;
 
-  @ApiProperty({ description: 'Realm identifier from core module', example: 'lotr' })
+  @ApiProperty({ description: 'Realm identifier from core module', required: false, example: 'lotr' })
   @IsString()
-  @IsNotEmpty()
-  realmId!: string;
+  @IsOptional()
+  realmId?: string;
 
   @ApiProperty({ description: 'Item category', example: 'weapon' })
   @IsString()
