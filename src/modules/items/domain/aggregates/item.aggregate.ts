@@ -1,50 +1,34 @@
-import { AggregateRoot } from '@nestjs/cqrs';
 import { ItemArmor } from '../value-objects/item-armor.vo';
 import { ItemCategory } from '../value-objects/item-category.vo';
 import { ItemInfo } from '../value-objects/item-info.vo';
 import { ItemShield } from '../value-objects/item-shield.vo';
 import { ItemWeapon } from '../value-objects/item-weapon.vo';
 import { ItemModifier } from '../value-objects/item-modifier.vo';
-import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
-import { ValidationError } from 'src/modules/shared/domain/errors';
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity.vo';
 import { randomUUID } from 'crypto';
 import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
+import { ItemProps } from './item-props';
+import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
+import { ValidationError } from 'src/modules/shared/domain/errors/errors';
+import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-aggregate';
 
-export interface ItemProps {
-  id: string;
-  realm: NamedEntity | null;
-  category: ItemCategory;
-  weapon?: ItemWeapon;
-  armor?: ItemArmor;
-  shield?: ItemShield;
-  info: ItemInfo;
-  modifiers?: ItemModifier[];
-  description?: string;
-  imageUrl?: string;
-  owner: string;
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
-export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
+export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
-    public id: string,
+    id: string,
     public realm: NamedEntity | null,
     public category: ItemCategory,
-    public weapon: ItemWeapon | undefined,
-    public armor: ItemArmor | undefined,
-    public shield: ItemShield | undefined,
+    public weapon: ItemWeapon | null,
+    public armor: ItemArmor | null,
+    public shield: ItemShield | null,
     public info: ItemInfo,
-    public modifiers: ItemModifier[] | undefined,
-    public description: string | undefined,
-    public imageUrl: string | undefined,
+    public modifiers: ItemModifier[] | null,
+    public description: string | null,
+    public imageUrl: string | null,
     public owner: string,
     public createdAt: Date,
-    public updatedAt: Date | undefined,
+    public updatedAt: Date | null,
   ) {
-    super();
+    super(id);
   }
 
   public static create(props: Omit<ItemProps, 'createdAt' | 'updatedAt'>): Item {
@@ -94,10 +78,10 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
       props.imageUrl,
       props.owner,
       new Date(),
-      undefined,
+      null,
     );
     item.validate();
-    item.apply(new ItemCreatedEvent(item.toProps()));
+    item.apply(new ItemCreatedEvent(item.getProps()));
     return item;
   }
 
@@ -131,7 +115,7 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     if (imageUrl !== undefined) this.imageUrl = imageUrl;
     this.validate();
     this.updatedAt = new Date();
-    this.apply(new ItemUpdatedEvent(this.toProps()));
+    this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 
   validate(): void {
@@ -174,16 +158,16 @@ export class Item extends AggregateRoot<DomainEvent<ItemProps>> {
     } else {
       this.modifiers.push(newModifier);
     }
-    this.apply(new ItemUpdatedEvent(this.toProps()));
+    this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 
   removeModifier(modifierId: string) {
     if (!this.modifiers) return;
     this.modifiers = this.modifiers.filter((m) => m.id !== modifierId);
-    this.apply(new ItemUpdatedEvent(this.toProps()));
+    this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 
-  toProps(): ItemProps {
+  getProps(): ItemProps {
     return {
       id: this.id,
       realm: this.realm,

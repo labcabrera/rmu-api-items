@@ -4,8 +4,6 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Req
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/jwt.auth.guard';
-import { Page } from 'src/modules/shared/domain/entities/page.entity';
-import { ErrorDto, PagedQueryDto } from 'src/modules/shared/infrastructure/controller/dto';
 import { GetItemQuery } from '../../application/cqrs/queries/get-item.query';
 import { GetItemsQuery } from '../../application/cqrs/queries/get-items.query';
 import { Item } from '../../domain/aggregates/item.aggregate';
@@ -18,6 +16,9 @@ import { UpdateItemCommand } from '../../application/cqrs/commands/update-item.c
 import { AddItemModifierDto } from './dtos/add-item-modifier.dto';
 import { AddItemModifierCommand } from '../../application/cqrs/commands/add-item-modifier.command';
 import { DeleteItemModifierCommand } from '../../application/cqrs/commands/delete-item-modifier.command';
+import { ErrorDto } from 'src/modules/shared/interfaces/http/dto/error-dto';
+import { PagedQueryDto } from 'src/modules/shared/interfaces/http/dto/paged-rsql-query';
+import { Page } from 'src/modules/shared/domain/entities/page';
 
 @UseGuards(JwtAuthGuard)
 @Controller('v1/items')

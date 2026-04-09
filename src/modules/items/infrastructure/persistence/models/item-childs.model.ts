@@ -77,5 +77,8 @@ export class ItemArmor {
 @Schema({ _id: false })
 export class ItemShield {
   @Prop({ type: Number, required: true })
-  attacks!: number;
+  db: number;
+
+  @Prop({ type: Number, required: true })
+  blockCount: number;
 }

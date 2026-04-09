@@ -1,3 +1,6 @@
 export class ItemShield {
-  constructor(public readonly attacks: number) {}
+  constructor(
+    public readonly db: number,
+    public readonly blockCount: number,
+  ) {}
 }

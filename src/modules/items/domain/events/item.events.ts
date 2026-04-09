@@ -1,5 +1,5 @@
 import { DomainEvent } from 'src/modules/shared/domain/events/domain-event';
-import { ItemProps } from '../aggregates/item.aggregate';
+import { ItemProps } from '../aggregates/item-props';
 
 export class ItemCreatedEvent extends DomainEvent<ItemProps> {
   constructor(data: ItemProps) {

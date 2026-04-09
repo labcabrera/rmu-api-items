@@ -12,12 +12,12 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
   @IsString()
   @IsNotEmpty()
-  id!: string;
+  id: string;
 
   @ApiProperty({ description: 'Realm identifier from core module', required: false, example: 'lotr' })
   @IsString()
   @IsOptional()
-  realmId?: string;
+  realmId: string | null;
 
   @ApiProperty({ description: 'Item category', example: 'weapon' })
   @IsString()
@@ -27,17 +27,17 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Weapon info if available' })
   @IsObject()
   @IsOptional()
-  weapon!: ItemWeaponDto | undefined;
+  weapon!: ItemWeaponDto | null;
 
   @ApiProperty({ description: 'Armor info if available' })
   @IsObject()
   @IsOptional()
-  armor!: ItemArmorDto | undefined;
+  armor!: ItemArmorDto | null;
 
   @ApiProperty({ description: 'Shield info if available' })
   @IsObject()
   @IsOptional()
-  shield!: ItemShieldDto | undefined;
+  shield!: ItemShieldDto | null;
 
   @ApiProperty({ description: 'Generic item information' })
   @IsObject()
@@ -45,28 +45,28 @@ export class CreateItemDto {
 
   @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
   @IsOptional()
-  modifiers: ItemModifierDto[] | undefined;
+  modifiers: ItemModifierDto[] | null;
 
   @ApiProperty({ description: 'Item description', example: 'Some item description' })
   @IsString()
   @IsOptional()
-  description: string | undefined;
+  description: string | null;
 
   @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
   @IsString()
   @IsOptional()
-  imageUrl: string | undefined;
+  imageUrl: string | null;
 
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
     return new CreateItemCommand(
       dto.id,
       dto.realmId,
       dto.category,
-      dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : undefined,
-      dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined,
-      dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined,
+      dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : null,
+      dto.armor ? ItemArmorDto.toEntity(dto.armor) : null,
+      dto.shield ? ItemShieldDto.toEntity(dto.shield) : null,
       ItemInfoDto.toEntity(dto.info),
-      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : undefined,
+      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : null,
       dto.description,
       dto.imageUrl,
       userId,

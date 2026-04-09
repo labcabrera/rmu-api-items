@@ -8,15 +8,15 @@ import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifi
 export class CreateItemCommand {
   public constructor(
     public readonly id: string,
-    public readonly realmId: string | undefined,
+    public readonly realmId: string | null,
     public readonly category: ItemCategory,
-    public readonly weapon: ItemWeapon | undefined,
-    public readonly armor: ItemArmor | undefined,
-    public readonly shield: ItemShield | undefined,
+    public readonly weapon: ItemWeapon | null,
+    public readonly armor: ItemArmor | null,
+    public readonly shield: ItemShield | null,
     public readonly info: ItemInfo,
-    public readonly modifiers: ItemModifier[] | undefined,
-    public readonly description: string | undefined,
-    public readonly imageUrl: string | undefined,
+    public readonly modifiers: ItemModifier[] | null,
+    public readonly description: string | null,
+    public readonly imageUrl: string | null,
     public readonly userId: string,
     public readonly roles: string[],
   ) {}

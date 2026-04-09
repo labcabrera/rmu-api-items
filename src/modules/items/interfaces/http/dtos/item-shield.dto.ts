@@ -5,15 +5,18 @@ import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.v
 export class ItemShieldDto {
   @ApiProperty({ description: 'Number of attacks the shield can block', example: 1 })
   @IsNumber()
-  attacks: number;
+  db: number;
+
+  blockCount: number;
 
   static fromEntity(entity: ItemShield): ItemShieldDto {
     const dto = new ItemShieldDto();
-    dto.attacks = entity.attacks;
+    dto.db = entity.db;
+    dto.blockCount = entity.blockCount;
     return dto;
   }
 
   static toEntity(dto: ItemShieldDto): ItemShield {
-    return new ItemShield(dto.attacks);
+    return new ItemShield(dto.db, dto.blockCount);
   }
 }

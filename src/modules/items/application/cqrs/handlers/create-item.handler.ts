@@ -1,12 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors';
 import { CreateItemCommand } from '../commands/create-item.command';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
-import type { Realm, RealmPort } from '../../ports/realm.port';
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity.vo';
+import type { RealmPort } from '../../ports/realm.port';
+import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
+import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors/errors';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
@@ -37,6 +37,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       armor: command.armor,
       shield: command.shield,
       info: command.info,
+      modifiers: command.modifiers,
       description: command.description,
       imageUrl: command.imageUrl,
       owner: command.userId,

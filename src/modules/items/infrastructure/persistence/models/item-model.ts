@@ -3,42 +3,42 @@ import { Document } from 'mongoose';
 import { ItemArmor, ItemInfo, ItemShield } from './item-childs.model';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { ItemWeapon } from './item-weapon.model';
-import { NamedEntity } from 'src/modules/shared/infrastructure/persistence/models/named-item.model';
 import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
+import { NamedEntity } from 'src/modules/shared/infrastructure/persistence/models/named-entity.model';
 
 export type ItemDocument = ItemModel & Document;
 
 @Schema({ collection: 'items', versionKey: false })
 export class ItemModel {
   @Prop({ required: true })
-  _id!: string;
+  _id: string;
 
   @Prop({ type: NamedEntity, required: false })
   realm: NamedEntity | null;
 
   @Prop({ required: true })
-  category!: ItemCategory;
+  category: ItemCategory;
 
   @Prop({ type: ItemWeapon, required: false })
-  weapon: ItemWeapon | undefined;
+  weapon: ItemWeapon | null;
 
   @Prop({ type: ItemArmor, required: false })
-  armor: ItemArmor | undefined;
+  armor: ItemArmor | null;
 
   @Prop({ type: ItemShield, required: false })
-  shield: ItemShield | undefined;
+  shield: ItemShield | null;
 
   @Prop({ type: ItemInfo, required: true })
   info!: ItemInfo;
 
   @Prop({ type: [ItemModifier], required: false })
-  modifiers: ItemModifier[] | undefined;
+  modifiers: ItemModifier[] | null;
 
   @Prop({ type: String, required: false })
-  description: string | undefined;
+  description: string | null;
 
   @Prop({ type: String, required: false })
-  imageUrl: string | undefined;
+  imageUrl: string | null;
 
   @Prop({ type: String, required: true })
   owner!: string;
@@ -47,7 +47,7 @@ export class ItemModel {
   createdAt!: Date;
 
   @Prop({ type: Date, required: false })
-  updatedAt: Date | undefined;
+  updatedAt: Date | null;
 }
 
 export const ItemSchema = SchemaFactory.createForClass(ItemModel);
