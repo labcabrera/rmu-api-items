@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import { NotFoundError } from 'src/modules/shared/domain/errors';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
 import { DeleteItemModifierCommand } from '../commands/delete-item-modifier.command';
+import { NotFoundError } from 'src/modules/shared/domain/errors/errors';
 
 @CommandHandler(DeleteItemModifierCommand)
 export class DeleteItemModifierHandler implements ICommandHandler<DeleteItemModifierCommand, Item> {

@@ -32,7 +32,7 @@ export abstract class MongoBaseRepository<E extends BaseAggregateRoot<any>, D> {
       mongoQuery = { $and: [rsqlParsed, filter] };
     }
 
-    this.logger.debug(`Executing MongoDB query: ${JSON.stringify(mongoQuery)} with pagination: page=${page}, size=${size}`);
+    this.logger.verbose(`Executing MongoDB query: ${JSON.stringify(mongoQuery)} with pagination: page=${page}, size=${size}`);
 
     const [docs, totalElements] = await Promise.all([
       this.model

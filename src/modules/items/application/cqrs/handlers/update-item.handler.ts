@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateItemCommand } from '../commands/update-item.command';
-import { NotFoundError } from 'src/modules/shared/domain/errors';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
+import { NotFoundError } from 'src/modules/shared/domain/errors/errors';
 
 @CommandHandler(UpdateItemCommand)
 export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Item> {
