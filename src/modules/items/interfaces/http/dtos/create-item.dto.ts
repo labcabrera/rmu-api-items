@@ -66,7 +66,7 @@ export class CreateItemDto {
       dto.armor ? ItemArmorDto.toEntity(dto.armor) : null,
       dto.shield ? ItemShieldDto.toEntity(dto.shield) : null,
       ItemInfoDto.toEntity(dto.info),
-      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : null,
+      dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : null,
       dto.description,
       dto.imageUrl,
       userId,

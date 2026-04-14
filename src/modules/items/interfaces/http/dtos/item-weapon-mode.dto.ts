@@ -49,7 +49,7 @@ export class ItemWeaponModeDto {
     dto.fumbleTable = entity.fumbleTable;
     dto.sizeAdjustment = entity.sizeAdjustment;
     dto.attackTypes = entity.attackTypes;
-    dto.ranges = entity.ranges?.map((range) => ItemWeaponRangeDto.fromEntity(range));
+    dto.ranges = entity.ranges?.map(range => ItemWeaponRangeDto.fromEntity(range));
     dto.alternativeTable = entity.alternativeTable;
     return dto;
   }
@@ -61,7 +61,7 @@ export class ItemWeaponModeDto {
       dto.attackTable,
       dto.fumbleTable,
       dto.sizeAdjustment,
-      dto.ranges?.map((range) => ItemWeaponRangeDto.toEntity(range)),
+      dto.ranges?.map(range => ItemWeaponRangeDto.toEntity(range)),
       dto.alternativeTable,
     );
   }

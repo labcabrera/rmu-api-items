@@ -22,11 +22,11 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemDocument>
           doc.weapon.skillId,
           doc.weapon.fumble,
           (doc.weapon.modes ?? []).map(
-            (m) => new ItemWeaponMode(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
+            m => new ItemWeaponMode(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
           ),
         )
       : null;
-    const modifiers = doc.modifiers ? doc.modifiers.map((m) => new ItemModifier(m.id, m.type, m.modifier, m.value)) : null;
+    const modifiers = doc.modifiers ? doc.modifiers.map(m => new ItemModifier(m.id, m.type, m.modifier, m.value)) : null;
     return Item.fromProps({
       id: doc._id,
       realm: doc.realm,

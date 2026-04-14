@@ -40,7 +40,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
         if (!props.weapon.modes || props.weapon.modes.length === 0) {
           throw new ValidationError('At least one weapon mode is required for weapon items');
         }
-        props.weapon.modes.forEach((mode) => {
+        props.weapon.modes.forEach(mode => {
           if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
           if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
         });
@@ -163,7 +163,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
 
   removeModifier(modifierId: string) {
     if (!this.modifiers) return;
-    this.modifiers = this.modifiers.filter((m) => m.id !== modifierId);
+    this.modifiers = this.modifiers.filter(m => m.id !== modifierId);
     this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 

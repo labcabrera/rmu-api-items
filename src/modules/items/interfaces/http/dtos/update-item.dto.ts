@@ -50,7 +50,7 @@ export class UpdateItemDto {
       dto.shield,
       dto.info,
 
-      dto.modifiers ? dto.modifiers.map((m) => ItemModifierDto.toEntity(m)) : undefined,
+      dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,
       userId,

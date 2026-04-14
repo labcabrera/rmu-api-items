@@ -28,7 +28,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       imageUrl: command.imageUrl,
     });
     const updated = await this.itemRepository.update(command.id, item);
-    updated.getUncommittedEvents().forEach((event) => this.itemEventBus.publish(event));
+    updated.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
     return updated;
   }
 }

@@ -43,7 +43,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       owner: command.userId,
     });
     const saved = await this.itemRepository.save(item);
-    item.getUncommittedEvents().forEach((event) => this.itemEventBus.publish(event));
+    item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
     return saved;
   }
 

@@ -52,7 +52,7 @@ export class ItemDto {
     dto.armor = entity.armor ? ItemArmorDto.fromEntity(entity.armor) : null;
     dto.shield = entity.shield ? ItemShieldDto.fromEntity(entity.shield) : null;
     dto.info = ItemInfoDto.fromEntity(entity.info);
-    dto.modifiers = entity.modifiers ? entity.modifiers.map((m) => ItemModifierDto.fromEntity(m)) : null;
+    dto.modifiers = entity.modifiers ? entity.modifiers.map(m => ItemModifierDto.fromEntity(m)) : null;
     dto.description = entity.description;
     dto.imageUrl = entity.imageUrl;
     dto.owner = entity.owner;
