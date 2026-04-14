@@ -1,6 +1,6 @@
 {
   "id": "boots",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "clothes",
   "info": {
     "cost": {

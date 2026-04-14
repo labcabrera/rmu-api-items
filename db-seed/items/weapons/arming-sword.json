@@ -1,21 +1,25 @@
 {
   "id": "arming-sword",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "weapon",
   "weapon": {
-    "attackTable": "arming-sword",
-    "fumbleTable": "one-handed-melee",
     "skillId": "melee-weapon@blade",
     "fumble": 3,
-    "sizeAdjustment": 0,
-    "requiredHands": 1,
-    "throwable": false
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "arming-sword",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": 0
+      }
+    ]
   },
   "info": {
     "cost": {
-      "min": 18,
-      "average": 18,
-      "max": 18
+      "min": 0.18,
+      "average": 0.18,
+      "max": 0.18
     },
     "length": 4,
     "weight": 2.5,

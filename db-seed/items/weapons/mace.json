@@ -1,0 +1,29 @@
+{
+  "id": "mace",
+  "realmId": "$REALM_ID",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "melee-weapon@hafted",
+    "fumble": 4,
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "mace",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": 0
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.06,
+      "average": 0.06,
+      "max": 0.06
+    },
+    "length": 2,
+    "weight": 6,
+    "strength": 80,
+    "productionHours": 16
+  }
+}

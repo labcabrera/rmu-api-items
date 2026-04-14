@@ -7,4 +7,5 @@ export interface ItemInfo {
   weightPercent: number | undefined;
   strength: number | undefined;
   productionHours: number | undefined;
+  stackable: boolean | undefined;
 }

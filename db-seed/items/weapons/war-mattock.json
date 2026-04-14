@@ -1,0 +1,29 @@
+{
+  "id": "war-mattock",
+  "realmId": "$REALM_ID",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "melee-weapon@greater-hafted",
+    "fumble": 6,
+    "modes": [
+      {
+        "type": "two-hands",
+        "attackTypes": ["melee"],
+        "attackTable": "war-hammer",
+        "fumbleTable": "melee-two-hands",
+        "sizeAdjustment": 1
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.15,
+      "average": 0.15,
+      "max": 0.15
+    },
+    "length": 6,
+    "weight": 4.5,
+    "strength": 55,
+    "productionHours": 16
+  }
+}

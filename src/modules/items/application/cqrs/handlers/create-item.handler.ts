@@ -1,38 +1,49 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors';
 import { CreateItemCommand } from '../commands/create-item.command';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
+import type { RealmPort } from '../../ports/realm.port';
+import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
+import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors/errors';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
   constructor(
     @Inject('ItemRepository') private readonly itemRepository: ItemRepository,
+    @Inject('RealmPort') private readonly realmPort: RealmPort,
     @Inject('ItemEventProducer') private readonly itemEventBus: ItemEventBusPort,
   ) {}
 
   async execute(command: CreateItemCommand): Promise<Item> {
     this.validate(command);
+
     const current = await this.itemRepository.findById(command.id);
-    if (current) {
-      throw new ConflictError(`Item ${command.id} already exists`);
+    if (current) throw new ConflictError(`Item ${command.id} already exists`);
+
+    let realm: NamedEntity | null = null;
+    if (command.realmId) {
+      const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
+      if (!realmEntity) throw new ValidationError(`Realm ${command.realmId} does not exist`);
+      realm = new NamedEntity(realmEntity.id, realmEntity.name);
     }
+
     const item = Item.create({
       id: command.id,
-      realm: command.realm,
+      realm: realm,
       category: command.category,
       weapon: command.weapon,
       armor: command.armor,
       shield: command.shield,
       info: command.info,
-      stackable: command.stackable,
+      modifiers: command.modifiers,
       description: command.description,
+      imageUrl: command.imageUrl,
       owner: command.userId,
     });
     const saved = await this.itemRepository.save(item);
-    item.getUncommittedEvents().forEach((event) => this.itemEventBus.publish(event));
+    item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
     return saved;
   }
 

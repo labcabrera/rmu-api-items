@@ -1,0 +1,61 @@
+{
+  "id": "crossbow",
+  "realmId": "$REALM_ID",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "ranged-weapon@crossbow",
+    "fumble": 4,
+    "modes": [
+      {
+        "type": "two-hands",
+        "attackTypes": ["ranged"],
+        "attackTable": "crossbow",
+        "fumbleTable": "bows",
+        "sizeAdjustment": 0,
+        "ranges": [
+          {
+            "from": 0,
+            "to": 10,
+            "bonus": 20
+          },
+          {
+            "from": 11.1,
+            "to": 70,
+            "bonus": 0
+          },
+          {
+            "from": 70.1,
+            "to": 140,
+            "bonus": -10
+          },
+          {
+            "from": 140.1,
+            "to": 210,
+            "bonus": -25
+          },
+          {
+            "from": 210.1,
+            "to": 280,
+            "bonus": -50
+          },
+          {
+            "from": 281.1,
+            "to": 350,
+            "bonus": -100
+          }
+        ]
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.11,
+      "average": 0.11,
+      "max": 0.11
+    },
+    "length": 3,
+    "weight": 6,
+    "strength": 75,
+    "productionHours": 64
+  }
+}

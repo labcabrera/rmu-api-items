@@ -1,6 +1,6 @@
 {
   "id": "rigid-leather-torso-armor",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "armor",
   "armor": {
     "slot": "body",

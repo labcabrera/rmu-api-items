@@ -1,0 +1,29 @@
+{
+  "id": "whip",
+  "realmId": "$REALM_ID",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "melee-weapon@exotic",
+    "fumble": 7,
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "whip",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": 0
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.02,
+      "average": 0.02,
+      "max": 0.02
+    },
+    "length": 7.5,
+    "weight": 3,
+    "strength": 40,
+    "productionHours": 12
+  }
+}

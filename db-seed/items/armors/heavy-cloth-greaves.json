@@ -1,6 +1,6 @@
 {
   "id": "heavy-cloth-greaves",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "armor",
   "armor": {
     "slot": "legs",

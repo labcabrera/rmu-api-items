@@ -1,6 +1,6 @@
 {
   "id": "arrow",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "ammunition",
   "info": {
     "cost": {
@@ -10,7 +10,7 @@
     },
     "weight": 0.125,
     "strength": 55,
-    "productionHours": 0.4
-  },
-  "stackable": true
+    "productionHours": 0.4,
+    "stackable": true
+  }
 }

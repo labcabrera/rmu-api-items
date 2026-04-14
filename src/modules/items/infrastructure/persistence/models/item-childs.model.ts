@@ -5,13 +5,13 @@ import type { DifficultyCode } from 'src/modules/items/domain/value-objects/diff
 @Schema({ _id: false })
 export class ItemCost {
   @Prop({ type: Number, required: true })
-  min: number;
+  min!: number;
 
   @Prop({ type: Number, required: true })
-  average: number;
+  average!: number;
 
   @Prop({ type: Number, required: true })
-  max: number;
+  max!: number;
 }
 
 @Schema({ _id: false })
@@ -33,73 +33,52 @@ export class ItemInfo {
 
   @Prop({ type: Number, required: false })
   productionHours: number | undefined;
+
+  @Prop({ type: Boolean, required: false })
+  stackable: boolean | undefined;
 }
 
 @Schema({ _id: false })
 export class ItemWeaponRange {
   @Prop({ type: Number, required: true })
-  from: number;
+  from!: number;
 
   @Prop({ type: Number, required: true })
-  to: number;
+  to!: number;
 
   @Prop({ type: Number, required: true })
-  bonus: number;
-}
-
-@Schema({ _id: false })
-export class ItemWeapon {
-  @Prop({ type: String, required: true })
-  attackTable: string;
-
-  @Prop({ type: String, required: true })
-  fumbleTable: string;
-
-  @Prop({ type: String, required: true })
-  skillId: string;
-
-  @Prop({ type: Number, required: true })
-  fumble: number;
-
-  @Prop({ type: Number, required: true })
-  sizeAdjustment: number;
-
-  @Prop({ type: Number, required: true })
-  requiredHands: number;
-
-  @Prop({ type: Boolean, required: true })
-  throwable: boolean;
-
-  @Prop({ type: [ItemWeaponRange], required: false })
-  ranges: ItemWeaponRange[] | undefined;
+  bonus!: number;
 }
 
 @Schema({ _id: false })
 export class ItemArmor {
   @Prop({ type: String, required: true })
-  slot: ArmorSlot;
+  slot!: ArmorSlot;
 
   @Prop({ type: Number, required: true })
-  at: number;
+  at!: number;
 
   @Prop({ type: Number, required: true })
-  enc: number;
+  enc!: number;
 
   @Prop({ type: Number, required: true })
-  maneuver: number;
+  maneuver!: number;
 
   @Prop({ type: Number, required: true })
-  rangedPenalty: number;
+  rangedPenalty!: number;
 
   @Prop({ type: Number, required: true })
-  perception: number;
+  perception!: number;
 
   @Prop({ type: String, required: true })
-  baseDifficulty: DifficultyCode;
+  baseDifficulty!: DifficultyCode;
 }
 
 @Schema({ _id: false })
 export class ItemShield {
   @Prop({ type: Number, required: true })
-  attacks: number;
+  db: number;
+
+  @Prop({ type: Number, required: true })
+  blockCount: number;
 }

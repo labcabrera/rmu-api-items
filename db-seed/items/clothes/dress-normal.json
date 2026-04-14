@@ -1,6 +1,6 @@
 {
-  "id": "weapon-belt",
-  "realm": "generic",
+  "id": "dress-normal",
+  "realmId": "$REALM_ID",
   "category": "clothes",
   "info": {
     "cost": {

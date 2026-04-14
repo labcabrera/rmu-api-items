@@ -1,6 +1,6 @@
 {
   "id": "full-shield",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "shield",
   "shield": {
     "attacks": 3

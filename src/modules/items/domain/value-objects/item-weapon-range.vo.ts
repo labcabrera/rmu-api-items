@@ -1,5 +1,7 @@
 export class ItemWeaponRange {
-  from: number;
-  to: number;
-  bonus: number;
+  constructor(
+    public readonly from: number,
+    public readonly to: number,
+    public readonly bonus: number,
+  ) {}
 }

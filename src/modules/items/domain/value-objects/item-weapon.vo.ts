@@ -1,12 +1,9 @@
-import { ItemWeaponRange } from './item-weapon-range.vo';
+import { ItemWeaponMode } from './item-weapon-mode.vo';
 
-export interface ItemWeapon {
-  attackTable: string;
-  fumbleTable: string;
-  skillId: string;
-  fumble: number;
-  sizeAdjustment: number;
-  requiredHands: number;
-  throwable: boolean;
-  ranges: ItemWeaponRange[] | undefined;
+export class ItemWeapon {
+  constructor(
+    public skillId: string,
+    public fumble: number,
+    public modes: ItemWeaponMode[],
+  ) {}
 }

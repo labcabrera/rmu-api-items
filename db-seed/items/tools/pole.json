@@ -1,6 +1,6 @@
 {
   "id": "pole",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "tools",
   "info": {
     "cost": {

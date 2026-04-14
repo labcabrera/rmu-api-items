@@ -1,28 +1,35 @@
 #!/bin/bash
 
-set -a
-source ../.env
 set -e
-DEFAULT_BASE_URL="http://localhost:3006/v1"
-DEFAULT_CONTENT_TYPE="application/json"
+set -a
+source .env
+set -e
+
+ITEMS_DIR="items"
 
 read_access_token() {
-    echo "Fetching access token from ${RMU_IAM_TOKEN_URI}"
-    echo " Client: ${RMU_IAM_CLIENT_ID}"
-    echo " Secret: ${RMU_IAM_CLIENT_SECRET}"
-
-    ACCESS_TOKEN=$(curl --location "${RMU_IAM_TOKEN_URI}" --silent \
+    echo "Fetching access token from Keycloak..."
+    ACCESS_TOKEN=$(curl --silent --location "${KEYCLOAK_TOKEN_URI}" \
         --header 'Content-Type: application/x-www-form-urlencoded' \
-        --data-urlencode 'grant_type=password' \
-        --data-urlencode "client_id=${RMU_IAM_CLIENT_ID}" \
-        --data-urlencode "client_secret=${RMU_IAM_CLIENT_SECRET}" \
-        --data-urlencode "username=${RMU_IAM_USERNAME}" \
-        --data-urlencode "password=${RMU_IAM_PASSWORD}" \
-        | jq -r '.access_token')
+        --data-urlencode 'grant_type=client_credentials' \
+        --data-urlencode "client_id=${KEYCLOAK_CLIENT_ID}" \
+        --data-urlencode "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
+        | jq -r '.access_token // empty')
 
-    echo "Token: $ACCESS_TOKEN"
-        
+    if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+        echo "Error: Unable to obtain access token from Keycloak" >&2
+        return 1
+    fi
+
+    DOTS_COUNT=$(printf '%s' "${ACCESS_TOKEN}" | awk -F'.' '{print NF-1}')
+    if [ -z "${DOTS_COUNT}" ] || [ "${DOTS_COUNT}" -lt 2 ]; then
+        echo "Error: Received access token does not look like a JWT" >&2
+        return 1
+    fi
+
     export ACCESS_TOKEN
+    echo "Access token obtained"
+    return 0
 }
 
 send_file_to_service() {
@@ -40,39 +47,61 @@ send_file_to_service() {
     fi
 
     local url="$DEFAULT_BASE_URL/$endpoint"
+    # Prepare payload by substituting environment variables in the file into a stream
+    if command -v envsubst >/dev/null 2>&1; then
+        payload=$(envsubst < "$filename")
+    else
+        # Fallback: replace literal $REALM_ID occurrences only
+        if [ -z "${REALM_ID+x}" ]; then
+            echo "Warning: REALM_ID not set, and envsubst not available; sending file as-is" >&2
+            payload=$(cat "$filename")
+        else
+            # escape replacement value for sed
+            esc_realm=$(printf '%s' "$REALM_ID" | sed -e 's/[\/&]/\\&/g')
+            payload=$(sed "s/\$REALM_ID/${esc_realm}/g" "$filename")
+        fi
+    fi
 
-    curl -X POST \
-         -H "Content-Type: $DEFAULT_CONTENT_TYPE" \
+    # Send payload and capture response body + HTTP status
+    resp=$(echo "$payload" | curl -X POST \
+         -H "Content-Type: application/json" \
          -H "Accept: application/json" \
          -H "Authorization: Bearer $ACCESS_TOKEN" \
-         -d @"$filename" \
+         -d @- \
          "$url" \
-         -s --show-error \
-         -w "\nHTTP Status: %{http_code}\nTotal Time: %{time_total}s\n" \
-    
-    local exit_code=$?
-    
-    if [ $exit_code -eq 0 ]; then
-        echo "Processed '$filename'"
+         -s --show-error -w "\n%{http_code}")
+
+    # Separate body and status (status is last line)
+    http_code=$(printf '%s' "$resp" | tail -n1)
+    body=$(printf '%s' "$resp" | sed '$d')
+
+    # Determine success (2xx). On success, do not log anything.
+    if [[ "$http_code" =~ ^2 ]]; then
+        return 0
     else
-        echo "Failed '$filename'"
+        # On error, print body (if any) and status
+        if [ -n "$body" ]; then
+            echo "$body" >&2
+        fi
+        echo "HTTP Status: $http_code" >&2
+        echo "Failed '$filename'" >&2
+        return 1
     fi
-    
-    return $exit_code
 }
-
-
 
 initialize_items() {
     echo "Initializing items..."   
-    for item_file in $(find items -type f -o -type d); do
+    for item_file in $(find "$ITEMS_DIR" -type f -o -type d); do
         if [ -f "$item_file" ]; then
-            send_file_to_service "$item_file" "items"
-            echo ""
+                send_file_to_service "$item_file" "items"
         fi
     done
     echo "Items data initialization completed"
 }
 
-read_access_token
-initialize_items
+if read_access_token; then
+    initialize_items
+else
+    echo "Initialization aborted: invalid or missing access token." >&2
+    exit 1
+fi

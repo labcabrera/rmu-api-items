@@ -1,0 +1,29 @@
+{
+  "id": "hand-axe",
+  "realmId": "$REALM_ID",
+  "category": "weapon",
+  "weapon": {
+    "skillId": "melee-weapon@hafted",
+    "fumble": 3,
+    "modes": [
+      {
+        "type": "one-hand",
+        "attackTypes": ["melee"],
+        "attackTable": "battle-axe",
+        "fumbleTable": "melee-one-hand",
+        "sizeAdjustment": -1
+      }
+    ]
+  },
+  "info": {
+    "cost": {
+      "min": 0.05,
+      "average": 0.05,
+      "max": 0.05
+    },
+    "length": 2,
+    "weight": 1.5,
+    "strength": 55,
+    "productionHours": 32
+  }
+}

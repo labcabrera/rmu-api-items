@@ -1,6 +1,6 @@
 {
   "id": "ration",
-  "realm": "generic",
+  "realmId": "$REALM_ID",
   "category": "food",
   "info": {
     "cost": {
@@ -8,8 +8,8 @@
       "average": 0.0071,
       "max": 0.0071
     },
-    "weight": 2
+    "weight": 2,
+    "stackable": true
   },
-  "stackable": true,
   "description": "A basic food ration"
 }
