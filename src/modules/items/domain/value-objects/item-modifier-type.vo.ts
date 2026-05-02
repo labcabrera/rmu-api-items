@@ -1,1 +1,1 @@
-export type ItemModifierType = 'bonus' | 'damage' | 'skill-bonus' | 'material' | 'slayer';
+export type ItemModifierType = 'bonus' | 'item-damage' | 'skill-bonus' | 'material' | 'slayer';
