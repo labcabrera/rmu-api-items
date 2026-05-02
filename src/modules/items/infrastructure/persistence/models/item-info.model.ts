@@ -5,29 +5,26 @@ import type { ItemRarity } from 'src/modules/items/domain/value-objects/item-rar
 @Schema({ _id: false })
 export class ItemInfo {
   @Prop({ type: ItemCost, required: false })
-  cost: ItemCost | undefined;
+  cost: ItemCost | null;
 
   @Prop({ type: Number, required: false })
-  length: number | undefined;
+  length: number | null;
 
   @Prop({ type: Number, required: false })
-  weight: number | undefined;
+  weight: number | null;
 
   @Prop({ type: Number, required: false })
-  weightPercent: number | undefined;
+  strength: number | null;
 
   @Prop({ type: Number, required: false })
-  strength: number | undefined;
-
-  @Prop({ type: Number, required: false })
-  productionHours: number | undefined;
+  productionHours: number | null;
 
   @Prop({ type: Boolean, required: false })
-  stackable: boolean | undefined;
+  stackable: boolean | null;
 
-  @Prop({ type: String, enum: ['common', 'uncommon', 'rare', 'very-rare'], required: false, default: 'common' })
-  rarity!: ItemRarity;
+  @Prop({ type: String, required: false })
+  rarity: ItemRarity;
 
   @Prop({ type: Boolean, required: false, default: false })
-  unique!: boolean;
+  unique: boolean;
 }

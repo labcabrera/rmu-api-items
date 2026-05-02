@@ -9,8 +9,8 @@ export class ItemModifier {
   type!: string;
 
   @Prop({ type: String, required: false })
-  modifier: string | undefined;
+  modifier: string | null;
 
   @Prop({ type: Number, required: false })
-  value: number | undefined;
+  value: number | null;
 }

@@ -18,8 +18,7 @@ export class ItemInfoDto {
 
   @IsOptional()
   @IsNumber()
-  weightPercent: number | undefined;
-
+  // weightPercent removed
   @IsOptional()
   @IsNumber()
   strength: number | undefined;
@@ -47,7 +46,7 @@ export class ItemInfoDto {
     dto.productionHours = entity.productionHours;
     dto.strength = entity.strength;
     dto.weight = entity.weight;
-    dto.weightPercent = entity.weightPercent;
+    // weightPercent removed
     dto.stackable = entity.stackable;
     dto.rarity = entity.rarity;
     dto.unique = entity.unique;
@@ -59,7 +58,7 @@ export class ItemInfoDto {
       cost: dto.cost ? ItemCostDto.toEntity(dto.cost) : undefined,
       length: dto.length,
       weight: dto.weight,
-      weightPercent: dto.weightPercent,
+      // weightPercent removed
       strength: dto.strength,
       productionHours: dto.productionHours,
       stackable: dto.stackable,
