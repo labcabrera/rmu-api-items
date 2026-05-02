@@ -65,8 +65,11 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       default:
         throw new ValidationError('Invalid item category');
     }
+    //TODO review
+    // const id = props.info.unique ? randomUUID() : props.name.toLowerCase().replace(/\s+/g, '-');
+    const id = props.name.toLowerCase().replace(/\s+/g, '-');
     const item = new Item(
-      randomUUID(),
+      id,
       props.name,
       props.realmId,
       props.category,
