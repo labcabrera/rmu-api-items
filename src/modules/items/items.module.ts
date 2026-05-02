@@ -9,6 +9,7 @@ import { GetItemsHandler } from './application/cqrs/handlers/get-items.handler';
 import { KafkaItemEventBusAdapter } from './infrastructure/messaging/kafka.item-event-bus.adapter';
 import { ItemModel, ItemSchema } from './infrastructure/persistence/models/item-model';
 import { ItemController } from './interfaces/http/item.controller';
+import { ItemModifierController } from './interfaces/http/item-modifier.controller';
 import { CreateItemHandler } from './application/cqrs/handlers/create-item.handler';
 import { DeleteItemHandler } from './application/cqrs/handlers/delete-item.handler';
 import { UpdateItemHandler } from './application/cqrs/handlers/update-item.handler';
@@ -16,6 +17,7 @@ import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
 import { ApiRealmAdapter } from './infrastructure/api-clients/api.realm.adapter';
 import { AddItemModifierHandler } from './application/cqrs/handlers/add-item-modifier.handler';
 import { DeleteItemModifierHandler } from './application/cqrs/handlers/delete-item-modifier.handler';
+import { ItemModifierOptionService } from './domain/services/item-modifier-option-service';
 
 @Module({
   imports: [
@@ -25,8 +27,9 @@ import { DeleteItemModifierHandler } from './application/cqrs/handlers/delete-it
     AuthModule,
     SharedModule,
   ],
-  controllers: [ItemController],
+  controllers: [ItemController, ItemModifierController],
   providers: [
+    ItemModifierOptionService,
     GetItemHandler,
     GetItemsHandler,
     CreateItemHandler,

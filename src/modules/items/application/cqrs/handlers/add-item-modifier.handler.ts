@@ -17,7 +17,7 @@ export class AddItemModifierHandler implements ICommandHandler<AddItemModifierCo
     const item = await this.itemRepository.findById(command.itemId);
     if (!item) throw new NotFoundError('Item', command.itemId);
 
-    item.addModifier(command.type, command.modifier, command.value);
+    item.addModifier(command.type, command.modifier ?? null, command.value ?? null);
 
     const saved = await this.itemRepository.update(command.itemId, item);
     item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));

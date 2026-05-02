@@ -19,12 +19,12 @@ export class ItemInfo {
   @Prop({ type: Number, required: false })
   productionHours: number | null;
 
-  @Prop({ type: Boolean, required: false })
-  stackable: boolean | null;
+  @Prop({ type: Boolean, required: true })
+  stackable: boolean;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: true })
   rarity: ItemRarity;
 
-  @Prop({ type: Boolean, required: false, default: false })
+  @Prop({ type: Boolean, required: true })
   unique: boolean;
 }

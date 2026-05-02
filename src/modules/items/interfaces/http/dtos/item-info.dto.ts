@@ -1,43 +1,40 @@
 import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn } from 'class-validator';
 import { ItemCost } from 'src/modules/items/domain/value-objects/item-cost.vo';
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
-import { ItemRarity } from 'src/modules/items/domain/value-objects/item-rarity.vo';
+import type { ItemRarity } from 'src/modules/items/domain/value-objects/item-rarity.vo';
 
 export class ItemInfoDto {
   @IsOptional()
   @IsObject()
-  cost: ItemCostDto | undefined;
+  cost: ItemCostDto | null;
 
   @IsOptional()
   @IsNumber()
-  length: number | undefined;
+  length: number | null;
 
   @IsOptional()
   @IsNumber()
-  weight: number | undefined;
+  weight: number | null;
 
   @IsOptional()
   @IsNumber()
-  // weightPercent removed
-  @IsOptional()
-  @IsNumber()
-  strength: number | undefined;
+  strength: number | null;
 
   @IsOptional()
   @IsNumber()
-  productionHours: number | undefined;
+  productionHours: number | null;
 
   @IsOptional()
   @IsBoolean()
-  stackable: boolean | undefined;
+  stackable: boolean;
 
   @IsOptional()
   @IsIn(['common', 'uncommon', 'rare', 'very-rare'])
-  rarity: ItemRarity | undefined;
+  rarity: ItemRarity;
 
   @IsOptional()
   @IsBoolean()
-  unique: boolean | undefined;
+  unique: boolean;
 
   static fromEntity(entity: ItemInfo): ItemInfoDto {
     const dto = new ItemInfoDto();
@@ -46,7 +43,6 @@ export class ItemInfoDto {
     dto.productionHours = entity.productionHours;
     dto.strength = entity.strength;
     dto.weight = entity.weight;
-    // weightPercent removed
     dto.stackable = entity.stackable;
     dto.rarity = entity.rarity;
     dto.unique = entity.unique;
@@ -55,10 +51,9 @@ export class ItemInfoDto {
 
   static toEntity(dto: ItemInfoDto): ItemInfo {
     return {
-      cost: dto.cost ? ItemCostDto.toEntity(dto.cost) : undefined,
+      cost: dto.cost ? ItemCostDto.toEntity(dto.cost) : null,
       length: dto.length,
       weight: dto.weight,
-      // weightPercent removed
       strength: dto.strength,
       productionHours: dto.productionHours,
       stackable: dto.stackable,

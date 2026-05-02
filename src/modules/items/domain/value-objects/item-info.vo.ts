@@ -7,7 +7,7 @@ export interface ItemInfo {
   weight: number | null;
   strength: number | null;
   productionHours: number | null;
-  stackable: boolean | null;
-  rarity: ItemRarity | null;
-  unique: boolean | null;
+  stackable: boolean;
+  rarity: ItemRarity;
+  unique: boolean;
 }

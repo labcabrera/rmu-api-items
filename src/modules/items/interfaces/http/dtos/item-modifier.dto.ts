@@ -23,15 +23,15 @@ export class ItemModifierDto {
   value: number | undefined;
 
   static toEntity(dto: ItemModifierDto): ItemModifier {
-    return new ItemModifier(dto.id, dto.type, dto.modifier, dto.value);
+    return new ItemModifier(dto.id, dto.type, dto.modifier ?? null, dto.value ?? null);
   }
 
   static fromEntity(entity: ItemModifier): ItemModifierDto {
     const dto = new ItemModifierDto();
     dto.id = entity.id;
     dto.type = entity.type;
-    dto.modifier = entity.modifier;
-    dto.value = entity.value;
+    dto.modifier = entity.modifier ?? undefined;
+    dto.value = entity.value ?? undefined;
     return dto;
   }
 }
