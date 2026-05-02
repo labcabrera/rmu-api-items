@@ -1,4 +1,3 @@
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
 import { ItemArmor } from '../value-objects/item-armor.vo';
 import { ItemCategory } from '../value-objects/item-category.vo';
 import { ItemInfo } from '../value-objects/item-info.vo';
@@ -8,7 +7,7 @@ import { ItemWeapon } from '../value-objects/item-weapon.vo';
 
 export interface ItemProps {
   id: string;
-  realm: NamedEntity | null;
+  realmId: string | null;
   category: ItemCategory;
   weapon: ItemWeapon | null;
   armor: ItemArmor | null;
@@ -21,3 +20,7 @@ export interface ItemProps {
   createdAt: Date;
   updatedAt: Date | null;
 }
+
+export type ItemCreationProps = Omit<ItemProps, 'id' | 'createdAt' | 'updatedAt'>;
+
+export type ItemUpdateProps = Partial<Omit<ItemProps, 'id' | 'createdAt' | 'updatedAt'>>;

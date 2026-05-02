@@ -8,14 +8,13 @@ import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { randomUUID } from 'crypto';
 import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
 import { ItemProps } from './item-props';
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
 import { ValidationError } from 'src/modules/shared/domain/errors/errors';
 import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-aggregate';
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
     id: string,
-    public realm: NamedEntity | null,
+    public realmId: string | null,
     public category: ItemCategory,
     public weapon: ItemWeapon | null,
     public armor: ItemArmor | null,
@@ -67,7 +66,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     }
     const item = new Item(
       props.id,
-      props.realm,
+      props.realmId,
       props.category,
       props.weapon,
       props.armor,
@@ -88,7 +87,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   public static fromProps(props: ItemProps): Item {
     return new Item(
       props.id,
-      props.realm,
+      props.realmId,
       props.category,
       props.weapon,
       props.armor,
@@ -103,7 +102,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     );
   }
 
-  update(props: Partial<Omit<ItemProps, 'id' | 'realm' | 'createdAt' | 'owner'>>): void {
+  update(props: Partial<Omit<ItemProps, 'id' | 'realmId' | 'createdAt' | 'owner'>>): void {
     const { category, weapon, armor, shield, info, modifiers, description, imageUrl } = props;
     if (category) this.category = category;
     if (weapon) this.weapon = weapon;
@@ -170,7 +169,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   getProps(): ItemProps {
     return {
       id: this.id,
-      realm: this.realm,
+      realmId: this.realmId,
       category: this.category,
       weapon: this.weapon,
       armor: this.armor,

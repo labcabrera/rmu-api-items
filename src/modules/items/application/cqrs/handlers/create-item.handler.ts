@@ -22,16 +22,15 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     const current = await this.itemRepository.findById(command.id);
     if (current) throw new ConflictError(`Item ${command.id} already exists`);
 
-    let realm: NamedEntity | null = null;
+    // realmId is validated by checking existence; store only realmId on the item
     if (command.realmId) {
       const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
       if (!realmEntity) throw new ValidationError(`Realm ${command.realmId} does not exist`);
-      realm = new NamedEntity(realmEntity.id, realmEntity.name);
     }
 
     const item = Item.create({
       id: command.id,
-      realm: realm,
+      realmId: command.realmId || null,
       category: command.category,
       weapon: command.weapon,
       armor: command.armor,

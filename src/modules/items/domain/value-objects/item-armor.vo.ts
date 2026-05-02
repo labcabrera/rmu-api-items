@@ -5,8 +5,8 @@ export interface ItemArmor {
   slot: ArmorSlot;
   at: number;
   enc: number;
-  maneuver: number;
+  maneuverPenalty: number;
   rangedPenalty: number;
-  perception: number;
+  perceptionPenalty: number;
   baseDifficulty: DifficultyCode;
 }

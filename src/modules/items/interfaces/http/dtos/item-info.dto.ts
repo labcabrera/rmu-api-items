@@ -1,6 +1,7 @@
-import { IsNumber, IsObject, IsOptional, IsBoolean } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn } from 'class-validator';
 import { ItemCost } from 'src/modules/items/domain/value-objects/item-cost.vo';
 import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
+import { ItemRarity } from 'src/modules/items/domain/value-objects/item-rarity.vo';
 
 export class ItemInfoDto {
   @IsOptional()
@@ -31,6 +32,14 @@ export class ItemInfoDto {
   @IsBoolean()
   stackable: boolean | undefined;
 
+  @IsOptional()
+  @IsIn(['common', 'uncommon', 'rare', 'very-rare'])
+  rarity: ItemRarity | undefined;
+
+  @IsOptional()
+  @IsBoolean()
+  unique: boolean | undefined;
+
   static fromEntity(entity: ItemInfo): ItemInfoDto {
     const dto = new ItemInfoDto();
     dto.cost = entity.cost;
@@ -40,6 +49,8 @@ export class ItemInfoDto {
     dto.weight = entity.weight;
     dto.weightPercent = entity.weightPercent;
     dto.stackable = entity.stackable;
+    dto.rarity = entity.rarity;
+    dto.unique = entity.unique;
     return dto;
   }
 
@@ -52,6 +63,8 @@ export class ItemInfoDto {
       strength: dto.strength,
       productionHours: dto.productionHours,
       stackable: dto.stackable,
+      rarity: dto.rarity,
+      unique: dto.unique,
     };
   }
 }

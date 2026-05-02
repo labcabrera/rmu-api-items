@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ItemArmor, ItemInfo, ItemShield } from './item-childs.model';
+import { ItemArmor, ItemShield } from './item-childs.model';
 import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
 import { ItemWeapon } from './item-weapon.model';
 import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
-import { NamedEntity } from 'src/modules/shared/infrastructure/persistence/models/named-entity.model';
+import { ItemInfo } from './item-info.model';
 
 export type ItemDocument = ItemModel & Document;
 
@@ -13,8 +13,8 @@ export class ItemModel {
   @Prop({ required: true })
   _id: string;
 
-  @Prop({ type: NamedEntity, required: false })
-  realm: NamedEntity | null;
+  @Prop({ type: String, required: false })
+  realmId: string | null;
 
   @Prop({ required: true })
   category: ItemCategory;
@@ -29,7 +29,7 @@ export class ItemModel {
   shield: ItemShield | null;
 
   @Prop({ type: ItemInfo, required: true })
-  info!: ItemInfo;
+  info: ItemInfo;
 
   @Prop({ type: [ItemModifier], required: false })
   modifiers: ItemModifier[] | null;
@@ -41,10 +41,10 @@ export class ItemModel {
   imageUrl: string | null;
 
   @Prop({ type: String, required: true })
-  owner!: string;
+  owner: string;
 
   @Prop({ type: Date, required: true })
-  createdAt!: Date;
+  createdAt: Date;
 
   @Prop({ type: Date, required: false })
   updatedAt: Date | null;

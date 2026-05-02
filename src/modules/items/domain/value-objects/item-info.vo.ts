@@ -1,4 +1,5 @@
 import { ItemCost } from './item-cost.vo';
+import { ItemRarity } from './item-rarity.vo';
 
 export interface ItemInfo {
   cost: ItemCost | undefined;
@@ -8,4 +9,6 @@ export interface ItemInfo {
   strength: number | undefined;
   productionHours: number | undefined;
   stackable: boolean | undefined;
+  rarity?: ItemRarity | undefined;
+  unique?: boolean | undefined;
 }

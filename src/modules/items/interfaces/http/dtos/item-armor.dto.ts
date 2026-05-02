@@ -14,11 +14,11 @@ export class ItemArmorDto {
 
   enc: number;
 
-  maneuver: number;
+  maneuverPenalty: number;
 
   rangedPenalty: number;
 
-  perception: number;
+  perceptionPenalty: number;
 
   baseDifficulty: DifficultyCode;
 
@@ -27,9 +27,9 @@ export class ItemArmorDto {
       slot: dto.slot,
       at: dto.at,
       enc: dto.enc,
-      maneuver: dto.maneuver,
+      maneuverPenalty: dto.maneuverPenalty,
       rangedPenalty: dto.rangedPenalty,
-      perception: dto.perception,
+      perceptionPenalty: dto.perceptionPenalty,
       baseDifficulty: dto.baseDifficulty,
     };
   }
@@ -39,9 +39,9 @@ export class ItemArmorDto {
     dto.slot = entity.slot;
     dto.at = entity.at;
     dto.enc = entity.enc;
-    dto.maneuver = entity.maneuver;
+    dto.maneuverPenalty = entity.maneuverPenalty;
     dto.rangedPenalty = entity.rangedPenalty;
-    dto.perception = entity.perception;
+    dto.perceptionPenalty = entity.perceptionPenalty;
     dto.baseDifficulty = entity.baseDifficulty;
     return dto;
   }
