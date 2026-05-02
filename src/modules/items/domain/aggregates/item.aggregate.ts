@@ -14,6 +14,7 @@ import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-agg
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
     id: string,
+    public name: string | null,
     public realmId: string | null,
     public category: ItemCategory,
     public weapon: ItemWeapon | null,
@@ -66,6 +67,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     }
     const item = new Item(
       props.id,
+      props.name ?? props.id,
       props.realmId,
       props.category,
       props.weapon,
@@ -87,6 +89,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   public static fromProps(props: ItemProps): Item {
     return new Item(
       props.id,
+      props.name ?? props.id,
       props.realmId,
       props.category,
       props.weapon,
@@ -169,6 +172,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   getProps(): ItemProps {
     return {
       id: this.id,
+      name: this.name,
       realmId: this.realmId,
       category: this.category,
       weapon: this.weapon,

@@ -13,6 +13,9 @@ export class ItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
   id: string;
 
+  @ApiProperty({ description: 'Item name', required: false })
+  name: string | null;
+
   @ApiProperty({ description: 'Realm id', required: false })
   realmId: string | null;
 
@@ -46,6 +49,7 @@ export class ItemDto {
   static fromEntity(entity: Item): ItemDto {
     const dto = new ItemDto();
     dto.id = entity.id;
+    dto.name = (entity as any).name ? (entity as any).name : entity.id;
     dto.realmId = (entity as any).realmId ? (entity as any).realmId : null;
     dto.category = entity.category;
     dto.weapon = entity.weapon ? ItemWeaponDto.fromEntity(entity.weapon) : null;

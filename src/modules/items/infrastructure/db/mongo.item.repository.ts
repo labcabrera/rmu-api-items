@@ -29,6 +29,7 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemDocument>
     const modifiers = doc.modifiers ? doc.modifiers.map(m => new ItemModifier(m.id, m.type, m.modifier, m.value)) : null;
     return Item.fromProps({
       id: doc._id,
+      name: doc.name,
       realmId: doc.realmId,
       category: doc.category,
       weapon: weapon,

@@ -30,6 +30,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
 
     const item = Item.create({
       id: command.id,
+      name: command.name ?? command.id,
       realmId: command.realmId || null,
       category: command.category,
       weapon: command.weapon,

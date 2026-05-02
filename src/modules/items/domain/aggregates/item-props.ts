@@ -7,6 +7,7 @@ import { ItemWeapon } from '../value-objects/item-weapon.vo';
 
 export interface ItemProps {
   id: string;
+  name?: string | null;
   realmId: string | null;
   category: ItemCategory;
   weapon: ItemWeapon | null;

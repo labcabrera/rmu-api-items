@@ -14,6 +14,11 @@ export class CreateItemDto {
   @IsNotEmpty()
   id: string;
 
+  @ApiProperty({ description: 'Item name', example: 'Dagger', required: false })
+  @IsString()
+  @IsOptional()
+  name: string | null;
+
   @ApiProperty({ description: 'Realm identifier from core module', required: false, example: 'lotr' })
   @IsString()
   @IsOptional()
@@ -60,6 +65,7 @@ export class CreateItemDto {
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
     return new CreateItemCommand(
       dto.id,
+      dto.name ?? dto.id,
       dto.realmId,
       dto.category,
       dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : null,

@@ -14,6 +14,9 @@ export class ItemModel {
   _id: string;
 
   @Prop({ type: String, required: false })
+  name: string | null;
+
+  @Prop({ type: String, required: false })
   realmId: string | null;
 
   @Prop({ required: true })
