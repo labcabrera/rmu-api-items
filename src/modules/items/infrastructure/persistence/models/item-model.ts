@@ -13,8 +13,8 @@ export class ItemModel {
   @Prop({ required: true })
   _id: string;
 
-  @Prop({ type: String, required: false })
-  name: string | null;
+  @Prop({ type: String, required: true })
+  name: string;
 
   @Prop({ type: String, required: false })
   realmId: string | null;

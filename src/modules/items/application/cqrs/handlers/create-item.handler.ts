@@ -5,8 +5,7 @@ import { CreateItemCommand } from '../commands/create-item.command';
 import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
 import type { ItemRepository } from '../../ports/item.repository';
 import type { RealmPort } from '../../ports/realm.port';
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
-import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors/errors';
+import { ValidationError } from 'src/modules/shared/domain/errors/errors';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
@@ -19,9 +18,6 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
   async execute(command: CreateItemCommand): Promise<Item> {
     this.validate(command);
 
-    const current = await this.itemRepository.findById(command.id);
-    if (current) throw new ConflictError(`Item ${command.id} already exists`);
-
     // realmId is validated by checking existence; store only realmId on the item
     if (command.realmId) {
       const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
@@ -29,8 +25,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     }
 
     const item = Item.create({
-      id: command.id,
-      name: command.name ?? command.id,
+      name: command.name,
       realmId: command.realmId || null,
       category: command.category,
       weapon: command.weapon,

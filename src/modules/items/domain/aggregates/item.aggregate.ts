@@ -7,14 +7,14 @@ import { ItemModifier } from '../value-objects/item-modifier.vo';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { randomUUID } from 'crypto';
 import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
-import { ItemProps } from './item-props';
+import { ItemCreationProps, ItemProps } from './item-props';
 import { ValidationError } from 'src/modules/shared/domain/errors/errors';
 import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-aggregate';
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
     id: string,
-    public name: string | null,
+    public name: string,
     public realmId: string | null,
     public category: ItemCategory,
     public weapon: ItemWeapon | null,
@@ -31,7 +31,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     super(id);
   }
 
-  public static create(props: Omit<ItemProps, 'createdAt' | 'updatedAt'>): Item {
+  public static create(props: ItemCreationProps): Item {
     switch (props.category) {
       case 'weapon':
         if (!props.weapon) {
@@ -66,8 +66,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
         throw new ValidationError('Invalid item category');
     }
     const item = new Item(
-      props.id,
-      props.name ?? props.id,
+      randomUUID(),
+      props.name,
       props.realmId,
       props.category,
       props.weapon,
@@ -152,7 +152,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     }
   }
 
-  addModifier(type: ItemModifierType, modifier: string | undefined, value: number | undefined) {
+  addModifier(type: ItemModifierType, modifier: string | null, value: number | null) {
     const id = randomUUID();
     const newModifier = new ItemModifier(id, type, modifier, value);
     if (!this.modifiers) {

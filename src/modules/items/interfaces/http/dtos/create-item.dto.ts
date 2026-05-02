@@ -9,15 +9,9 @@ import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-c
 import { CreateItemCommand } from 'src/modules/items/application/cqrs/commands/create-item.command';
 
 export class CreateItemDto {
-  @ApiProperty({ description: 'Item identifier', example: 'dagger' })
+  @ApiProperty({ description: 'Item name', example: 'Dagger', required: true })
   @IsString()
-  @IsNotEmpty()
-  id: string;
-
-  @ApiProperty({ description: 'Item name', example: 'Dagger', required: false })
-  @IsString()
-  @IsOptional()
-  name: string | null;
+  name: string;
 
   @ApiProperty({ description: 'Realm identifier from core module', required: false, example: 'lotr' })
   @IsString()
@@ -27,26 +21,26 @@ export class CreateItemDto {
   @ApiProperty({ description: 'Item category', example: 'weapon' })
   @IsString()
   @IsNotEmpty()
-  category!: ItemCategory;
+  category: ItemCategory;
 
   @ApiProperty({ description: 'Weapon info if available' })
   @IsObject()
   @IsOptional()
-  weapon!: ItemWeaponDto | null;
+  weapon: ItemWeaponDto | null;
 
   @ApiProperty({ description: 'Armor info if available' })
   @IsObject()
   @IsOptional()
-  armor!: ItemArmorDto | null;
+  armor: ItemArmorDto | null;
 
   @ApiProperty({ description: 'Shield info if available' })
   @IsObject()
   @IsOptional()
-  shield!: ItemShieldDto | null;
+  shield: ItemShieldDto | null;
 
   @ApiProperty({ description: 'Generic item information' })
   @IsObject()
-  info!: ItemInfoDto;
+  info: ItemInfoDto;
 
   @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
   @IsOptional()
@@ -64,8 +58,7 @@ export class CreateItemDto {
 
   static toCommand(dto: CreateItemDto, userId: string, roles: string[]): CreateItemCommand {
     return new CreateItemCommand(
-      dto.id,
-      dto.name ?? dto.id,
+      dto.name,
       dto.realmId,
       dto.category,
       dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : null,
