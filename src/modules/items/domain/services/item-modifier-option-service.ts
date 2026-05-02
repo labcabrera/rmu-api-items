@@ -6,8 +6,10 @@ export class ItemModifierOptionService {
   getOptions(): ItemModifierOption[] {
     return [
       new ItemModifierOption('bonus', null, true, false, true),
+      new ItemModifierOption('damage', null, true, false, true),
       new ItemModifierOption('skill-bonus', '@skill', true, true, true),
       new ItemModifierOption('material', '@enumeration:material', false, true, false),
+      new ItemModifierOption('slayer', '@enumeration:animal-type|@creature', false, true, false),
     ];
   }
 }
