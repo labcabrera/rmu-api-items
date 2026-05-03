@@ -19,6 +19,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       throw new NotFoundError('Item', command.id);
     }
     item.update({
+      name: command.name,
       weapon: command.weapon,
       armor: command.armor,
       shield: command.shield,

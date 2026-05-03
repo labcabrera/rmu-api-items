@@ -7,7 +7,7 @@ import { ItemModifier } from '../value-objects/item-modifier.vo';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { randomUUID } from 'crypto';
 import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
-import { ItemCreationProps, ItemProps } from './item-props';
+import { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props';
 import { ValidationError } from 'src/modules/shared/domain/errors/errors';
 import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-aggregate';
 
@@ -108,9 +108,9 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     );
   }
 
-  update(props: Partial<Omit<ItemProps, 'id' | 'realmId' | 'createdAt' | 'owner'>>): void {
-    const { category, weapon, armor, shield, info, modifiers, description, imageUrl } = props;
-    if (category) this.category = category;
+  update(props: ItemUpdateProps): void {
+    const { name, weapon, armor, shield, info, modifiers, description, imageUrl } = props;
+    if (name) this.name = name;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
     if (shield) this.shield = shield;

@@ -24,4 +24,4 @@ export interface ItemProps {
 
 export type ItemCreationProps = Omit<ItemProps, 'id' | 'createdAt' | 'updatedAt'>;
 
-export type ItemUpdateProps = Partial<Omit<ItemProps, 'id' | 'createdAt' | 'updatedAt'>>;
+export type ItemUpdateProps = Partial<Omit<ItemProps, 'id' | 'realmId' | 'category' | 'createdAt' | 'updatedAt'>>;

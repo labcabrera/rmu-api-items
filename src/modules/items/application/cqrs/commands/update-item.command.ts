@@ -7,6 +7,7 @@ import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifi
 export class UpdateItemCommand {
   constructor(
     public readonly id: string,
+    public readonly name: string | undefined,
     public readonly weapon: ItemWeapon | undefined,
     public readonly armor: ItemArmor | undefined,
     public readonly shield: ItemShield | undefined,

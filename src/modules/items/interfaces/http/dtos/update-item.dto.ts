@@ -8,6 +8,11 @@ import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.v
 import { ItemModifierDto } from './item-modifier.dto';
 
 export class UpdateItemDto {
+  @ApiProperty({ description: 'Item name', required: false })
+  @IsOptional()
+  @IsString()
+  name: string | undefined;
+
   @ApiProperty({ description: 'Item weapon', required: false })
   @IsOptional()
   @IsObject()
@@ -45,11 +50,11 @@ export class UpdateItemDto {
   static toCommand(itemId: string, dto: UpdateItemDto, userId: string, roles: string[]): UpdateItemCommand {
     return new UpdateItemCommand(
       itemId,
+      dto.name,
       dto.weapon,
       dto.armor,
       dto.shield,
       dto.info,
-
       dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,
