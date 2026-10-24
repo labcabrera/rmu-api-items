@@ -50,6 +50,7 @@ describe('item modifiers', () => {
     expect(item.modifiers).toHaveLength(1);
     expect(item.modifiers![0]).toMatchObject({ type: 'bonus', value: 10 });
     modifierId = item.modifiers![0].id;
+    expect((response.body as { version: number }).version).toBe(1);
     expect(modifierId).toMatch(/^[0-9a-f-]{36}$/);
     const topics = e2e.events.filter(event => event.message.data.id === 'e2e-magic-armor').map(event => event.topic);
     expect(topics).toEqual(['internal.rmu-items.item.created.v1', 'internal.rmu-items.item.updated.v1']);

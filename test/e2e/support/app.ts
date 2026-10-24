@@ -62,6 +62,8 @@ export async function startApp(env: Record<string, string> = {}): Promise<E2eApp
     RMU_KAFKA_BROKERS: 'localhost:9092',
     RMU_KAFKA_CLIENT_ID: 'rmu-api-items-e2e',
     RMU_KAFKA_CONSUMER_GROUP_ID: 'rmu-api-items-e2e',
+    RMU_THROTTLE_LIMIT: '0',
+    RMU_CORS_ORIGINS: '',
     ...env,
   });
 

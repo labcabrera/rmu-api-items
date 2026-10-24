@@ -17,7 +17,7 @@ import { UpdateItemCommand } from '../../application/cqrs/commands/update-item.c
 import { AddItemModifierDto } from './dto/add-item-modifier.dto.js';
 import { AddItemModifierCommand } from '../../application/cqrs/commands/add-item-modifier.command.js';
 import { DeleteItemModifierCommand } from '../../application/cqrs/commands/delete-item-modifier.command.js';
-import { PagedQueryDto } from '../../../shared/interfaces/http/dto/paged-rsql-query.js';
+import { CatalogPagedQueryDto } from '../../../shared/interfaces/http/dto/paged-rsql-query.js';
 import { Page } from '../../../shared/application/pagination/page.js';
 
 @UseGuards(JwtAuthGuard)
@@ -43,7 +43,8 @@ export class ItemController {
   @ApiOperation({ operationId: 'findItems', summary: 'Find items by RSQL' })
   @ApiOkResponse({ type: ItemPageDto })
   @ApiErrors({ 400: 'Invalid RSQL query' })
-  async find(@Query() dto: PagedQueryDto, @CurrentUser() user: AuthenticatedUser) {
+  // Up to 1000: the item selector of rmu-mfe-strategic asks for pages of 250 (spec 020, decision 7).
+  async find(@Query() dto: CatalogPagedQueryDto, @CurrentUser() user: AuthenticatedUser) {
     const query = new GetItemsQuery(dto.q, dto.page, dto.size, user.id, user.roles);
     const page = await this.queryBus.execute<GetItemsQuery, Page<Item>>(query);
     const mapped = page.content.map(game => ItemDto.fromEntity(game));

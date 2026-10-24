@@ -13,6 +13,10 @@ export class ItemModel {
   @Prop({ required: true })
   _id: string;
 
+  /** Optimistic concurrency: +1 on each write. Documents stored before it existed have none (version 0). */
+  @Prop({ type: Number, default: 0 })
+  version: number;
+
   @Prop({ type: String, required: true })
   name: string;
 

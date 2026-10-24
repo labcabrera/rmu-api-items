@@ -18,6 +18,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
     if (!item) {
       throw new NotFoundError('Item', command.id);
     }
+    item.checkVersion(command.expectedVersion);
     item.update({
       name: command.name,
       weapon: command.weapon,
@@ -28,7 +29,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       description: command.description,
       imageUrl: command.imageUrl,
     });
-    const updated = await this.itemRepository.update(command.id, item);
+    const updated = await this.itemRepository.update(item);
     // F-items-03: `updated` is the copy read back from Mongo, without the aggregate's events, so nothing is published.
     await this.eventPublisher.publishChanges('item', updated);
     return updated;

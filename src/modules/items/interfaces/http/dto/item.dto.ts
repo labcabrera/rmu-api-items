@@ -45,9 +45,13 @@ export class ItemDto {
   @ApiProperty({ description: 'Owner of the item', example: 'user123' })
   owner: string;
 
+  @ApiProperty({ description: 'Version of optimistic concurrency: send it back in the PATCH to detect a concurrent change', example: 0 })
+  version: number;
+
   static fromEntity(entity: Item): ItemDto {
     const dto = new ItemDto();
     dto.id = entity.id;
+    dto.version = entity.version;
     dto.name = entity.name ? entity.name : entity.id;
     dto.realmId = entity.realmId ? entity.realmId : null;
     dto.category = entity.category;
