@@ -126,8 +126,8 @@ describe('create', () => {
 
     const events = eventsOf('e2e-long-dagger');
     expect(events.map(event => event.topic)).toEqual(['internal.rmu-items.item.created.v1']);
-    // F-items-07: the events of items say they come from rmu-api-core.
-    expect(events[0].message).toMatchObject({ eventType: 'created', producer: 'rmu-api-core', data: { name: 'E2E Long Dagger' } });
+    // F-items-07: the producer is the Kafka client id of the API.
+    expect(events[0].message).toMatchObject({ eventType: 'created', producer: 'rmu-api-items-e2e', data: { name: 'E2E Long Dagger' } });
   });
 
   it('creates an armor and a shield', async () => {
@@ -341,10 +341,17 @@ describe('update', () => {
     expect((await patch('owner', 'e2e-patch-sword', { version: 'one' })).status).toBe(400);
   });
 
-  it('answers 200 to a PATCH without changes', async () => {
-    const response = await patch('owner', 'e2e-patch-sword', {});
-    expect(response.status).toBe(200);
-    expect((response.body as ItemBody).description).toBe('Patched again');
+  // Spec 021, decision 9: a PATCH without changes neither writes (same version) nor publishes.
+  it('answers 200 to a PATCH without changes, without writing or publishing', async () => {
+    const before = (await get('owner', '/v1/items/e2e-patch-sword')).body as ItemBody & { version: number };
+    const eventsBefore = eventsOf('e2e-patch-sword').length;
+    const empty = await patch('owner', 'e2e-patch-sword', {});
+    expect(empty.status).toBe(200);
+    expect(empty.body).toMatchObject({ description: before.description, version: before.version });
+    const same = await patch('owner', 'e2e-patch-sword', { description: before.description, name: before.name });
+    expect(same.status).toBe(200);
+    expect((same.body as { version: number }).version).toBe(before.version);
+    expect(eventsOf('e2e-patch-sword').length).toBe(eventsBefore);
   });
 
   it('answers 404 to an unknown id', async () => {
