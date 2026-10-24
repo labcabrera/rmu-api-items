@@ -11,9 +11,9 @@ import { MongoBaseRepository } from '../../../shared/infrastructure/db/mongo.bas
 import { RsqlParser } from '../../../shared/infrastructure/db/rsql-parser.js';
 
 @Injectable()
-export class MongoItemRepository extends MongoBaseRepository<Item, ItemDocument> implements ItemRepository {
-  constructor(@InjectModel(ItemModel.name) gameModel: Model<ItemDocument>, rsqlParser: RsqlParser) {
-    super(gameModel, rsqlParser);
+export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> implements ItemRepository {
+  constructor(@InjectModel(ItemModel.name) itemModel: Model<ItemModel>, rsqlParser: RsqlParser) {
+    super(itemModel, rsqlParser);
   }
 
   protected mapToEntity(doc: ItemDocument): Item {

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsObject, IsOptional, IsString, Min } from 'class-validator';
 import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command.js';
 import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
 import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
@@ -47,6 +47,12 @@ export class UpdateItemDto {
   @IsOptional()
   imageUrl: string | undefined;
 
+  @ApiPropertyOptional({ description: 'Version the client read (from the GET); a different stored version is a 409', example: 3 })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  version?: number;
+
   static toCommand(itemId: string, dto: UpdateItemDto, userId: string, roles: string[]): UpdateItemCommand {
     return new UpdateItemCommand(
       itemId,
@@ -60,6 +66,7 @@ export class UpdateItemDto {
       dto.imageUrl,
       userId,
       roles,
+      dto.version,
     );
   }
 }

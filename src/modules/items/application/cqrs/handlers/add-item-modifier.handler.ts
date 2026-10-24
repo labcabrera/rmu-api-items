@@ -19,7 +19,7 @@ export class AddItemModifierHandler implements ICommandHandler<AddItemModifierCo
 
     item.addModifier(command.type, command.modifier ?? null, command.value ?? null);
 
-    const saved = await this.itemRepository.update(command.itemId, item);
+    const saved = await this.itemRepository.update(item);
     await this.eventPublisher.publishChanges('item', item);
     return saved;
   }

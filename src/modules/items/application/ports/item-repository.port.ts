@@ -1,16 +1,6 @@
 import { Item } from '../../domain/aggregates/item.aggregate.js';
-import { Page } from '../../../shared/application/pagination/page.js';
+import type { BaseRepository } from '../../../shared/application/ports/base-repository.port.js';
 
-export interface ItemRepository {
-  findById(id: string): Promise<Item | null>;
-
-  findByRsql(rsql: string | undefined, page: number, size: number): Promise<Page<Item>>;
-
-  save(Item: Item): Promise<Item>;
-
-  update(ItemId: string, Item: Partial<Item>): Promise<Item>;
-
-  deleteById(id: string): Promise<Item | null>;
-}
+export type ItemRepository = BaseRepository<Item>;
 
 export const ITEM_REPOSITORY = Symbol('ItemRepository');

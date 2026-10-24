@@ -178,24 +178,26 @@ describe('create', () => {
     expect(noInfo.status).toBe(400);
   });
 
-  // F-items-08: the id is the name in lower case with dashes, so a second item with the same name hits the unique
-  // _id and answers 500.
-  it('answers 500 to a second item with the same name', async () => {
+  // F-items-08: the id is the name in lower case with dashes, so a second item with the same name, from any user or
+  // realm, hits the unique _id. The repository of core turns it into a 409 (it was a 500).
+  it('answers 409 duplicate-key to a second item with the same name', async () => {
     expect((await create('owner', armor('E2E Twin Armor'))).status).toBe(201);
     const response = await create('other', armor('E2E Twin Armor'));
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(409);
+    expect(response.body).toMatchObject({ statusCode: 409, error: 'ConflictError', code: 'duplicate-key' });
   });
 
-  it.skip('answers 409 to a second item with the same name [F-items-08]', async () => {
-    const response = await create('other', armor('E2E Twin Armor'));
-    expect(response.status).toBe(409);
+  it.skip('creates a second item with the same name in another realm [F-items-08]', async () => {
+    const response = await create('other', { ...armor('E2E Twin Armor'), realmId: 'e2e-realm' });
+    expect(response.status).toBe(201);
   });
 
   // F-items-09: the nested objects (weapon, armor, shield, info) are not validated, so a weapon without modes fails
   // while it is mapped and answers 500.
-  it('answers 500 to a weapon without modes', async () => {
+  it('answers 500 to a weapon without modes, without the details', async () => {
     const response = await create('owner', { name: 'E2E Modeless', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1 }, info });
     expect(response.status).toBe(500);
+    expect(response.body).toMatchObject({ code: 'internal-error', message: 'Internal server error' });
   });
 
   // F-items-09: the same for an armor without its penalties, which the Mongo schema requires.
@@ -218,10 +220,17 @@ describe('read', () => {
     expect((response.body as ItemBody).name).toBe('E2E Tower Shield');
   });
 
-  it('answers 404 to an unknown id', async () => {
+  it('answers 404 to an unknown id, in the common error format', async () => {
     const response = await get('owner', '/v1/items/missing-item');
     expect(response.status).toBe(404);
-    expect(response.body).toMatchObject({ error: 'NotFoundError', message: 'Item missing-item not found' });
+    expect(response.body).toMatchObject({
+      statusCode: 404,
+      error: 'NotFoundError',
+      code: 'not-found',
+      message: 'Item missing-item not found',
+      path: '/v1/items/missing-item',
+    });
+    expect(typeof (response.body as { timestamp: string }).timestamp).toBe('string');
   });
 });
 
@@ -268,10 +277,12 @@ describe('list', () => {
     expect((await get('owner', '/v1/items?size=0')).status).toBe(400);
   });
 
-  // F-items-10: size has no maximum.
-  it('accepts any page size', async () => {
-    const response = await get('owner', '/v1/items?size=100000');
-    expect(response.status).toBe(200);
+  // The item selector of rmu-mfe-strategic asks for 250, so items is a catalog listing (decision 7).
+  it('accepts pages of up to 1000 items', async () => {
+    expect((await get('owner', '/v1/items?size=1000')).status).toBe(200);
+    const rejected = await get('owner', '/v1/items?size=1001');
+    expect(rejected.status).toBe(400);
+    expect((rejected.body as { code: string }).code).toBe('bad-request');
   });
 });
 
@@ -310,6 +321,24 @@ describe('update', () => {
   it.skip('publishes item.updated [F-items-03]', async () => {
     await patch('owner', 'e2e-patch-sword', { description: 'Patched once more' });
     expect(eventsOf('e2e-patch-sword').at(-1)?.topic).toBe('internal.rmu-items.item.updated.v1');
+  });
+
+  it('counts the writes in the version and rejects a change made on a stale version', async () => {
+    const created = (await create('owner', weapon('E2E Versioned Sword'))).body as ItemBody & { version: number };
+    expect(created.version).toBe(0);
+    const first = await patch('owner', created.id, { description: 'First', version: 0 });
+    expect(first.status).toBe(200);
+    expect((first.body as { version: number }).version).toBe(1);
+    const stale = await patch('owner', created.id, { description: 'Stale', version: 0 });
+    expect(stale.status).toBe(409);
+    expect((stale.body as { code: string }).code).toBe('version-conflict');
+    const withoutVersion = await patch('owner', created.id, { description: 'Latest' });
+    expect(withoutVersion.body).toMatchObject({ version: 2, description: 'Latest' });
+  });
+
+  it('rejects a version that is not a non-negative integer', async () => {
+    expect((await patch('owner', 'e2e-patch-sword', { version: -1 })).status).toBe(400);
+    expect((await patch('owner', 'e2e-patch-sword', { version: 'one' })).status).toBe(400);
   });
 
   it('answers 200 to a PATCH without changes', async () => {
