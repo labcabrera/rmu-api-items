@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObject, IsOptional, IsString } from 'class-validator';
-import { UpdateItemCommand } from 'src/modules/items/application/cqrs/commands/update-item.command';
-import { ItemArmor } from 'src/modules/items/domain/value-objects/item-armor.vo';
-import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
-import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.vo';
-import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command';
+import { ItemArmor } from '../../../domain/value-objects/item-armor.vo';
+import { ItemInfo } from '../../../domain/value-objects/item-info.vo';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo';
+import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo';
 import { ItemModifierDto } from './item-modifier.dto';
 
 export class UpdateItemDto {
-  @ApiProperty({ description: 'Item name', required: false })
+  @ApiProperty({ type: String, description: 'Item name', required: false })
   @IsOptional()
   @IsString()
   name: string | undefined;
@@ -37,12 +37,12 @@ export class UpdateItemDto {
   @IsOptional()
   modifiers: ItemModifierDto[] | undefined;
 
-  @ApiProperty({ description: 'Item description', example: 'Some description.' })
+  @ApiProperty({ type: String, description: 'Item description', example: 'Some description.' })
   @IsString()
   @IsOptional()
   description: string | undefined;
 
-  @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
+  @ApiProperty({ type: String, description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
   @IsString()
   @IsOptional()
   imageUrl: string | undefined;

@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 import { ItemArmor, ItemShield } from './item-childs.model';
-import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
+import type { ItemCategory } from '../../../domain/value-objects/item-category.vo';
 import { ItemWeapon } from './item-weapon.model';
-import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
+import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo';
 import { ItemInfo } from './item-info.model';
 
-export type ItemDocument = ItemModel & Document;
+export type ItemDocument = HydratedDocument<ItemModel>;
 
 @Schema({ collection: 'items', versionKey: false })
 export class ItemModel {
@@ -19,7 +19,7 @@ export class ItemModel {
   @Prop({ type: String, required: false })
   realmId: string | null;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   category: ItemCategory;
 
   @Prop({ type: ItemWeapon, required: false })

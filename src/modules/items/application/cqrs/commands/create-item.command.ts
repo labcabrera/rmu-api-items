@@ -1,9 +1,9 @@
-import { ItemArmor } from 'src/modules/items/domain/value-objects/item-armor.vo';
-import { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
-import { ItemInfo } from 'src/modules/items/domain/value-objects/item-info.vo';
-import { ItemShield } from 'src/modules/items/domain/value-objects/item-shield.vo';
-import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
-import { ItemModifier } from 'src/modules/items/domain/value-objects/item-modifier.vo';
+import { ItemArmor } from '../../../domain/value-objects/item-armor.vo';
+import { ItemCategory } from '../../../domain/value-objects/item-category.vo';
+import { ItemInfo } from '../../../domain/value-objects/item-info.vo';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo';
+import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo';
+import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo';
 
 export class CreateItemCommand {
   public constructor(

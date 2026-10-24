@@ -5,20 +5,20 @@ import { ItemInfoDto } from './item-info.dto';
 import { ItemShieldDto } from './item-shield.dto';
 import { ItemWeaponDto } from './item-weapon.dto';
 import { ItemModifierDto } from './item-modifier.dto';
-import type { ItemCategory } from 'src/modules/items/domain/value-objects/item-category.vo';
-import { CreateItemCommand } from 'src/modules/items/application/cqrs/commands/create-item.command';
+import type { ItemCategory } from '../../../domain/value-objects/item-category.vo';
+import { CreateItemCommand } from '../../../application/cqrs/commands/create-item.command';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'Item name', example: 'Dagger', required: true })
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Realm identifier from core module', required: false, example: 'lotr' })
+  @ApiProperty({ type: String, description: 'Realm identifier from core module', required: false, example: 'lotr' })
   @IsString()
   @IsOptional()
   realmId: string | null;
 
-  @ApiProperty({ description: 'Item category', example: 'weapon' })
+  @ApiProperty({ type: String, description: 'Item category', example: 'weapon' })
   @IsString()
   @IsNotEmpty()
   category: ItemCategory;
@@ -46,12 +46,12 @@ export class CreateItemDto {
   @IsOptional()
   modifiers: ItemModifierDto[] | null;
 
-  @ApiProperty({ description: 'Item description', example: 'Some item description' })
+  @ApiProperty({ type: String, description: 'Item description', example: 'Some item description' })
   @IsString()
   @IsOptional()
   description: string | null;
 
-  @ApiProperty({ description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
+  @ApiProperty({ type: String, description: 'Image URL for the item', example: 'https://example.com/image.png', required: false })
   @IsString()
   @IsOptional()
   imageUrl: string | null;
