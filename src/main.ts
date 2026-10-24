@@ -1,103 +1,32 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { Request, Response } from 'express';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { DomainExceptionFilter } from './modules/shared/interfaces/http/domain-exception.filter';
-
-function configureOpenApi(app: INestApplication<any>) {
-  const openApiConfig = new DocumentBuilder()
-    .setTitle('Items API')
-    .setDescription('Rolemaster Unified Items API.')
-    .setVersion('1.0')
-    .addOAuth2(
-      {
-        type: 'oauth2',
-        flows: {
-          authorizationCode: {
-            authorizationUrl: 'http://localhost/sso/realms/rmu/protocol/openid-connect/auth',
-            tokenUrl: 'http://localhost/sso/realms/rmu/protocol/openid-connect/token',
-            scopes: {
-              read: 'Read',
-              write: 'Write',
-            },
-          },
-        },
-      },
-      'oauth2',
-    )
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'access-token',
-    )
-    .addServer('http://localhost:3006', 'Local development server')
-    .build();
-  const document = SwaggerModule.createDocument(app, openApiConfig);
-  SwaggerModule.setup('api-docs', app, document, {
-    swaggerOptions: {
-      urls: [
-        {
-          url: '/api-spec',
-          name: 'OpenAPI Specification',
-        },
-      ],
-    },
-  });
-
-  // Apply security schema to all paths. The health exclusion compared against '/health', which never matched
-  // '/v1/health' (F-items-02), so every path has always carried it.
-  for (const methods of Object.values(document.paths) as Record<string, object>[]) {
-    for (const method of Object.keys(methods)) {
-      methods[method] = { ...methods[method], security: [{ oauth2: [], 'access-token': [] }] };
-    }
-  }
-
-  app.use('/api-spec', (_req: Request, res: Response) => {
-    res.json(document);
-  });
-}
+import { NestFactory } from '@nestjs/core';
+import { type MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppModule } from './app.module';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+import { configureHttp } from './bootstrap/http';
+import { configureLogger } from './bootstrap/logger';
+import { configureOpenApi } from './bootstrap/openapi';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors();
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      whitelist: true,
-      forbidNonWhitelisted: false,
-    }),
-  );
-
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: configureLogger(process.env.LOG_LEVEL) });
+  const config = app.get(ConfigService);
+  configureHttp(app);
   configureOpenApi(app);
-
-  const clientId = app.get(ConfigService).get<string>('RMU_KAFKA_CLIENT_ID')!;
-  const brokers = app.get(ConfigService).get<string>('RMU_KAFKA_BROKERS')!.split(',');
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
-      client: {
-        clientId: clientId,
-        brokers: brokers,
-      },
+      client: { clientId: config.get<string>('RMU_KAFKA_CLIENT_ID'), brokers: config.get<string>('RMU_KAFKA_BROKERS')!.split(',') },
       // Without it Nest falls back to a group shared with every API that also leaves it unset.
-      consumer: { groupId: app.get(ConfigService).get<string>('RMU_KAFKA_CONSUMER_GROUP_ID')! },
+      consumer: { groupId: config.get<string>('RMU_KAFKA_CONSUMER_GROUP_ID')! },
     },
   });
-
-  app.useGlobalFilters(new DomainExceptionFilter());
-  await app.listen(app.get(ConfigService).get<string>('PORT') || 3006);
+  await app.listen(config.get<number>('PORT')!);
   await app.startAllMicroservices();
 }
 
-void bootstrap();
+// A failed start (Mongo, Kafka, a port in use) ends the process, so the container restarts instead of hanging.
+bootstrap().catch((error: unknown) => {
+  new Logger('Bootstrap').fatal(error instanceof Error ? (error.stack ?? error.message) : String(error));
+  process.exit(1);
+});

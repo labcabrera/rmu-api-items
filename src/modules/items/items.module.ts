@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TerminusModule } from '@nestjs/terminus';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../shared/infrastructure/security/auth.module';
 import { SharedModule } from '../shared/shared.module';
 import { GetItemHandler } from './application/cqrs/handlers/get-item.handler';
 import { GetItemsHandler } from './application/cqrs/handlers/get-items.handler';
-import { KafkaItemEventBusAdapter } from './infrastructure/messaging/kafka.item-event-bus.adapter';
-import { ItemModel, ItemSchema } from './infrastructure/persistence/models/item-model';
+import { ItemModel, ItemSchema } from './infrastructure/persistence/models/item.model';
 import { ItemController } from './interfaces/http/item.controller';
 import { ItemModifierController } from './interfaces/http/item-modifier.controller';
 import { CreateItemHandler } from './application/cqrs/handlers/create-item.handler';
@@ -17,7 +16,9 @@ import { MongoItemRepository } from './infrastructure/db/mongo.item.repository';
 import { ApiRealmAdapter } from './infrastructure/api-clients/api.realm.adapter';
 import { AddItemModifierHandler } from './application/cqrs/handlers/add-item-modifier.handler';
 import { DeleteItemModifierHandler } from './application/cqrs/handlers/delete-item-modifier.handler';
-import { ItemModifierOptionService } from './domain/services/item-modifier-option-service';
+import { ItemModifierOptionService } from './domain/services/item-modifier-option.service';
+import { ITEM_REPOSITORY } from './application/ports/item-repository.port';
+import { REALM_PORT } from './application/ports/realm.port';
 
 @Module({
   imports: [
@@ -38,18 +39,14 @@ import { ItemModifierOptionService } from './domain/services/item-modifier-optio
     AddItemModifierHandler,
     DeleteItemModifierHandler,
     {
-      provide: 'ItemRepository',
+      provide: ITEM_REPOSITORY,
       useClass: MongoItemRepository,
     },
     {
-      provide: 'ItemEventProducer',
-      useClass: KafkaItemEventBusAdapter,
-    },
-    {
-      provide: 'RealmPort',
+      provide: REALM_PORT,
       useClass: ApiRealmAdapter,
     },
   ],
-  exports: ['ItemRepository'],
+  exports: [ITEM_REPOSITORY],
 })
 export class ItemsModule {}

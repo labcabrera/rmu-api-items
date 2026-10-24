@@ -1,5 +1,5 @@
 import { Item } from '../../domain/aggregates/item.aggregate';
-import { Page } from '../../../shared/domain/entities/page';
+import { Page } from '../../../shared/application/pagination/page';
 
 export interface ItemRepository {
   findById(id: string): Promise<Item | null>;
@@ -12,3 +12,5 @@ export interface ItemRepository {
 
   deleteById(id: string): Promise<Item | null>;
 }
+
+export const ITEM_REPOSITORY = Symbol('ItemRepository');

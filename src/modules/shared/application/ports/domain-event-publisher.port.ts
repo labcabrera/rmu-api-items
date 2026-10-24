@@ -1,0 +1,15 @@
+import type { BaseAggregateRoot } from '../../domain/aggregates/base-aggregate';
+import type { DomainEvent } from '../../domain/events/domain-event';
+
+export const DOMAIN_EVENT_PUBLISHER = Symbol('DomainEventPublisher');
+
+/**
+ * Publishes domain events to `internal.rmu-items.<aggregateType>.<eventType>.v1`. Publishing happens after
+ * the change is saved, so a failure is logged and never thrown: the caller's request still succeeds.
+ */
+export interface DomainEventPublisher {
+  publish(aggregateType: string, ...events: DomainEvent<unknown>[]): Promise<void>;
+
+  /** Publishes the aggregate's uncommitted events and clears them. */
+  publishChanges(aggregateType: string, aggregate: BaseAggregateRoot<unknown>): Promise<void>;
+}
