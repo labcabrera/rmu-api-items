@@ -71,8 +71,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       default:
         throw new ValidationError('Invalid item category');
     }
-    //TODO review
-    // const id = props.info.unique ? randomUUID() : props.name.toLowerCase().replace(/\s+/g, '-');
+    // The id is the name in lower case with dashes, unique across users and realms: a second item with the same name
+    // is a 409 duplicate-key. Strategic and tactical store these ids, so they do not change (spec 021, decision 5).
     const id = props.name.toLowerCase().replace(/\s+/g, '-');
     const item = new Item(
       id,
