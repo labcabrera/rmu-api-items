@@ -172,8 +172,9 @@ describe('create', () => {
     expect(noInfo.status).toBe(400);
   });
 
-  // F-items-08: the id is the name in lower case with dashes, so a second item with the same name, from any user or
-  // realm, hits the unique _id. The repository of core turns it into a 409 (it was a 500).
+  // The id is the name in lower case with dashes, so a second item with the same name, from any user or realm, hits
+  // the unique _id: a 409. Strategic and tactical store these ids, so they stay (spec 021, decision 5: F-items-08
+  // descartado).
   it('answers 409 duplicate-key to a second item with the same name', async () => {
     expect((await create('owner', armor('E2E Twin Armor'))).status).toBe(201);
     const response = await create('other', armor('E2E Twin Armor'));
@@ -181,9 +182,10 @@ describe('create', () => {
     expect(response.body).toMatchObject({ statusCode: 409, error: 'ConflictError', code: 'duplicate-key' });
   });
 
-  it.skip('creates a second item with the same name in another realm [F-items-08]', async () => {
+  it('answers 409 duplicate-key to the same name in another realm [F-items-08]', async () => {
     const response = await create('other', { ...armor('E2E Twin Armor'), realmId: 'e2e-realm' });
-    expect(response.status).toBe(201);
+    expect(response.status).toBe(409);
+    expect((response.body as { code: string }).code).toBe('duplicate-key');
   });
 
   // F-items-09: the nested objects (weapon, armor, shield, info) are not validated, so a weapon without modes fails
