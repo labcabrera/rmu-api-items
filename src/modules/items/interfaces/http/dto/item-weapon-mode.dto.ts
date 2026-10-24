@@ -1,20 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { ItemWeaponMode } from '../../../domain/value-objects/item-weapon-mode.vo.js';
-import type { WeaponMode } from '../../../domain/value-objects/weapon-mode.vo.js';
+import { WEAPON_MODES, type WeaponMode } from '../../../domain/value-objects/weapon-mode.vo.js';
 import { ItemWeaponRangeDto } from './item-weapon-range.dto.js';
-import type { AttackType } from '../../../domain/value-objects/attack-type.vo.js';
+import { ATTACK_TYPES, type AttackType } from '../../../domain/value-objects/attack-type.vo.js';
 import type { AttackTable } from '../../../domain/value-objects/attack-table.vo.js';
 import type { FumbleTable } from '../../../domain/value-objects/fumble-table.vo.js';
 
 export class ItemWeaponModeDto {
-  @ApiProperty({ type: String, description: 'Weapon mode type', example: 'one-hand' })
-  @IsString()
-  @IsNotEmpty()
+  @ApiProperty({ type: String, enum: WEAPON_MODES, description: 'Weapon mode type', example: 'one-hand' })
+  @IsIn(WEAPON_MODES)
   type: WeaponMode;
 
-  @ApiProperty({ description: 'Attack types', required: true })
+  @ApiProperty({ description: 'Attack types', required: true, type: String, enum: ATTACK_TYPES, isArray: true, example: ['melee'] })
   @IsArray()
+  @IsIn(ATTACK_TYPES, { each: true })
   attackTypes: AttackType[];
 
   @ApiProperty({ type: String, description: 'Attack table', example: 'dagger' })
@@ -32,9 +33,11 @@ export class ItemWeaponModeDto {
   @IsNotEmpty()
   sizeAdjustment: number;
 
-  @ApiProperty({ description: 'Weapon ranges', required: false })
+  @ApiProperty({ description: 'Weapon ranges', required: false, type: [ItemWeaponRangeDto] })
   @IsOptional()
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ItemWeaponRangeDto)
   ranges: ItemWeaponRangeDto[] | undefined;
 
   @ApiProperty({ type: String, description: 'Alternative attack table', example: 'dagger', required: false })

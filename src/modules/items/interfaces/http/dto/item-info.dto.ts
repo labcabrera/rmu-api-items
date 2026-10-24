@@ -1,11 +1,45 @@
-import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn, ValidateNested } from 'class-validator';
 import type { ItemCost } from '../../../domain/value-objects/item-cost.vo.js';
 import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
-import type { ItemRarity } from '../../../domain/value-objects/item-rarity.vo.js';
+import { ITEM_RARITIES, type ItemRarity } from '../../../domain/value-objects/item-rarity.vo.js';
+
+/**
+ * The cost range. Each bound is optional: the item form of rmu-mfe-items sends the bounds the user filled in (spec 021,
+ * decision 6).
+ */
+export class ItemCostDto {
+  @ApiProperty({ type: Number, required: false, example: 1 })
+  @IsOptional()
+  @IsNumber()
+  min: number;
+
+  @ApiProperty({ type: Number, required: false, example: 2 })
+  @IsOptional()
+  @IsNumber()
+  average: number;
+
+  @ApiProperty({ type: Number, required: false, example: 3 })
+  @IsOptional()
+  @IsNumber()
+  max: number;
+
+  static toEntity(dto: ItemCostDto): ItemCost {
+    return {
+      min: dto.min,
+      average: dto.average,
+      max: dto.max,
+    };
+  }
+}
 
 export class ItemInfoDto {
+  @ApiProperty({ type: ItemCostDto, required: false })
   @IsOptional()
   @IsObject()
+  @ValidateNested()
+  @Type(() => ItemCostDto)
   cost: ItemCostDto | null;
 
   @IsOptional()
@@ -24,15 +58,16 @@ export class ItemInfoDto {
   @IsNumber()
   productionHours: number | null;
 
-  @IsOptional()
+  // stackable, rarity and unique are required by the stored item: without them the write failed with a 500.
+  @ApiProperty({ type: Boolean, example: false })
   @IsBoolean()
   stackable: boolean;
 
-  @IsOptional()
-  @IsIn(['common', 'uncommon', 'rare', 'very-rare'])
+  @ApiProperty({ type: String, enum: ITEM_RARITIES, example: 'common' })
+  @IsIn(ITEM_RARITIES)
   rarity: ItemRarity;
 
-  @IsOptional()
+  @ApiProperty({ type: Boolean, example: false })
   @IsBoolean()
   unique: boolean;
 
@@ -59,25 +94,6 @@ export class ItemInfoDto {
       stackable: dto.stackable,
       rarity: dto.rarity,
       unique: dto.unique,
-    };
-  }
-}
-
-export class ItemCostDto {
-  @IsNumber()
-  min: number;
-
-  @IsNumber()
-  average: number;
-
-  @IsNumber()
-  max: number;
-
-  static toEntity(dto: ItemCostDto): ItemCost {
-    return {
-      min: dto.min,
-      average: dto.average,
-      max: dto.max,
     };
   }
 }

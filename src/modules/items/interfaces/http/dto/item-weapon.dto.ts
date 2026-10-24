@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo.js';
 import { ItemWeaponModeDto } from './item-weapon-mode.dto.js';
 
@@ -14,6 +15,10 @@ export class ItemWeaponDto {
   @IsNotEmpty()
   fumble: number;
 
+  @ApiProperty({ description: 'Attack modes (at least one)', type: [ItemWeaponModeDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ItemWeaponModeDto)
   modes: ItemWeaponModeDto[];
 
   static fromEntity(entity: ItemWeapon): ItemWeaponDto {

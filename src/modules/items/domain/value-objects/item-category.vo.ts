@@ -1,1 +1,3 @@
-export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'clothes' | 'coins' | 'tools' | 'food' | 'ammunition' | 'other';
+export const ITEM_CATEGORIES = ['weapon', 'armor', 'shield', 'clothes', 'coins', 'tools', 'food', 'ammunition', 'other'] as const;
+
+export type ItemCategory = (typeof ITEM_CATEGORIES)[number];

@@ -7,6 +7,7 @@ import { ItemModifier } from '../value-objects/item-modifier.vo.js';
 import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events.js';
 import { randomUUID } from 'crypto';
 import type { ItemModifierType } from '../value-objects/item-modifier-type.vo.js';
+import { checkItemModifier } from '../value-objects/item-modifier-option.vo.js';
 import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props.js';
 import { ValidationError } from '../../../shared/domain/errors/errors.js';
 import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
@@ -37,29 +38,37 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     return 'public';
   }
 
-  public static create(props: ItemCreationProps): Item {
-    switch (props.category) {
+  /**
+   * The category data an item may have: a weapon, an armor or a shield needs its own data and no other. The same rules
+   * apply to the creation and to every update (F-items-13).
+   */
+  public static checkCategoryData(
+    category: ItemCategory,
+    data: { weapon?: ItemWeapon | null; armor?: ItemArmor | null; shield?: ItemShield | null },
+  ): void {
+    const { weapon, armor, shield } = data;
+    switch (category) {
       case 'weapon':
-        if (!props.weapon) {
-          throw new ValidationError('Weapon is required for weapon items');
-        }
-        if (!props.weapon.modes || props.weapon.modes.length === 0) {
+        if (!weapon) throw new ValidationError('Required weapon info');
+        if (armor) throw new ValidationError('Armor info not allowed');
+        if (shield) throw new ValidationError('Shield info not allowed');
+        if (!weapon.modes || weapon.modes.length === 0) {
           throw new ValidationError('At least one weapon mode is required for weapon items');
         }
-        props.weapon.modes.forEach(mode => {
+        weapon.modes.forEach(mode => {
           if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
           if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
         });
         break;
       case 'armor':
-        if (!props.armor) {
-          throw new ValidationError('Armor is required for armor items');
-        }
+        if (!armor) throw new ValidationError('Required armor info');
+        if (weapon) throw new ValidationError('Weapon info not allowed');
+        if (shield) throw new ValidationError('Shield info not allowed');
         break;
       case 'shield':
-        if (!props.shield) {
-          throw new ValidationError('Shield is required for shield items');
-        }
+        if (!shield) throw new ValidationError('Required shield info');
+        if (weapon) throw new ValidationError('Weapon info not allowed');
+        if (armor) throw new ValidationError('Armor info not allowed');
         break;
       case 'clothes':
       case 'ammunition':
@@ -67,10 +76,17 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'coins':
       case 'food':
       case 'tools':
+        if (weapon) throw new ValidationError('Weapon info not allowed');
+        if (armor) throw new ValidationError('Armor info not allowed');
+        if (shield) throw new ValidationError('Shield info not allowed');
         break;
       default:
         throw new ValidationError('Invalid item category');
     }
+  }
+
+  public static create(props: ItemCreationProps): Item {
+    Item.checkCategoryData(props.category, props);
     // The id is the name in lower case with dashes, unique across users and realms: a second item with the same name
     // is a 409 duplicate-key. Strategic and tactical store these ids, so they do not change (spec 021, decision 5).
     const id = props.name.toLowerCase().replace(/\s+/g, '-');
@@ -124,6 +140,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     if (modifiers !== undefined) this.modifiers = modifiers;
     if (description !== undefined) this.description = description;
     if (imageUrl !== undefined) this.imageUrl = imageUrl;
+    // Weapon, armor or shield data on an item of another category is a 400, as in the creation (F-items-13).
+    Item.checkCategoryData(this.category, this);
     this.validate();
     this.updatedAt = new Date();
     this.apply(new ItemUpdatedEvent(this.getProps()));
@@ -162,6 +180,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   }
 
   addModifier(type: ItemModifierType, modifier: string | null, value: number | null) {
+    checkItemModifier(type, modifier, value);
     const id = randomUUID();
     const newModifier = new ItemModifier(id, type, modifier, value);
     if (!this.modifiers) {
