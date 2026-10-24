@@ -35,8 +35,8 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
     // A PATCH without changes neither writes nor publishes (spec 021, decision 9).
     if (!item.hasChanges()) return item;
     const updated = await this.itemRepository.update(item);
-    // F-items-03: `updated` is the copy read back from Mongo, without the aggregate's events, so nothing is published.
-    await this.eventPublisher.publishChanges('item', updated);
+    // The events are those of the loaded aggregate: `updated` is the copy read back from Mongo (F-items-03).
+    await this.eventPublisher.publishChanges('item', item);
     return updated;
   }
 }

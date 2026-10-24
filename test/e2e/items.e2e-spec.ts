@@ -352,16 +352,13 @@ describe('update', () => {
     expect(response.body).toMatchObject({ id: 'e2e-patch-sword', name: 'E2E Renamed Sword' });
   });
 
-  // F-items-03: the handler publishes the events of the copy it reads back, which has none.
-  it('publishes no event', async () => {
+  it('publishes item.updated with the new state [F-items-03]', async () => {
     const before = eventsOf('e2e-patch-sword').length;
     await patch('owner', 'e2e-patch-sword', { description: 'Patched again' });
-    expect(eventsOf('e2e-patch-sword').length).toBe(before);
-  });
-
-  it.skip('publishes item.updated [F-items-03]', async () => {
-    await patch('owner', 'e2e-patch-sword', { description: 'Patched once more' });
-    expect(eventsOf('e2e-patch-sword').at(-1)?.topic).toBe('internal.rmu-items.item.updated.v1');
+    const events = eventsOf('e2e-patch-sword');
+    expect(events.length).toBe(before + 1);
+    expect(events.at(-1)?.topic).toBe('internal.rmu-items.item.updated.v1');
+    expect(events.at(-1)?.message).toMatchObject({ eventType: 'updated', data: { description: 'Patched again' } });
   });
 
   it('counts the writes in the version and rejects a change made on a stale version', async () => {
