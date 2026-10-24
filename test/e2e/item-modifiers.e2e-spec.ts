@@ -5,7 +5,7 @@ type Modifier = { id: string; type: string; modifier?: string; value?: number };
 type ItemBody = { id: string; category: string; weapon: unknown; armor: unknown; modifiers: Modifier[] | null };
 
 const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
-const armor = { slot: 'chest', at: 5, enc: 10, maneuverPenalty: -10, rangedPenalty: 0, perceptionPenalty: 0, baseDifficulty: 'm' };
+const armor = { slot: 'body', at: 5, enc: 10, maneuverPenalty: -10, rangedPenalty: 0, perceptionPenalty: 0, baseDifficulty: 'm' };
 
 let e2e: E2eApp;
 
@@ -62,17 +62,27 @@ describe('item modifiers', () => {
     expect((response.body as ItemBody).modifiers!.map(modifier => modifier.type)).toEqual(['bonus', 'slayer']);
   });
 
-  // F-items-11: neither the type nor the required and forbidden fields of the options are checked.
-  it('accepts an unknown modifier type and a value the option forbids', async () => {
-    const response = await addModifier('owner', 'e2e-magic-armor', { type: 'teleport', value: 3 });
-    expect(response.status).toBe(201);
-    const forbidden = await addModifier('owner', 'e2e-magic-armor', { type: 'material', value: 3 });
-    expect(forbidden.status).toBe(201);
-  });
-
-  it.skip('rejects an unknown modifier type [F-items-11]', async () => {
+  it('rejects an unknown modifier type [F-items-11]', async () => {
     const response = await addModifier('owner', 'e2e-magic-armor', { type: 'teleport', value: 3 });
     expect(response.status).toBe(400);
+  });
+
+  // F-items-11: the fields each option requires and forbids (GET /v1/item-modifiers/options).
+  it.each([
+    [{ type: 'material', value: 3, modifier: 'mithril' }, 'A material modifier does not allow a value'],
+    [{ type: 'material' }, 'A material modifier requires a modifier'],
+    [{ type: 'bonus' }, 'A bonus modifier requires a value'],
+    [{ type: 'bonus', value: 5, modifier: 'animals' }, 'A bonus modifier does not allow a modifier'],
+    [{ type: 'skill-bonus', value: 5 }, 'A skill-bonus modifier requires a modifier'],
+  ])('rejects a modifier its option does not allow: %j [F-items-11]', async (body, message) => {
+    const response = await addModifier('owner', 'e2e-magic-armor', body);
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ code: 'validation', message });
+  });
+
+  it('accepts a modifier as its option describes it', async () => {
+    const response = await addModifier('owner', 'e2e-magic-armor', { type: 'skill-bonus', value: 5, modifier: 'climbing' });
+    expect(response.status).toBe(201);
   });
 
   it('requires the type', async () => {
@@ -115,23 +125,56 @@ describe('update of the category data', () => {
     expect((await createArmor('E2E Plain Armor')).status).toBe(201);
   });
 
-  // F-items-13: PATCH sets weapon or shield info on an item of another category, which create rejects.
-  it('accepts weapon info on an armor', async () => {
-    const response = await request(e2e.server)
-      .patch('/v1/items/e2e-plain-armor')
-      .set('Authorization', auth('owner'))
-      .send({ weapon: { skillId: 'dagger', fumble: 2, modes: [] } });
-    expect(response.status).toBe(200);
-    const item = response.body as ItemBody;
-    expect(item.category).toBe('armor');
-    expect(item.weapon).toMatchObject({ skillId: 'dagger' });
+  const patch = (body: object) => request(e2e.server).patch('/v1/items/e2e-plain-armor').set('Authorization', auth('owner')).send(body);
+
+  // F-items-13: the PATCH applies the rules of the creation.
+  it('rejects weapon info on an armor [F-items-13]', async () => {
+    const response = await patch({ weapon: { skillId: 'dagger', fumble: 2, modes: [] } });
+    expect(response.status).toBe(400);
+    expect((response.body as { message: string }).message).toBe('Weapon info not allowed');
+    const read = await request(e2e.server).get('/v1/items/e2e-plain-armor').set('Authorization', auth('owner'));
+    expect((read.body as ItemBody).weapon).toBeNull();
   });
 
-  it.skip('rejects weapon info on an armor [F-items-13]', async () => {
-    const response = await request(e2e.server)
-      .patch('/v1/items/e2e-plain-armor')
+  it('validates the nested objects of the PATCH [F-items-09, F-items-13]', async () => {
+    expect((await patch({ armor: { ...armor, slot: 'tail' } })).status).toBe(400);
+    expect((await patch({ armor: { slot: 'body', at: 3 } })).status).toBe(400);
+    expect((await patch({ info: { ...info, rarity: 'legendary' } })).status).toBe(400);
+    expect((await patch({ modifiers: [{ id: 'm1', type: 'teleport' }] })).status).toBe(400);
+  });
+
+  it('accepts the whole item as rmu-mfe-items sends it, with null for the other categories', async () => {
+    const read = await request(e2e.server).get('/v1/items/e2e-plain-armor').set('Authorization', auth('owner'));
+    // The item form sends everything it read except the id.
+    const item: Record<string, unknown> = { ...(read.body as Record<string, unknown>) };
+    delete item.id;
+    const response = await patch({
+      ...item,
+      armor: { ...armor, at: 7 },
+      modifiers: [{ id: 'm1', type: 'bonus', value: 2, modifier: null, specialization: null }],
+    });
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      category: 'armor',
+      weapon: null,
+      shield: null,
+      armor: { at: 7 },
+      modifiers: [{ id: 'm1', type: 'bonus', value: 2 }],
+    });
+  });
+
+  it('requires a mode in the weapon of a weapon', async () => {
+    const mode = { type: 'one-hand', attackTypes: ['melee'], attackTable: 'dagger', fumbleTable: 'dagger', sizeAdjustment: 0 };
+    const created = await request(e2e.server)
+      .post('/v1/items')
       .set('Authorization', auth('owner'))
-      .send({ weapon: { skillId: 'dagger', fumble: 2, modes: [] } });
+      .send({ name: 'E2E Patched Knife', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1, modes: [mode] }, info });
+    expect(created.status).toBe(201);
+    const response = await request(e2e.server)
+      .patch('/v1/items/e2e-patched-knife')
+      .set('Authorization', auth('owner'))
+      .send({ weapon: { skillId: 'dagger', fumble: 1, modes: [] } });
     expect(response.status).toBe(400);
+    expect((response.body as { message: string }).message).toBe('At least one weapon mode is required for weapon items');
   });
 });

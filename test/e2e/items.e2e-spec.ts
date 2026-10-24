@@ -36,7 +36,7 @@ const weapon = (name: string, extra: Record<string, unknown> = {}) => ({
 const armor = (name: string) => ({
   name,
   category: 'armor',
-  armor: { slot: 'chest', at: 5, enc: 10, maneuverPenalty: -10, rangedPenalty: 0, perceptionPenalty: 0, baseDifficulty: 'm' },
+  armor: { slot: 'body', at: 5, enc: 10, maneuverPenalty: -10, rangedPenalty: 0, perceptionPenalty: 0, baseDifficulty: 'm' },
   info,
 });
 
@@ -127,7 +127,7 @@ describe('create', () => {
   it('creates an armor and a shield', async () => {
     const armorResponse = await create('owner', armor('E2E Chain Shirt'));
     expect(armorResponse.status).toBe(201);
-    expect((armorResponse.body as ItemBody).armor).toMatchObject({ slot: 'chest', at: 5 });
+    expect((armorResponse.body as ItemBody).armor).toMatchObject({ slot: 'body', at: 5 });
 
     const shieldResponse = await create('owner', shield('E2E Round Shield'));
     expect(shieldResponse.status).toBe(201);
@@ -188,23 +188,68 @@ describe('create', () => {
     expect((response.body as { code: string }).code).toBe('duplicate-key');
   });
 
-  // F-items-09: the nested objects (weapon, armor, shield, info) are not validated, so a weapon without modes fails
-  // while it is mapped and answers 500.
-  it('answers 500 to a weapon without modes, without the details', async () => {
-    const response = await create('owner', { name: 'E2E Modeless', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1 }, info });
-    expect(response.status).toBe(500);
-    expect(response.body).toMatchObject({ code: 'internal-error', message: 'Internal server error' });
-  });
-
-  // F-items-09: the same for an armor without its penalties, which the Mongo schema requires.
-  it('answers 500 to an armor without its penalties', async () => {
-    const response = await create('owner', { name: 'E2E Partial Armor', category: 'armor', armor: { slot: 'chest', at: 5 }, info });
-    expect(response.status).toBe(500);
-  });
-
-  it.skip('answers 400 to a weapon without modes [F-items-09]', async () => {
+  // F-items-09: the nested objects are validated, so invalid data is a 400 and never reaches the mapping or Mongo.
+  it('answers 400 to a weapon without modes [F-items-09]', async () => {
     const response = await create('owner', { name: 'E2E Modeless', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1 }, info });
     expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ code: 'bad-request', message: ['weapon.modes must be an array'] });
+  });
+
+  it('answers 400 to an armor without its penalties [F-items-09]', async () => {
+    const response = await create('owner', { name: 'E2E Partial Armor', category: 'armor', armor: { slot: 'body', at: 5 }, info });
+    expect(response.status).toBe(400);
+    expect((response.body as { message: string[] }).message).toContain(
+      'armor.maneuverPenalty must be a number conforming to the specified constraints',
+    );
+  });
+
+  it('answers 400 to invalid values inside the nested objects [F-items-09]', async () => {
+    const badMode = { type: 'three-hands', attackTypes: ['magic'], attackTable: 'dagger', fumbleTable: 'dagger', sizeAdjustment: 0 };
+    const cases: object[] = [
+      { name: 'E2E Bad Mode', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1, modes: [badMode] }, info },
+      { ...armor('E2E Bad Slot'), armor: { ...armor('x').armor, slot: 'chest', baseDifficulty: 'impossible' } },
+      { ...shield('E2E Bad Shield'), shield: { db: 'big', blockCount: 1 } },
+      { ...shield('E2E Bad Info'), info: { ...info, rarity: 'legendary' } },
+      { ...shield('E2E No Rarity'), info: { weight: 1, stackable: false, unique: false } },
+      { ...shield('E2E Bad Cost'), info: { ...info, cost: { min: 'one' } } },
+      {
+        ...shield('E2E Bad Range'),
+        category: 'weapon',
+        shield: null,
+        weapon: {
+          skillId: 'bow',
+          fumble: 1,
+          modes: [{ ...badMode, type: 'two-hands', attackTypes: ['ranged'], ranges: [{ from: 'near' }] }],
+        },
+      },
+      { ...shield('E2E Bad Modifier'), modifiers: [{ id: 'm1', type: 'teleport' }] },
+      { ...shield('E2E String Info'), info: 'cheap' },
+    ];
+    for (const body of cases) {
+      const response = await create('owner', body);
+      expect(response.status, JSON.stringify(body)).toBe(400);
+    }
+  });
+
+  it('accepts the cost bounds the item form sends, also a partial cost', async () => {
+    const response = await create('owner', { ...shield('E2E Partial Cost Shield'), info: { ...info, cost: { min: 5 } } });
+    expect(response.status).toBe(201);
+    expect((response.body as ItemBody).info.cost).toEqual({ min: 5 });
+  });
+
+  it('rejects data of another category on an item without category data', async () => {
+    const response = await create('owner', { ...shield('E2E Armed Rope'), category: 'tools' });
+    expect(response.status).toBe(400);
+    expect((response.body as { message: string }).message).toBe('Shield info not allowed');
+  });
+
+  // F-items-17: realmId goes in the URL of core, so it must be an id.
+  it('rejects a realmId that is not an id [F-items-17]', async () => {
+    for (const realmId of ['../users', 'a/b', 'x?y=1', '']) {
+      const response = await create('owner', weapon(`E2E Path Dagger ${realmId.length}`, { realmId }));
+      expect(response.status, realmId).toBe(400);
+    }
+    expect(e2e.realmLookups).not.toContain('../users');
   });
 });
 
@@ -244,7 +289,7 @@ describe('list', () => {
   });
 
   it('filters by nested fields, as the item selector does', async () => {
-    const response = await get('owner', '/v1/items?q=category==armor;armor.slot==chest;armor.at==5&size=250');
+    const response = await get('owner', '/v1/items?q=category==armor;armor.slot==body;armor.at==5&size=250');
     expect(response.status).toBe(200);
     expect(ids(response.body)).toContain('e2e-chain-shirt');
     expect((response.body as PageBody).content.every(item => item.category === 'armor')).toBe(true);

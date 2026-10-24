@@ -1,40 +1,58 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsObject, IsOptional, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command.js';
-import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
-import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
-import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
-import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo.js';
+import { ItemArmorDto } from './item-armor.dto.js';
+import { ItemInfoDto } from './item-info.dto.js';
 import { ItemModifierDto } from './item-modifier.dto.js';
+import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemWeaponDto } from './item-weapon.dto.js';
 
+/**
+ * A partial change: absent (or null) objects keep their stored value. The nested objects are validated as in the
+ * creation and replace the stored ones whole (F-items-09, F-items-13). rmu-mfe-items sends the whole item it read, with
+ * null for the data of the other categories.
+ */
 export class UpdateItemDto {
   @ApiProperty({ type: String, description: 'Item name', required: false })
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   name: string | undefined;
 
-  @ApiProperty({ description: 'Item weapon', required: false })
+  @ApiProperty({ type: ItemWeaponDto, description: 'Weapon info (weapons only)', required: false })
   @IsOptional()
   @IsObject()
-  weapon: ItemWeapon | undefined;
+  @ValidateNested()
+  @Type(() => ItemWeaponDto)
+  weapon: ItemWeaponDto | undefined;
 
-  @ApiProperty({ description: 'Item armor', required: false })
+  @ApiProperty({ type: ItemArmorDto, description: 'Armor info (armors only)', required: false })
   @IsOptional()
   @IsObject()
-  armor: ItemArmor | undefined;
+  @ValidateNested()
+  @Type(() => ItemArmorDto)
+  armor: ItemArmorDto | undefined;
 
-  @ApiProperty({ description: 'Item armor', required: false })
+  @ApiProperty({ type: ItemShieldDto, description: 'Item armor', required: false })
   @IsOptional()
   @IsObject()
-  shield: ItemShield | undefined;
+  @ValidateNested()
+  @Type(() => ItemShieldDto)
+  shield: ItemShieldDto | undefined;
 
-  @ApiProperty({ description: 'Item armor', required: false })
+  @ApiProperty({ type: ItemInfoDto, description: 'Item armor', required: false })
   @IsOptional()
   @IsObject()
-  info: ItemInfo | undefined;
+  @ValidateNested()
+  @Type(() => ItemInfoDto)
+  info: ItemInfoDto | undefined;
 
-  @ApiProperty({ description: 'Item modifiers', required: false, isArray: true, type: () => ItemModifierDto })
+  @ApiProperty({ description: 'Item modifiers', required: false, type: [ItemModifierDto] })
   @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ItemModifierDto)
   modifiers: ItemModifierDto[] | undefined;
 
   @ApiProperty({ type: String, description: 'Item description', example: 'Some description.' })
@@ -56,11 +74,11 @@ export class UpdateItemDto {
   static toCommand(itemId: string, dto: UpdateItemDto, userId: string, roles: string[]): UpdateItemCommand {
     return new UpdateItemCommand(
       itemId,
-      dto.name,
-      dto.weapon,
-      dto.armor,
-      dto.shield,
-      dto.info,
+      dto.name ?? undefined,
+      dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : undefined,
+      dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined,
+      dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined,
+      dto.info ? ItemInfoDto.toEntity(dto.info) : undefined,
       dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,
       dto.imageUrl,

@@ -19,7 +19,8 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
 
   async execute(command: CreateItemCommand): Promise<Item> {
     this.itemGuard.checkCreate(command.roles);
-    this.validate(command);
+    // Before asking core for the realm, so invalid data is a 400 without a call.
+    Item.checkCategoryData(command.category, command);
 
     // realmId is validated by checking existence; store only realmId on the item
     if (command.realmId) {
@@ -43,39 +44,5 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     const saved = await this.itemRepository.save(item);
     await this.eventPublisher.publishChanges('item', item);
     return saved;
-  }
-
-  validate(command: CreateItemCommand) {
-    switch (command.category) {
-      case 'weapon':
-        if (!command.weapon) {
-          throw new ValidationError('Required weapon info');
-        } else if (command.armor) {
-          throw new ValidationError('Armor info not allowed');
-        } else if (command.shield) {
-          throw new ValidationError('Armor info not allowed');
-        }
-        break;
-      case 'armor':
-        if (!command.armor) {
-          throw new ValidationError('Required armor info');
-        } else if (command.weapon) {
-          throw new ValidationError('Weapon info not allowed');
-        } else if (command.shield) {
-          throw new ValidationError('Weapon info not allowed');
-        }
-        break;
-      case 'shield':
-        if (!command.shield) {
-          throw new ValidationError('Required shield info');
-        } else if (command.weapon) {
-          throw new ValidationError('Weapon info not allowed');
-        } else if (command.armor) {
-          throw new ValidationError('Armor info not allowed');
-        }
-        break;
-      default:
-        break;
-    }
   }
 }

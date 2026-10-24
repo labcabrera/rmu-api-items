@@ -18,7 +18,8 @@ export class ApiRealmAdapter implements RealmPort {
    */
   async fetchRealmById(realmId: string): Promise<Realm | null> {
     const token = await this.tokenService.getToken();
-    const uri = `${this.configService.get<string>('RMU_API_CORE_URI')}/realms/${realmId}`;
+    // Encoded: the id never changes the path of core, which is called with the service token (F-items-17).
+    const uri = `${this.configService.get<string>('RMU_API_CORE_URI')}/realms/${encodeURIComponent(realmId)}`;
     try {
       return await this.httpClient.get<Realm>(uri, { token });
     } catch (err) {

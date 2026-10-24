@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
-import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
+import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ITEM_MODIFIER_TYPES, type ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
 import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
 
 export class ItemModifierDto {
@@ -8,8 +8,8 @@ export class ItemModifierDto {
   @IsString()
   id!: string;
 
-  @ApiProperty({ type: String, description: 'Modifier type', example: 'bonus' })
-  @IsString()
+  @ApiProperty({ type: String, enum: ITEM_MODIFIER_TYPES, description: 'Modifier type', example: 'bonus' })
+  @IsIn(ITEM_MODIFIER_TYPES)
   type!: ItemModifierType;
 
   @ApiProperty({ type: String, description: 'Modifier target', required: false })
