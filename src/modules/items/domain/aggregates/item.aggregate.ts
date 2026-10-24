@@ -8,8 +8,8 @@ import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
 import { randomUUID } from 'crypto';
 import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
 import { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props';
-import { ValidationError } from 'src/modules/shared/domain/errors/errors';
-import { BaseAggregateRoot } from 'src/modules/shared/domain/aggregates/base-aggregate';
+import { ValidationError } from '../../../shared/domain/errors/errors';
+import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate';
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(

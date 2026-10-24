@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ItemWeaponMode } from 'src/modules/items/domain/value-objects/item-weapon-mode.vo';
-import type { WeaponMode } from 'src/modules/items/domain/value-objects/weapon-mode.vo';
+import { ItemWeaponMode } from '../../../domain/value-objects/item-weapon-mode.vo';
+import type { WeaponMode } from '../../../domain/value-objects/weapon-mode.vo';
 import { ItemWeaponRangeDto } from './item-weapon-range.dto';
-import type { AttackType } from 'src/modules/items/domain/value-objects/attack-type.vo';
-import type { AttackTable } from 'src/modules/items/domain/value-objects/attack-table.vo';
-import type { FumbleTable } from 'src/modules/items/domain/value-objects/fumble-table.vo';
+import type { AttackType } from '../../../domain/value-objects/attack-type.vo';
+import type { AttackTable } from '../../../domain/value-objects/attack-table.vo';
+import type { FumbleTable } from '../../../domain/value-objects/fumble-table.vo';
 
 export class ItemWeaponModeDto {
-  @ApiProperty({ description: 'Weapon mode type', example: 'one-hand' })
+  @ApiProperty({ type: String, description: 'Weapon mode type', example: 'one-hand' })
   @IsString()
   @IsNotEmpty()
   type: WeaponMode;
@@ -17,12 +17,12 @@ export class ItemWeaponModeDto {
   @IsArray()
   attackTypes: AttackType[];
 
-  @ApiProperty({ description: 'Attack table', example: 'dagger' })
+  @ApiProperty({ type: String, description: 'Attack table', example: 'dagger' })
   @IsString()
   @IsNotEmpty()
   attackTable: AttackTable;
 
-  @ApiProperty({ description: 'Fumble table', example: 'dagger' })
+  @ApiProperty({ type: String, description: 'Fumble table', example: 'dagger' })
   @IsString()
   @IsNotEmpty()
   fumbleTable: FumbleTable;
@@ -37,7 +37,7 @@ export class ItemWeaponModeDto {
   @IsArray()
   ranges: ItemWeaponRangeDto[] | undefined;
 
-  @ApiProperty({ description: 'Alternative attack table', example: 'dagger', required: false })
+  @ApiProperty({ type: String, description: 'Alternative attack table', example: 'dagger', required: false })
   @IsOptional()
   @IsString()
   alternativeTable: AttackTable | undefined;

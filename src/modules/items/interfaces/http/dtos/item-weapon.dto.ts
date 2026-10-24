@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ItemWeapon } from 'src/modules/items/domain/value-objects/item-weapon.vo';
+import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo';
 import { ItemWeaponModeDto } from './item-weapon-mode.dto';
 
 export class ItemWeaponDto {
