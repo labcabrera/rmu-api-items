@@ -308,9 +308,10 @@ describe('list', () => {
     expect((response.body as PageBody).pagination).toMatchObject({ page: 0, size: 10 });
   });
 
-  it('rejects an invalid RSQL expression', async () => {
+  it('rejects an invalid RSQL expression, with the path without the query [F-receta-22]', async () => {
     const response = await get('owner', '/v1/items?q=name==');
     expect(response.status).toBe(400);
+    expect((response.body as { path: string }).path).toBe('/v1/items');
   });
 
   it('rejects a negative page and a size of 0', async () => {

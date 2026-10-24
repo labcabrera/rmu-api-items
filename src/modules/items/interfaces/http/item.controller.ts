@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../shared/infrastructure/security/jwt-auth.guard.js';
 import { ApiErrors } from '../../../shared/interfaces/http/api-errors.decorator.js';
 import type { AuthenticatedUser } from '../../../shared/interfaces/http/authenticated-request.js';
@@ -53,8 +53,14 @@ export class ItemController {
 
   @Post('')
   @ApiOperation({ operationId: 'createItem', summary: 'Create a new item' })
-  @ApiOkResponse({ type: ItemDto, description: 'Success' })
-  @ApiErrors({ 400: 'Bad request, invalid data' })
+  @ApiCreatedResponse({ type: ItemDto, description: 'Created' })
+  @ApiErrors({
+    400: 'Bad request, invalid data',
+    403: 'Without rmu-user or rmu-admin',
+    409: 'An item with the same name (id) already exists',
+    502: 'Core did not answer the realm check',
+    504: 'Core did not answer the realm check in time',
+  })
   async create(@Body() createItemDto: CreateItemDto, @CurrentUser() user: AuthenticatedUser) {
     const command = CreateItemDto.toCommand(createItemDto, user.id, user.roles);
     const game = await this.commandBus.execute<CreateItemCommand, Item>(command);
@@ -64,7 +70,12 @@ export class ItemController {
   @Patch(':id')
   @ApiOperation({ operationId: 'updateItem', summary: 'Update item by id' })
   @ApiOkResponse({ type: ItemDto, description: 'Success' })
-  @ApiErrors({ 404: 'Item not found', 400: 'Bad request, invalid data' })
+  @ApiErrors({
+    404: 'Item not found',
+    400: 'Bad request, invalid data',
+    403: 'Not the owner or an admin',
+    409: 'The item changed since the version sent',
+  })
   async updateItem(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto, @CurrentUser() user: AuthenticatedUser) {
     const command = UpdateItemDto.toCommand(id, updateItemDto, user.id, user.roles);
     const game = await this.commandBus.execute<UpdateItemCommand, Item>(command);
@@ -74,7 +85,8 @@ export class ItemController {
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ operationId: 'deleteItem', summary: 'Delete item by id' })
-  @ApiErrors({ 404: 'Item not found' })
+  @ApiNoContentResponse({ description: 'Deleted' })
+  @ApiErrors({ 404: 'Item not found', 403: 'Not the owner or an admin' })
   async delete(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
     const command = new DeleteItemCommand(id, undefined, user.id, user.roles);
     await this.commandBus.execute(command);
@@ -82,8 +94,8 @@ export class ItemController {
 
   @Post(':id/modifiers')
   @ApiOperation({ operationId: 'addItemModifier', summary: 'Add a modifier to an item' })
-  @ApiOkResponse({ type: ItemDto, description: 'Success' })
-  @ApiErrors({ 404: 'Item not found', 400: 'Bad request, invalid data' })
+  @ApiCreatedResponse({ type: ItemDto, description: 'The item with the new modifier' })
+  @ApiErrors({ 404: 'Item not found', 400: 'Bad request, invalid data', 403: 'Not the owner or an admin' })
   async addModifier(@Param('id') id: string, @Body() modifierDto: AddItemModifierDto, @CurrentUser() user: AuthenticatedUser) {
     const command = AddItemModifierDto.toCommand(id, modifierDto, user.id, user.roles);
     const item = await this.commandBus.execute<AddItemModifierCommand, Item>(command);
@@ -92,8 +104,8 @@ export class ItemController {
 
   @Delete(':id/modifiers/:modifierId')
   @ApiOperation({ operationId: 'removeItemModifier', summary: 'Remove a modifier from an item' })
-  @ApiOkResponse({ type: ItemDto, description: 'Success' })
-  @ApiErrors({ 404: 'Item not found' })
+  @ApiOkResponse({ type: ItemDto, description: 'The item without the modifier' })
+  @ApiErrors({ 404: 'Item or modifier not found', 403: 'Not the owner or an admin' })
   async removeModifier(@Param('id') id: string, @Param('modifierId') modifierId: string, @CurrentUser() user: AuthenticatedUser) {
     const command = new DeleteItemModifierCommand(id, modifierId, user.id, user.roles);
     const item = await this.commandBus.execute<DeleteItemModifierCommand, Item>(command);

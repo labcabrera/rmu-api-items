@@ -68,11 +68,7 @@ export class ItemDto {
 }
 
 export class ItemPageDto {
-  @ApiProperty({
-    type: [ItemDto],
-    description: 'Items',
-    isArray: true,
-  })
+  @ApiProperty({ type: [ItemDto], description: 'Items' })
   content!: ItemDto[];
 
   @ApiProperty({ type: PaginationDto, description: 'Pagination information' })
