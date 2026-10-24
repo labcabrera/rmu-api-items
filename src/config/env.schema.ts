@@ -14,6 +14,8 @@ export const envSchema = Joi.object({
   RMU_IAM_TOKEN_URI: Joi.string().uri().required(),
   RMU_IAM_CLIENT_ID: Joi.string().required(),
   RMU_IAM_CLIENT_SECRET: Joi.string().required(),
+  // Timeout of the calls to other APIs and to Keycloak: no answer in time is a 504 upstream-timeout (spec 021).
+  RMU_HTTP_TIMEOUT_MS: Joi.number().integer().min(1).default(10_000),
   RMU_KAFKA_BROKERS: Joi.string().required(),
   RMU_KAFKA_CLIENT_ID: Joi.string().required(),
   RMU_KAFKA_CONSUMER_GROUP_ID: Joi.string().required(),
