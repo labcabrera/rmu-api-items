@@ -1,8 +1,8 @@
-import { ItemArmor } from '../../../domain/value-objects/item-armor.vo';
-import { ItemInfo } from '../../../domain/value-objects/item-info.vo';
-import { ItemShield } from '../../../domain/value-objects/item-shield.vo';
-import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo';
-import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo';
+import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
+import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
+import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo.js';
+import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
 
 export class UpdateItemCommand {
   constructor(

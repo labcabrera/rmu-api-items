@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { envSchema } from './config/env.schema';
+import { envSchema } from './config/env.schema.js';
 
-import { AuthModule } from './modules/shared/infrastructure/security/auth.module';
-import { ItemsModule } from './modules/items/items.module';
-import { SharedModule } from './modules/shared/shared.module';
+import { AuthModule } from './modules/shared/infrastructure/security/auth.module.js';
+import { ItemsModule } from './modules/items/items.module.js';
+import { SharedModule } from './modules/shared/shared.module.js';
 
 @Module({
   imports: [

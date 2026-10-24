@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
-import { ItemArmorDto } from './item-armor.dto';
-import { ItemInfoDto } from './item-info.dto';
-import { ItemShieldDto } from './item-shield.dto';
-import { ItemWeaponDto } from './item-weapon.dto';
-import { ItemModifierDto } from './item-modifier.dto';
-import type { ItemCategory } from '../../../domain/value-objects/item-category.vo';
-import { CreateItemCommand } from '../../../application/cqrs/commands/create-item.command';
+import { ItemArmorDto } from './item-armor.dto.js';
+import { ItemInfoDto } from './item-info.dto.js';
+import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemWeaponDto } from './item-weapon.dto.js';
+import { ItemModifierDto } from './item-modifier.dto.js';
+import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
+import { CreateItemCommand } from '../../../application/cqrs/commands/create-item.command.js';
 
 export class CreateItemDto {
   @ApiProperty({ description: 'Item name', example: 'Dagger', required: true })

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
-import type { ArmorSlot } from '../../../domain/value-objects/armor-slot.vo';
-import { DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo';
-import { ItemArmor } from '../../../domain/value-objects/item-armor.vo';
+import type { ArmorSlot } from '../../../domain/value-objects/armor-slot.vo.js';
+import type { DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo.js';
+import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
 
 export class ItemArmorDto {
   @ApiProperty({ description: 'Armor slot', type: String, example: 'chest' })

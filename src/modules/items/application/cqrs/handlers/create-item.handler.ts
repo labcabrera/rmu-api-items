@@ -1,11 +1,11 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Item } from '../../../domain/aggregates/item.aggregate';
-import { CreateItemCommand } from '../commands/create-item.command';
-import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port';
-import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
-import { type RealmPort, REALM_PORT } from '../../ports/realm.port';
-import { ValidationError } from '../../../../shared/domain/errors/errors';
+import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { CreateItemCommand } from '../commands/create-item.command.js';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { type RealmPort, REALM_PORT } from '../../ports/realm.port.js';
+import { ValidationError } from '../../../../shared/domain/errors/errors.js';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {

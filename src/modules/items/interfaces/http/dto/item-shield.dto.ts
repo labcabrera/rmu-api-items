@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
-import { ItemShield } from '../../../domain/value-objects/item-shield.vo';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
 
 export class ItemShieldDto {
   @ApiProperty({ description: 'Number of attacks the shield can block', example: 1 })

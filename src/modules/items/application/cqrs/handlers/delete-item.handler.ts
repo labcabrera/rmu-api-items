@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DeleteItemCommand } from '../commands/delete-item.command';
-import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port';
-import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
-import { ItemDeletedEvent } from '../../../domain/events/item.events';
-import { NotFoundError } from '../../../../shared/domain/errors/errors';
+import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
+import { DeleteItemCommand } from '../commands/delete-item.command.js';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { ItemDeletedEvent } from '../../../domain/events/item.events.js';
+import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 
 @CommandHandler(DeleteItemCommand)
 export class DeleteItemHandler implements ICommandHandler<DeleteItemCommand> {

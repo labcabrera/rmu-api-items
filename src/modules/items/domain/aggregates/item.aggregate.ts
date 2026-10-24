@@ -1,15 +1,15 @@
-import { ItemArmor } from '../value-objects/item-armor.vo';
-import { ItemCategory } from '../value-objects/item-category.vo';
-import { ItemInfo } from '../value-objects/item-info.vo';
-import { ItemShield } from '../value-objects/item-shield.vo';
-import { ItemWeapon } from '../value-objects/item-weapon.vo';
-import { ItemModifier } from '../value-objects/item-modifier.vo';
-import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events';
+import type { ItemArmor } from '../value-objects/item-armor.vo.js';
+import type { ItemCategory } from '../value-objects/item-category.vo.js';
+import type { ItemInfo } from '../value-objects/item-info.vo.js';
+import { ItemShield } from '../value-objects/item-shield.vo.js';
+import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
+import { ItemModifier } from '../value-objects/item-modifier.vo.js';
+import { ItemCreatedEvent, ItemUpdatedEvent } from '../events/item.events.js';
 import { randomUUID } from 'crypto';
-import { ItemModifierType } from '../value-objects/item-modifier-type.vo';
-import { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props';
-import { ValidationError } from '../../../shared/domain/errors/errors';
-import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate';
+import type { ItemModifierType } from '../value-objects/item-modifier-type.vo.js';
+import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props.js';
+import { ValidationError } from '../../../shared/domain/errors/errors.js';
+import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(

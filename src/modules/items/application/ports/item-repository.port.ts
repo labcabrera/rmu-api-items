@@ -1,5 +1,5 @@
-import { Item } from '../../domain/aggregates/item.aggregate';
-import { Page } from '../../../shared/application/pagination/page';
+import { Item } from '../../domain/aggregates/item.aggregate.js';
+import { Page } from '../../../shared/application/pagination/page.js';
 
 export interface ItemRepository {
   findById(id: string): Promise<Item | null>;

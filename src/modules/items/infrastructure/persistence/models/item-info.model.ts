@@ -1,6 +1,6 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { ItemCost } from './item-cost.model';
-import type { ItemRarity } from '../../../domain/value-objects/item-rarity.vo';
+import { ItemCost } from './item-cost.model.js';
+import type { ItemRarity } from '../../../domain/value-objects/item-rarity.vo.js';
 
 @Schema({ _id: false })
 export class ItemInfo {

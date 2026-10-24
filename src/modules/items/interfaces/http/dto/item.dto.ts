@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ItemArmorDto } from './item-armor.dto';
-import { ItemInfoDto } from './item-info.dto';
-import { ItemShieldDto } from './item-shield.dto';
-import { ItemWeaponDto } from './item-weapon.dto';
-import { ItemModifierDto } from './item-modifier.dto';
-import type { ItemCategory } from '../../../domain/value-objects/item-category.vo';
-import { Item } from '../../../domain/aggregates/item.aggregate';
-import { PaginationDto } from '../../../../shared/interfaces/http/dto/page.dto';
+import { ItemArmorDto } from './item-armor.dto.js';
+import { ItemInfoDto } from './item-info.dto.js';
+import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemWeaponDto } from './item-weapon.dto.js';
+import { ItemModifierDto } from './item-modifier.dto.js';
+import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { PaginationDto } from '../../../../shared/interfaces/http/dto/page.dto.js';
 
 export class ItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })

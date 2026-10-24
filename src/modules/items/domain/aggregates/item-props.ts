@@ -1,9 +1,9 @@
-import { ItemArmor } from '../value-objects/item-armor.vo';
-import { ItemCategory } from '../value-objects/item-category.vo';
-import { ItemInfo } from '../value-objects/item-info.vo';
-import { ItemModifier } from '../value-objects/item-modifier.vo';
-import { ItemShield } from '../value-objects/item-shield.vo';
-import { ItemWeapon } from '../value-objects/item-weapon.vo';
+import type { ItemArmor } from '../value-objects/item-armor.vo.js';
+import type { ItemCategory } from '../value-objects/item-category.vo.js';
+import type { ItemInfo } from '../value-objects/item-info.vo.js';
+import { ItemModifier } from '../value-objects/item-modifier.vo.js';
+import { ItemShield } from '../value-objects/item-shield.vo.js';
+import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
 
 export interface ItemProps {
   id: string;

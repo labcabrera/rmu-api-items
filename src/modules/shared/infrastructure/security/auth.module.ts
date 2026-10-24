@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { HttpClient } from '../http/http-client';
-import { JwtStrategy } from './jwt.strategy';
-import { TokenService } from './token.service';
+import { HttpClient } from '../http/http-client.js';
+import { JwtStrategy } from './jwt.strategy.js';
+import { TokenService } from './token.service.js';
 
 @Module({
   providers: [JwtStrategy, TokenService, HttpClient],

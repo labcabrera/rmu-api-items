@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObject, IsOptional, IsString } from 'class-validator';
-import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command';
-import { ItemArmor } from '../../../domain/value-objects/item-armor.vo';
-import { ItemInfo } from '../../../domain/value-objects/item-info.vo';
-import { ItemShield } from '../../../domain/value-objects/item-shield.vo';
-import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo';
-import { ItemModifierDto } from './item-modifier.dto';
+import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command.js';
+import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
+import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
+import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo.js';
+import { ItemModifierDto } from './item-modifier.dto.js';
 
 export class UpdateItemDto {
   @ApiProperty({ type: String, description: 'Item name', required: false })

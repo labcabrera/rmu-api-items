@@ -1,7 +1,7 @@
 import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn } from 'class-validator';
-import { ItemCost } from '../../../domain/value-objects/item-cost.vo';
-import { ItemInfo } from '../../../domain/value-objects/item-info.vo';
-import type { ItemRarity } from '../../../domain/value-objects/item-rarity.vo';
+import type { ItemCost } from '../../../domain/value-objects/item-cost.vo.js';
+import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
+import type { ItemRarity } from '../../../domain/value-objects/item-rarity.vo.js';
 
 export class ItemInfoDto {
   @IsOptional()

@@ -1,5 +1,5 @@
-import { ArmorSlot } from './armor-slot.vo';
-import { DifficultyCode } from './difficulty-code.vo';
+import type { ArmorSlot } from './armor-slot.vo.js';
+import type { DifficultyCode } from './difficulty-code.vo.js';
 
 export interface ItemArmor {
   slot: ArmorSlot;
