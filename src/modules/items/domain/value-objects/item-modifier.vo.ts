@@ -1,4 +1,4 @@
-import { ItemModifierType } from './item-modifier-type.vo';
+import type { ItemModifierType } from './item-modifier-type.vo.js';
 
 export class ItemModifier {
   constructor(

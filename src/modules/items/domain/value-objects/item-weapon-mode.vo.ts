@@ -1,8 +1,8 @@
-import { AttackTable } from './attack-table.vo';
-import { FumbleTable } from './fumble-table.vo';
-import { ItemWeaponRange } from './item-weapon-range.vo';
-import { WeaponMode } from './weapon-mode.vo';
-import { AttackType } from './attack-type.vo';
+import type { AttackTable } from './attack-table.vo.js';
+import type { FumbleTable } from './fumble-table.vo.js';
+import { ItemWeaponRange } from './item-weapon-range.vo.js';
+import type { WeaponMode } from './weapon-mode.vo.js';
+import type { AttackType } from './attack-type.vo.js';
 
 export class ItemWeaponMode {
   constructor(

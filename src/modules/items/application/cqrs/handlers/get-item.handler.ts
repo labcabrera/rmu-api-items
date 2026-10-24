@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { Item } from '../../../domain/aggregates/item.aggregate';
-import { GetItemQuery } from '../queries/get-item.query';
-import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
-import { NotFoundError } from '../../../../shared/domain/errors/errors';
+import { type IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { GetItemQuery } from '../queries/get-item.query.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 
 @QueryHandler(GetItemQuery)
 export class GetItemHandler implements IQueryHandler<GetItemQuery, Item> {

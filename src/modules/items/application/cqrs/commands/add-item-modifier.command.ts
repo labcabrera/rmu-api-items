@@ -1,5 +1,5 @@
-import { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo';
-import { AuthenticatedCommand } from '../../../../shared/application/cqrs/authenticated-command';
+import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
+import { AuthenticatedCommand } from '../../../../shared/application/cqrs/authenticated-command.js';
 
 export class AddItemModifierCommand extends AuthenticatedCommand {
   constructor(

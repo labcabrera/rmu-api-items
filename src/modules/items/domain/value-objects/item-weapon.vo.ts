@@ -1,4 +1,4 @@
-import { ItemWeaponMode } from './item-weapon-mode.vo';
+import { ItemWeaponMode } from './item-weapon-mode.vo.js';
 
 export class ItemWeapon {
   constructor(

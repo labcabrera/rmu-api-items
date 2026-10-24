@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpClient, HttpClientError } from '../../../shared/infrastructure/http/http-client';
-import { TokenService } from '../../../shared/infrastructure/security/token.service';
-import { Realm, RealmPort } from '../../application/ports/realm.port';
+import { HttpClient, HttpClientError } from '../../../shared/infrastructure/http/http-client.js';
+import { TokenService } from '../../../shared/infrastructure/security/token.service.js';
+import { Realm, type RealmPort } from '../../application/ports/realm.port.js';
 
 @Injectable()
 export class ApiRealmAdapter implements RealmPort {

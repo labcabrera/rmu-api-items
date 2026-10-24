@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { DomainEventPublisher } from '../../application/ports/domain-event-publisher.port';
-import type { BaseAggregateRoot } from '../../domain/aggregates/base-aggregate';
-import type { DomainEvent } from '../../domain/events/domain-event';
-import { KafkaProducerService } from './kafka-producer.service';
+import type { DomainEventPublisher } from '../../application/ports/domain-event-publisher.port.js';
+import type { BaseAggregateRoot } from '../../domain/aggregates/base-aggregate.js';
+import type { DomainEvent } from '../../domain/events/domain-event.js';
+import { KafkaProducerService } from './kafka-producer.service.js';
 
 @Injectable()
 export class KafkaDomainEventPublisher implements DomainEventPublisher {

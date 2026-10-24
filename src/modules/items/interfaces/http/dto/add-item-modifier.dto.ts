@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsNumber } from 'class-validator';
-import { AddItemModifierCommand } from '../../../application/cqrs/commands/add-item-modifier.command';
-import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo';
+import { AddItemModifierCommand } from '../../../application/cqrs/commands/add-item-modifier.command.js';
+import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
 
 export class AddItemModifierDto {
   @ApiProperty({ type: String, description: 'Modifier type', example: 'bonus' })

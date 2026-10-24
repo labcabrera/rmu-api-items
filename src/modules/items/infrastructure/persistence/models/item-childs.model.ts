@@ -1,6 +1,6 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import type { ArmorSlot } from '../../../domain/value-objects/armor-slot.vo';
-import type { DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo';
+import type { ArmorSlot } from '../../../domain/value-objects/armor-slot.vo.js';
+import type { DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo.js';
 
 @Schema({ _id: false })
 export class ItemWeaponRange {

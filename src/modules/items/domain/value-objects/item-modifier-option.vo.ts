@@ -1,4 +1,4 @@
-import { ItemModifierType } from './item-modifier-type.vo';
+import type { ItemModifierType } from './item-modifier-type.vo.js';
 
 export type OptionType = 'required' | 'optional' | 'forbidden';
 

@@ -1,5 +1,5 @@
-import { ItemCost } from './item-cost.vo';
-import { ItemRarity } from './item-rarity.vo';
+import type { ItemCost } from './item-cost.vo.js';
+import type { ItemRarity } from './item-rarity.vo.js';
 
 export interface ItemInfo {
   cost: ItemCost | null;

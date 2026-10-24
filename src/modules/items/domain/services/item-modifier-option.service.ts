@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ItemModifierOption } from '../value-objects/item-modifier-option.vo';
+import { ItemModifierOption } from '../value-objects/item-modifier-option.vo.js';
 
 @Injectable()
 export class ItemModifierOptionService {

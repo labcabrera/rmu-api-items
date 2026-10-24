@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import type { HydratedDocument } from 'mongoose';
-import { ItemArmor, ItemShield } from './item-childs.model';
-import type { ItemCategory } from '../../../domain/value-objects/item-category.vo';
-import { ItemWeapon } from './item-weapon.model';
-import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo';
-import { ItemInfo } from './item-info.model';
+import { ItemArmor, ItemShield } from './item-childs.model.js';
+import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
+import { ItemWeapon } from './item-weapon.model.js';
+import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
+import { ItemInfo } from './item-info.model.js';
 
 export type ItemDocument = HydratedDocument<ItemModel>;
 

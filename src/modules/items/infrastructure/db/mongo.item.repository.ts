@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ItemRepository } from '../../application/ports/item-repository.port';
-import { Item } from '../../domain/aggregates/item.aggregate';
-import { ItemWeapon } from '../../domain/value-objects/item-weapon.vo';
-import { ItemWeaponMode } from '../../domain/value-objects/item-weapon-mode.vo';
-import { ItemModifier } from '../../domain/value-objects/item-modifier.vo';
-import { ItemDocument, ItemModel } from '../persistence/models/item.model';
-import { MongoBaseRepository } from '../../../shared/infrastructure/db/mongo.base.repository';
-import { RsqlParser } from '../../../shared/infrastructure/db/rsql-parser';
+import type { ItemRepository } from '../../application/ports/item-repository.port.js';
+import { Item } from '../../domain/aggregates/item.aggregate.js';
+import { ItemWeapon } from '../../domain/value-objects/item-weapon.vo.js';
+import { ItemWeaponMode } from '../../domain/value-objects/item-weapon-mode.vo.js';
+import { ItemModifier } from '../../domain/value-objects/item-modifier.vo.js';
+import { type ItemDocument, ItemModel } from '../persistence/models/item.model.js';
+import { MongoBaseRepository } from '../../../shared/infrastructure/db/mongo.base.repository.js';
+import { RsqlParser } from '../../../shared/infrastructure/db/rsql-parser.js';
 
 @Injectable()
 export class MongoItemRepository extends MongoBaseRepository<Item, ItemDocument> implements ItemRepository {

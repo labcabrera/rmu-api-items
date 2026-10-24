@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ItemModifierOption } from '../../domain/value-objects/item-modifier-option.vo';
-import { ItemModifierOptionService } from '../../domain/services/item-modifier-option.service';
-import { ItemModifierOptionDto } from './dto/item-modifier-option.dto';
+import { ItemModifierOption } from '../../domain/value-objects/item-modifier-option.vo.js';
+import { ItemModifierOptionService } from '../../domain/services/item-modifier-option.service.js';
+import { ItemModifierOptionDto } from './dto/item-modifier-option.dto.js';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('v1/item-modifiers')

@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Item } from '../../../domain/aggregates/item.aggregate';
-import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port';
-import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
-import { AddItemModifierCommand } from '../commands/add-item-modifier.command';
-import { NotFoundError } from '../../../../shared/domain/errors/errors';
+import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { AddItemModifierCommand } from '../commands/add-item-modifier.command.js';
+import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 
 @CommandHandler(AddItemModifierCommand)
 export class AddItemModifierHandler implements ICommandHandler<AddItemModifierCommand, Item> {

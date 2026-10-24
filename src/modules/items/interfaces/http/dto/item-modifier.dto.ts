@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
-import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo';
-import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo';
+import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
+import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
 
 export class ItemModifierDto {
   @ApiProperty({ description: 'Modifier identifier', example: 'sharpness' })

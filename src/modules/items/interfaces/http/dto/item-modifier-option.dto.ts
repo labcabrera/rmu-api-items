@@ -1,5 +1,5 @@
-import { ItemModifierOption, OptionType } from '../../../domain/value-objects/item-modifier-option.vo';
-import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo';
+import { ItemModifierOption, type OptionType } from '../../../domain/value-objects/item-modifier-option.vo.js';
+import type { ItemModifierType } from '../../../domain/value-objects/item-modifier-type.vo.js';
 
 export class ItemModifierOptionDto {
   modifierType: ItemModifierType;
