@@ -104,6 +104,8 @@ async function bootstrap() {
         clientId: clientId,
         brokers: brokers,
       },
+      // Without it Nest falls back to a group shared with every API that also leaves it unset.
+      consumer: { groupId: app.get(ConfigService).get<string>('RMU_KAFKA_CONSUMER_GROUP_ID')! },
     },
   });
 
