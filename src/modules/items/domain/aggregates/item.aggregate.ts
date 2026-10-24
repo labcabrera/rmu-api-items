@@ -9,7 +9,7 @@ import { randomUUID } from 'crypto';
 import type { ItemModifierType } from '../value-objects/item-modifier-type.vo.js';
 import { checkItemModifier } from '../value-objects/item-modifier-option.vo.js';
 import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props.js';
-import { ValidationError } from '../../../shared/domain/errors/errors.js';
+import { NotFoundError, ValidationError } from '../../../shared/domain/errors/errors.js';
 import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
 import type { AccessType } from '../../../shared/domain/entities/access-type.js';
 
@@ -188,12 +188,15 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     } else {
       this.modifiers.push(newModifier);
     }
+    this.updatedAt = new Date();
     this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 
+  /** A modifier the item does not have is a 404, without a write or an event (F-items-12). */
   removeModifier(modifierId: string) {
-    if (!this.modifiers) return;
+    if (!this.modifiers?.some(m => m.id === modifierId)) throw new NotFoundError('Item modifier', modifierId);
     this.modifiers = this.modifiers.filter(m => m.id !== modifierId);
+    this.updatedAt = new Date();
     this.apply(new ItemUpdatedEvent(this.getProps()));
   }
 

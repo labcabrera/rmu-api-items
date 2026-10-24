@@ -39,13 +39,19 @@ describe('modifier options', () => {
 describe('item modifiers', () => {
   let modifierId: string;
 
+  const storedUpdatedAt = async () => {
+    const doc = await e2e.connection.collection('items').findOne({ _id: 'e2e-magic-armor' as never });
+    return (doc as { updatedAt?: Date | null } | null)?.updatedAt ?? null;
+  };
+
   beforeAll(async () => {
     expect((await createArmor('E2E Magic Armor')).status).toBe(201);
   });
 
-  it('adds a modifier with a generated id and publishes item.updated', async () => {
+  it('adds a modifier with a generated id, updates updatedAt and publishes item.updated [F-items-19]', async () => {
     const response = await addModifier('owner', 'e2e-magic-armor', { type: 'bonus', value: 10 });
     expect(response.status).toBe(201);
+    expect(await storedUpdatedAt()).toBeInstanceOf(Date);
     const item = response.body as ItemBody;
     expect(item.modifiers).toHaveLength(1);
     expect(item.modifiers![0]).toMatchObject({ type: 'bonus', value: 10 });
@@ -90,23 +96,27 @@ describe('item modifiers', () => {
     expect(response.status).toBe(400);
   });
 
-  it('removes a modifier', async () => {
+  it('removes a modifier and updates updatedAt [F-items-19]', async () => {
+    const before = await storedUpdatedAt();
     const response = await removeModifier('owner', 'e2e-magic-armor', modifierId);
     expect(response.status).toBe(200);
     expect((response.body as ItemBody).modifiers!.map(modifier => modifier.id)).not.toContain(modifierId);
+    const after = await storedUpdatedAt();
+    expect(after).toBeInstanceOf(Date);
+    expect(after!.getTime()).toBeGreaterThan(before?.getTime() ?? 0);
   });
 
-  // F-items-12: removing a modifier the item does not have answers 200 and publishes item.updated.
-  it('answers 200 to a modifier the item does not have', async () => {
-    const before = e2e.events.length;
-    const response = await removeModifier('owner', 'e2e-magic-armor', 'missing-modifier');
-    expect(response.status).toBe(200);
-    expect(e2e.events.length).toBe(before + 1);
-  });
-
-  it.skip('answers 404 to a modifier the item does not have [F-items-12]', async () => {
+  it('answers 404 to a modifier the item does not have, without writing or publishing [F-items-12]', async () => {
+    const eventsBefore = e2e.events.length;
+    const versionBefore = (
+      (await request(e2e.server).get('/v1/items/e2e-magic-armor').set('Authorization', auth('owner'))).body as { version: number }
+    ).version;
     const response = await removeModifier('owner', 'e2e-magic-armor', 'missing-modifier');
     expect(response.status).toBe(404);
+    expect(response.body).toMatchObject({ code: 'not-found', message: 'Item modifier missing-modifier not found' });
+    expect(e2e.events.length).toBe(eventsBefore);
+    const read = await request(e2e.server).get('/v1/items/e2e-magic-armor').set('Authorization', auth('owner'));
+    expect((read.body as { version: number }).version).toBe(versionBefore);
   });
 
   it('answers 404 to an unknown item', async () => {
