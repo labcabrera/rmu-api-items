@@ -2,14 +2,19 @@ import { Inject } from '@nestjs/common';
 import { type IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Item } from '../../../domain/aggregates/item.aggregate.js';
 import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { type ItemGuardPort, ITEM_GUARD } from '../../ports/item-guard.port.js';
 import { GetItemsQuery } from '../queries/get-items.query.js';
 import { Page } from '../../../../shared/application/pagination/page.js';
 
 @QueryHandler(GetItemsQuery)
 export class GetItemsHandler implements IQueryHandler<GetItemsQuery, Page<Item>> {
-  constructor(@Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository) {}
+  constructor(
+    @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(ITEM_GUARD) private readonly itemGuard: ItemGuardPort,
+  ) {}
 
   async execute(query: GetItemsQuery): Promise<Page<Item>> {
-    return await this.itemRepository.findByRsql(query.rsql, query.page, query.size);
+    const filter = this.itemGuard.buildQueryPredicate(query.userId, query.roles);
+    return await this.itemRepository.findByRsql(query.rsql, query.page, query.size, filter);
   }
 }

@@ -87,19 +87,13 @@ describe('authentication', () => {
     expect(response.status).toBe(200);
   });
 
-  // F-items-06: no endpoint checks the roles, so a token without groups reads and writes the catalogue.
+  // The catalog is readable by everyone (spec 021, decision 2); writing needs a role (see permissions.e2e-spec.ts).
   it('lets a user without roles list the items', async () => {
     const response = await get('noRole', '/v1/items');
     expect(response.status).toBe(200);
   });
 
-  it('lets a user without roles create an item', async () => {
-    const response = await create('noRole', armor('E2E Guest Armor'));
-    expect(response.status).toBe(201);
-    expect((response.body as ItemBody).owner).toBe('e2e-guest');
-  });
-
-  it.skip('rejects an item from a user without roles [F-items-06]', async () => {
+  it('rejects an item from a user without roles [F-items-06]', async () => {
     const response = await create('noRole', armor('E2E Guest Armor 2'));
     expect(response.status).toBe(403);
   });
@@ -359,13 +353,7 @@ describe('update', () => {
     expect(response.status).toBe(404);
   });
 
-  // F-items-06: anyone can change anyone's item.
-  it("lets another user change the owner's item", async () => {
-    const response = await patch('other', 'e2e-patch-sword', { description: 'Changed by another user' });
-    expect(response.status).toBe(200);
-  });
-
-  it.skip("rejects a change to another user's item [F-items-06]", async () => {
+  it("rejects a change to another user's item [F-items-06]", async () => {
     const response = await patch('other', 'e2e-patch-sword', { description: 'Changed by another user' });
     expect(response.status).toBe(403);
   });
@@ -388,14 +376,7 @@ describe('delete', () => {
     expect(response.status).toBe(404);
   });
 
-  // F-items-06: anyone can delete anyone's item.
-  it("lets another user delete the owner's item", async () => {
-    await create('owner', armor('E2E Stolen Armor'));
-    const response = await remove('other', 'e2e-stolen-armor');
-    expect(response.status).toBe(204);
-  });
-
-  it.skip("rejects the deletion of another user's item [F-items-06]", async () => {
+  it("rejects the deletion of another user's item [F-items-06]", async () => {
     await create('owner', armor('E2E Kept Armor'));
     const response = await remove('other', 'e2e-kept-armor');
     expect(response.status).toBe(403);

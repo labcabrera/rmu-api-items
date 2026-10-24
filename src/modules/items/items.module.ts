@@ -19,6 +19,8 @@ import { DeleteItemModifierHandler } from './application/cqrs/handlers/delete-it
 import { ItemModifierOptionService } from './domain/services/item-modifier-option.service.js';
 import { ITEM_REPOSITORY } from './application/ports/item-repository.port.js';
 import { REALM_PORT } from './application/ports/realm.port.js';
+import { ITEM_GUARD } from './application/ports/item-guard.port.js';
+import { ItemGuardAdapter } from './infrastructure/security/item-guard.adapter.js';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { REALM_PORT } from './application/ports/realm.port.js';
       provide: ITEM_REPOSITORY,
       useClass: MongoItemRepository,
     },
+    { provide: ITEM_GUARD, useClass: ItemGuardAdapter },
     {
       provide: REALM_PORT,
       useClass: ApiRealmAdapter,
