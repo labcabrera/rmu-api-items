@@ -38,8 +38,13 @@ make check             # lint, typecheck, unit and e2e tests
 The Joi schema in `src/config/env.schema.ts` fails startup on a missing required variable. Besides `PORT` (`3006`),
 `LOG_LEVEL` (`info`) and `RMU_MONGO_ITEMS_URI`, the HTTP layer reads `RMU_CORS_ORIGINS` (empty: no CORS, browsers come through the
 gateway), `RMU_THROTTLE_LIMIT` / `RMU_THROTTLE_TTL_MS` (`300` per `60000` ms and client IP, `0` turns it off) and
-`RMU_TRUST_PROXY` (`loopback, linklocal, uniquelocal`).
+`RMU_TRUST_PROXY` (`loopback, linklocal, uniquelocal`). The realm check calls core (`RMU_API_CORE_URI`) with a service
+token from Keycloak (`RMU_IAM_TOKEN_URI`, `RMU_IAM_CLIENT_ID`, `RMU_IAM_CLIENT_SECRET`) through the common `HttpClient`:
+no answer in `RMU_HTTP_TIMEOUT_MS` (`10000`) is a 504 `upstream-timeout`, core down or a non-2xx other than 404 is a 502.
 
 Errors answer `{ statusCode, error, code, message, timestamp, path }`. Responses carry the `version` of the entity and a
 `PATCH` may send it back: a stale one is a 409 `version-conflict`. `size` goes up to 100. `GET /v1/items` accepts up to 1000 (`CatalogPagedQueryDto`), because the item selector of rmu-mfe-strategic loads 250.
+Permissions (spec 021): the catalog is readable by every authenticated user and `GET /v1/item-modifiers/options` is
+public; creating needs `rmu-user` or `rmu-admin`; changing, deleting and the modifiers are for the owner or `rmu-admin`
+(403 otherwise). A `PATCH` without changes neither writes nor publishes.
 Open problems found during the migration are listed in `docs/reports/api-template-rollout-findings.md` of the workspace.
