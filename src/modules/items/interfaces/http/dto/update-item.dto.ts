@@ -34,14 +34,14 @@ export class UpdateItemDto {
   @Type(() => ItemArmorDto)
   armor: ItemArmorDto | undefined;
 
-  @ApiProperty({ type: ItemShieldDto, description: 'Item armor', required: false })
+  @ApiProperty({ type: ItemShieldDto, description: 'Shield info (shields only)', required: false })
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => ItemShieldDto)
   shield: ItemShieldDto | undefined;
 
-  @ApiProperty({ type: ItemInfoDto, description: 'Item armor', required: false })
+  @ApiProperty({ type: ItemInfoDto, description: 'Generic item information', required: false })
   @IsOptional()
   @IsObject()
   @ValidateNested()

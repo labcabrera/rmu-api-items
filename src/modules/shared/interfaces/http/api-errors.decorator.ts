@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ErrorDto } from './dto/error-dto.js';
 
-type ErrorStatus = 400 | 401 | 403 | 404 | 409;
+type ErrorStatus = 400 | 401 | 403 | 404 | 409 | 502 | 504;
 
 const UNAUTHORIZED = 'Invalid or missing authentication token';
 

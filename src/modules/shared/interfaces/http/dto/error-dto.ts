@@ -17,13 +17,13 @@ export class ErrorDto {
   @ApiProperty({
     description: 'Error message; a list of messages for request validation errors',
     oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
-    example: 'Race 1 not found',
+    example: 'Item dagger not found',
   })
   message: string | string[];
 
   @ApiProperty({ description: 'Timestamp', example: '2023-01-01T00:00:00Z' })
   timestamp: string;
 
-  @ApiProperty({ description: 'Request path', example: '/v1/races/1' })
+  @ApiProperty({ description: 'Request path, without the query string', example: '/v1/items/dagger' })
   path: string;
 }

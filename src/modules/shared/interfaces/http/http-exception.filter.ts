@@ -38,6 +38,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
     const body = toErrorBody(exception);
+    // The log keeps the query string; the body has the path only (F-receta-22).
     const where = `${request.method} ${request.originalUrl}`;
     if (body.statusCode >= 500) {
       this.logger.error(`${where}: ${body.statusCode}`, exception instanceof Error ? exception.stack : String(exception));
@@ -47,7 +48,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     ctx
       .getResponse<Response>()
       .status(body.statusCode)
-      .json({ ...body, timestamp: new Date().toISOString(), path: request.originalUrl } satisfies ErrorDto);
+      .json({ ...body, timestamp: new Date().toISOString(), path: request.path } satisfies ErrorDto);
   }
 }
 
