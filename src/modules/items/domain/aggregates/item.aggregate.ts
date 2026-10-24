@@ -10,6 +10,7 @@ import type { ItemModifierType } from '../value-objects/item-modifier-type.vo.js
 import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props.js';
 import { ValidationError } from '../../../shared/domain/errors/errors.js';
 import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
+import type { AccessType } from '../../../shared/domain/entities/access-type.js';
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
@@ -29,6 +30,11 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     public updatedAt: Date | null,
   ) {
     super(id);
+  }
+
+  /** The catalog is readable by everyone (spec 021, decision 2): not stored, every item is public. */
+  get accessType(): AccessType {
+    return 'public';
   }
 
   public static create(props: ItemCreationProps): Item {

@@ -26,7 +26,7 @@ const removeModifier = (user: UserName, itemId: string, modifierId: string) =>
   request(e2e.server).delete(`/v1/items/${itemId}/modifiers/${modifierId}`).set('Authorization', auth(user));
 
 describe('modifier options', () => {
-  // The options are a static list, served without authentication.
+  // The options are a static list, public also without a token (spec 021, decision 2: F-items-20 descartado).
   it('lists the options without a token', async () => {
     const response = await request(e2e.server).get('/v1/item-modifiers/options');
     expect(response.status).toBe(200);
@@ -104,13 +104,7 @@ describe('item modifiers', () => {
     expect((await removeModifier('owner', 'missing-item', 'x')).status).toBe(404);
   });
 
-  // F-items-06: anyone can change the modifiers of anyone's item.
-  it("lets another user add a modifier to the owner's item", async () => {
-    const response = await addModifier('other', 'e2e-magic-armor', { type: 'bonus', value: 1 });
-    expect(response.status).toBe(201);
-  });
-
-  it.skip("rejects a modifier on another user's item [F-items-06]", async () => {
+  it("rejects a modifier on another user's item [F-items-06]", async () => {
     const response = await addModifier('other', 'e2e-magic-armor', { type: 'bonus', value: 1 });
     expect(response.status).toBe(403);
   });

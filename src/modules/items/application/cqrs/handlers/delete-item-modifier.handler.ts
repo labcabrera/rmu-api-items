@@ -3,6 +3,7 @@ import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
 import { Item } from '../../../domain/aggregates/item.aggregate.js';
 import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
 import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { type ItemGuardPort, ITEM_GUARD } from '../../ports/item-guard.port.js';
 import { DeleteItemModifierCommand } from '../commands/delete-item-modifier.command.js';
 import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 
@@ -10,12 +11,14 @@ import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 export class DeleteItemModifierHandler implements ICommandHandler<DeleteItemModifierCommand, Item> {
   constructor(
     @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(ITEM_GUARD) private readonly itemGuard: ItemGuardPort,
     @Inject(DOMAIN_EVENT_PUBLISHER) private readonly eventPublisher: DomainEventPublisher,
   ) {}
 
   async execute(command: DeleteItemModifierCommand): Promise<Item> {
     const item = await this.itemRepository.findById(command.itemId);
     if (!item) throw new NotFoundError('Item', command.itemId);
+    this.itemGuard.checkUpdate(item, command.userId, command.roles);
 
     item.removeModifier(command.modifierId);
 
