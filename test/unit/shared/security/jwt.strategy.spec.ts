@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { generateKeyPairSync, sign } from 'crypto';
-import { JwtStrategy } from '../../../src/modules/auth/jwt.strategy';
+import { JwtStrategy } from '../../../../src/modules/shared/infrastructure/security/jwt.strategy';
 
 const mockKeys = generateKeyPairSync('rsa', { modulusLength: 2048 });
 

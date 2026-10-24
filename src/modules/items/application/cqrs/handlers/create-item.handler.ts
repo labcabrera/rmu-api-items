@@ -2,17 +2,17 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Item } from '../../../domain/aggregates/item.aggregate';
 import { CreateItemCommand } from '../commands/create-item.command';
-import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
-import type { ItemRepository } from '../../ports/item.repository';
-import type { RealmPort } from '../../ports/realm.port';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
+import { type RealmPort, REALM_PORT } from '../../ports/realm.port';
 import { ValidationError } from '../../../../shared/domain/errors/errors';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
   constructor(
-    @Inject('ItemRepository') private readonly itemRepository: ItemRepository,
-    @Inject('RealmPort') private readonly realmPort: RealmPort,
-    @Inject('ItemEventProducer') private readonly itemEventBus: ItemEventBusPort,
+    @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(REALM_PORT) private readonly realmPort: RealmPort,
+    @Inject(DOMAIN_EVENT_PUBLISHER) private readonly eventPublisher: DomainEventPublisher,
   ) {}
 
   async execute(command: CreateItemCommand): Promise<Item> {
@@ -38,7 +38,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       owner: command.userId,
     });
     const saved = await this.itemRepository.save(item);
-    item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
+    await this.eventPublisher.publishChanges('item', item);
     return saved;
   }
 

@@ -1,16 +1,16 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Item } from '../../../domain/aggregates/item.aggregate';
-import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
-import type { ItemRepository } from '../../ports/item.repository';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port';
 import { DeleteItemModifierCommand } from '../commands/delete-item-modifier.command';
 import { NotFoundError } from '../../../../shared/domain/errors/errors';
 
 @CommandHandler(DeleteItemModifierCommand)
 export class DeleteItemModifierHandler implements ICommandHandler<DeleteItemModifierCommand, Item> {
   constructor(
-    @Inject('ItemRepository') private readonly itemRepository: ItemRepository,
-    @Inject('ItemEventProducer') private readonly itemEventBus: ItemEventBusPort,
+    @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(DOMAIN_EVENT_PUBLISHER) private readonly eventPublisher: DomainEventPublisher,
   ) {}
 
   async execute(command: DeleteItemModifierCommand): Promise<Item> {
@@ -20,7 +20,7 @@ export class DeleteItemModifierHandler implements ICommandHandler<DeleteItemModi
     item.removeModifier(command.modifierId);
 
     const saved = await this.itemRepository.update(command.itemId, item);
-    item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
+    await this.eventPublisher.publishChanges('item', item);
     return saved;
   }
 }
