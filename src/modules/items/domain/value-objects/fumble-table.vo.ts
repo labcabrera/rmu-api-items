@@ -1,6 +1,7 @@
+/** Fumble columns of Core Law, served by rmu-api-attack-tables (`GET /v1/fumble-tables`). */
 export type FumbleTable =
   | 'melee-one-hand'
-  | 'melee-two-hands'
+  | 'melee-two-hand'
   | 'animals'
   | 'mounted-arms'
   | 'unarmed'
@@ -8,4 +9,4 @@ export type FumbleTable =
   | 'slings'
   | 'thrown'
   | 'elemental-bolts'
-  | 'elemental-balls';
+  | 'elemental-balls-cones';
