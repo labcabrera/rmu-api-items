@@ -11,4 +11,7 @@ export class ItemWeapon {
 
   @Prop({ type: [ItemWeaponMode], required: false })
   modes: ItemWeaponMode[] | undefined;
+
+  @Prop({ type: [String], required: false })
+  tags?: string[];
 }
