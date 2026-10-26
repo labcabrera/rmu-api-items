@@ -24,6 +24,7 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
           (doc.weapon.modes ?? []).map(
             m => new ItemWeaponMode(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
           ),
+          [...(doc.weapon.tags ?? [])],
         )
       : null;
     const modifiers = doc.modifiers ? doc.modifiers.map(m => new ItemModifier(m.id, m.type, m.modifier, m.value)) : null;

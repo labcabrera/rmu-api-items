@@ -116,7 +116,7 @@ describe('create', () => {
       owner: 'e2e-owner',
       info: { weight: 1.5, rarity: 'common', cost: { min: 1, average: 2, max: 3 } },
     });
-    expect(item.weapon).toMatchObject({ skillId: 'dagger', fumble: 3, modes: [{ type: 'one-hand', attackTable: 'dagger' }] });
+    expect(item.weapon).toMatchObject({ skillId: 'dagger', fumble: 3, modes: [{ type: 'one-hand', attackTable: 'dagger' }], tags: [] });
 
     const events = eventsOf('e2e-long-dagger');
     expect(events.map(event => event.topic)).toEqual(['internal.rmu-items.item.created.v1']);
@@ -145,6 +145,16 @@ describe('create', () => {
     const response = await create('owner', weapon('E2E Lost Dagger', { realmId: 'missing-realm' }));
     expect(response.status).toBe(400);
     expect((response.body as { message: string }).message).toBe('Realm missing-realm does not exist');
+  });
+
+  it('keeps the weapon tags read by the fighting styles (spec 032), without repeating them', async () => {
+    const base = weapon('E2E Tagged Rapier');
+    const response = await create('owner', { ...base, weapon: { ...base.weapon, tags: ['fencing', 'fencing', 'light-blade'] } });
+    expect(response.status).toBe(201);
+    expect((response.body as { weapon: { tags: string[] } }).weapon.tags).toEqual(['fencing', 'light-blade']);
+
+    const invalid = await create('owner', { ...weapon('E2E Bad Tags'), weapon: { ...base.weapon, tags: ['Not Valid'] } });
+    expect(invalid.status).toBe(400);
   });
 
   it('requires the weapon info of a weapon', async () => {
