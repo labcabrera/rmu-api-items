@@ -1,4 +1,4 @@
-/** Spec 041 adds the general equipment categories: container, light, mount, vehicle, service and instrument. */
+/** Spec 042 adds poison and herb (antidotes). Spec 041 adds the general equipment categories: container, light, mount, vehicle, service and instrument. */
 export const ITEM_CATEGORIES = [
   'weapon',
   'armor',
@@ -14,6 +14,8 @@ export const ITEM_CATEGORIES = [
   'vehicle',
   'service',
   'instrument',
+  'poison',
+  'herb',
   'other',
 ] as const;
 

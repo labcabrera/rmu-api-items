@@ -62,7 +62,7 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
   private features(features: ItemModel['features'] | undefined): ItemFeatures | null {
     if (!features) return null;
     const result: ItemFeatures = {};
-    const { container, light, transport, ammunition } = features;
+    const { container, light, transport, ammunition, poison, antidote } = features;
     if (container)
       result.container = {
         weight: container.weight ?? null,
@@ -73,6 +73,18 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
     if (light) result.light = { radius: light.radius ?? null, durationHours: light.durationHours ?? null };
     if (transport) result.transport = { capacity: transport.capacity ?? null, speed: transport.speed ?? null };
     if (ammunition) result.ammunition = { launchers: [...(ammunition.launchers ?? [])], sizeAdjustment: ammunition.sizeAdjustment ?? 0 };
+    const range = (value?: { min: number; max: number } | null) => (value ? { min: value.min, max: value.max } : null);
+    if (poison)
+      result.poison = {
+        category: poison.category,
+        level: poison.level,
+        form: poison.form,
+        maxSeverity: poison.maxSeverity ?? null,
+        immediateHits: range(poison.immediateHits),
+        onsetRounds: range(poison.onsetRounds),
+      };
+    if (antidote)
+      result.antidote = { categories: [...(antidote.categories ?? [])], level: antidote.level, withinHours: antidote.withinHours ?? null };
     return Object.keys(result).length > 0 ? result : null;
   }
 }

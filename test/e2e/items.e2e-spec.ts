@@ -439,6 +439,74 @@ describe('delete', () => {
 });
 
 // Workspace spec 041: the general equipment categories and blocks, full suits, armor classes and improvised weapons.
+describe('poisons and antidotes (spec 042)', () => {
+  const poison = {
+    category: 'nerve',
+    level: 3,
+    form: 'paste',
+    maxSeverity: 'moderate',
+    immediateHits: { min: 2, max: 8 },
+    onsetRounds: null,
+  };
+
+  it('stores and returns a poison and an antidote', async () => {
+    const created = await create('owner', {
+      name: 'E2E Toadpaste',
+      category: 'poison',
+      features: { poison },
+      info: { ...info, stackable: true },
+    });
+    expect(created.status, JSON.stringify(created.body)).toBe(201);
+    const read = (await get('owner', '/v1/items/e2e-toadpaste')).body as ItemBody & { features: object };
+    expect(read.features).toEqual({ poison });
+
+    const antidote = { categories: ['nerve', 'nerve', 'muscle'], level: 6, withinHours: 24 };
+    const herb = await create('owner', { name: 'E2E Bluebell', category: 'herb', features: { antidote }, info });
+    expect(herb.status, JSON.stringify(herb.body)).toBe(201);
+    const readHerb = (await get('owner', '/v1/items/e2e-bluebell')).body as ItemBody & { features: object };
+    expect(readHerb.features).toEqual({ antidote: { categories: ['nerve', 'muscle'], level: 6, withinHours: 24 } });
+  });
+
+  it('requires the poison block in a poison and keeps each block in its category', async () => {
+    const noBlock = await create('owner', { name: 'E2E Empty Vial', category: 'poison', info });
+    expect(noBlock.status).toBe(400);
+    expect((noBlock.body as { message: string }).message).toBe('Required poison info');
+    const onFood = await create('owner', { name: 'E2E Bad Stew', category: 'food', features: { poison }, info });
+    expect((onFood.body as { message: string }).message).toBe('Poison info not allowed');
+    const antidoteOnTool = await create('owner', {
+      name: 'E2E Bad Kit',
+      category: 'tools',
+      features: { antidote: { categories: ['any'], level: 1, withinHours: null } },
+      info,
+    });
+    expect((antidoteOnTool.body as { message: string }).message).toBe('Antidote info not allowed');
+  });
+
+  it('rejects an unknown category, an inverted range and an antidote without categories', async () => {
+    const unknown = await create('owner', {
+      name: 'E2E Odd',
+      category: 'poison',
+      features: { poison: { ...poison, category: 'mystic' } },
+      info,
+    });
+    expect(unknown.status).toBe(400);
+    const inverted = await create('owner', {
+      name: 'E2E Odd Two',
+      category: 'poison',
+      features: { poison: { ...poison, immediateHits: { min: 9, max: 2 } } },
+      info,
+    });
+    expect((inverted.body as { message: string }).message).toBe('Invalid poison immediate hits range');
+    const empty = await create('owner', {
+      name: 'E2E Odd Three',
+      category: 'herb',
+      features: { antidote: { categories: [], level: 1 } },
+      info,
+    });
+    expect(empty.status).toBe(400);
+  });
+});
+
 describe('general equipment (spec 041)', () => {
   const featured = (name: string, category: string, features: object, extra: Record<string, unknown> = {}) => ({
     name,
