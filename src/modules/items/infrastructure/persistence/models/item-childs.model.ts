@@ -1,7 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import type { ArmorSlot } from '../../../domain/value-objects/armor-slot.vo.js';
 import type { DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo.js';
-import type { ArmorClass } from '../../../domain/value-objects/item-features.vo.js';
+import type { ArmorClass, PoisonCategory, PoisonForm, PoisonSeverity } from '../../../domain/value-objects/item-features.vo.js';
 
 @Schema({ _id: false })
 export class ItemWeaponRange {
@@ -96,6 +96,49 @@ export class ItemAmmunition {
   sizeAdjustment: number;
 }
 
+@Schema({ _id: false })
+export class ItemRange {
+  @Prop({ type: Number, required: true })
+  min: number;
+
+  @Prop({ type: Number, required: true })
+  max: number;
+}
+
+/** Spec 042, decision 2. */
+@Schema({ _id: false })
+export class ItemPoison {
+  @Prop({ type: String, required: true })
+  category: PoisonCategory;
+
+  @Prop({ type: Number, required: true })
+  level: number;
+
+  @Prop({ type: String, required: true })
+  form: PoisonForm;
+
+  @Prop({ type: String, required: false })
+  maxSeverity: PoisonSeverity | null;
+
+  @Prop({ type: ItemRange, required: false })
+  immediateHits: ItemRange | null;
+
+  @Prop({ type: ItemRange, required: false })
+  onsetRounds: ItemRange | null;
+}
+
+@Schema({ _id: false })
+export class ItemAntidote {
+  @Prop({ type: [String], required: true })
+  categories: (PoisonCategory | 'any')[];
+
+  @Prop({ type: Number, required: true })
+  level: number;
+
+  @Prop({ type: Number, required: false })
+  withinHours: number | null;
+}
+
 /** Spec 041, decision 4. */
 @Schema({ _id: false })
 export class ItemFeatures {
@@ -110,4 +153,10 @@ export class ItemFeatures {
 
   @Prop({ type: ItemAmmunition, required: false })
   ammunition?: ItemAmmunition | null;
+
+  @Prop({ type: ItemPoison, required: false })
+  poison?: ItemPoison | null;
+
+  @Prop({ type: ItemAntidote, required: false })
+  antidote?: ItemAntidote | null;
 }

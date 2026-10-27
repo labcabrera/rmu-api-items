@@ -1,6 +1,6 @@
 import type { ItemArmor } from '../value-objects/item-armor.vo.js';
 import type { ItemCategory } from '../value-objects/item-category.vo.js';
-import type { ItemFeatures } from '../value-objects/item-features.vo.js';
+import type { ItemFeatures, ItemPoison } from '../value-objects/item-features.vo.js';
 import type { ItemInfo } from '../value-objects/item-info.vo.js';
 import { ItemShield } from '../value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
@@ -54,6 +54,11 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       throw new ValidationError('Container, light, transport or ammunition info not allowed');
     }
     if (features?.ammunition && category !== 'ammunition') throw new ValidationError('Ammunition info not allowed');
+    // Spec 042, decision 2
+    if (features?.poison && category !== 'poison') throw new ValidationError('Poison info not allowed');
+    if (features?.antidote && category !== 'herb') throw new ValidationError('Antidote info not allowed');
+    if (category === 'poison' && !features?.poison) throw new ValidationError('Required poison info');
+    if (features?.poison) Item.checkPoison(features.poison);
     switch (category) {
       case 'weapon':
         if (!weapon) throw new ValidationError('Required weapon info');
@@ -86,6 +91,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'vehicle':
       case 'service':
       case 'instrument':
+      case 'poison':
+      case 'herb':
         if (weapon) throw new ValidationError('Weapon info not allowed');
         if (armor) throw new ValidationError('Armor info not allowed');
         if (shield) throw new ValidationError('Shield info not allowed');
@@ -95,6 +102,12 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     }
     if (armor) Item.checkArmor(armor);
     if (weapon) Item.checkWeapon(weapon);
+  }
+
+  private static checkPoison(poison: ItemPoison): void {
+    for (const [name, range] of Object.entries({ 'immediate hits': poison.immediateHits, onset: poison.onsetRounds })) {
+      if (range && range.min > range.max) throw new ValidationError(`Invalid poison ${name} range`);
+    }
   }
 
   private static checkWeapon(weapon: ItemWeapon): void {
@@ -208,6 +221,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'vehicle':
       case 'service':
       case 'instrument':
+      case 'poison':
+      case 'herb':
         break;
       default:
         throw new ValidationError('Invalid item category');
