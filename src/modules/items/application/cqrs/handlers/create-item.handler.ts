@@ -35,6 +35,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       weapon: command.weapon,
       armor: command.armor,
       shield: command.shield,
+      features: command.features,
       info: command.info,
       modifiers: command.modifiers,
       description: command.description,

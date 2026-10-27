@@ -27,4 +27,7 @@ export class ItemWeaponMode {
 
   @Prop({ type: String, required: false })
   alternativeTable: AttackTable | undefined;
+
+  @Prop({ type: Number, required: false })
+  obModifier?: number;
 }

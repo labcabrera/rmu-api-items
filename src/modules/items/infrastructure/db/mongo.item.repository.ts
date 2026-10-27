@@ -6,6 +6,7 @@ import { Item } from '../../domain/aggregates/item.aggregate.js';
 import { ItemWeapon } from '../../domain/value-objects/item-weapon.vo.js';
 import { ItemWeaponMode } from '../../domain/value-objects/item-weapon-mode.vo.js';
 import { ItemModifier } from '../../domain/value-objects/item-modifier.vo.js';
+import type { ItemFeatures } from '../../domain/value-objects/item-features.vo.js';
 import { type ItemDocument, ItemModel } from '../persistence/models/item.model.js';
 import { MongoBaseRepository } from '../../../shared/infrastructure/db/mongo.base.repository.js';
 import { RsqlParser } from '../../../shared/infrastructure/db/rsql-parser.js';
@@ -22,7 +23,17 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
           doc.weapon.skillId,
           doc.weapon.fumble,
           (doc.weapon.modes ?? []).map(
-            m => new ItemWeaponMode(m.type, m.attackTypes, m.attackTable, m.fumbleTable, m.sizeAdjustment, m.ranges, m.alternativeTable),
+            m =>
+              new ItemWeaponMode(
+                m.type,
+                m.attackTypes,
+                m.attackTable,
+                m.fumbleTable,
+                m.sizeAdjustment,
+                m.ranges,
+                m.alternativeTable,
+                m.obModifier || undefined,
+              ),
           ),
           [...(doc.weapon.tags ?? [])],
         )
@@ -36,6 +47,7 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
       weapon: weapon,
       armor: doc.armor,
       shield: doc.shield,
+      features: this.features(doc.features),
       info: doc.info,
       description: doc.description,
       modifiers: modifiers,
@@ -44,5 +56,23 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });
+  }
+
+  /** Plain copies of the stored blocks (spec 041), without the Mongoose subdocuments. */
+  private features(features: ItemModel['features'] | undefined): ItemFeatures | null {
+    if (!features) return null;
+    const result: ItemFeatures = {};
+    const { container, light, transport, ammunition } = features;
+    if (container)
+      result.container = {
+        weight: container.weight ?? null,
+        volume: container.volume ?? null,
+        liquid: container.liquid ?? null,
+        units: container.units ?? null,
+      };
+    if (light) result.light = { radius: light.radius ?? null, durationHours: light.durationHours ?? null };
+    if (transport) result.transport = { capacity: transport.capacity ?? null, speed: transport.speed ?? null };
+    if (ammunition) result.ammunition = { launchers: [...(ammunition.launchers ?? [])], sizeAdjustment: ammunition.sizeAdjustment ?? 0 };
+    return Object.keys(result).length > 0 ? result : null;
   }
 }

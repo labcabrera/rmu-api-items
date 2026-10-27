@@ -437,3 +437,105 @@ describe('delete', () => {
     expect(response.status).toBe(403);
   });
 });
+
+// Workspace spec 041: the general equipment categories and blocks, full suits, armor classes and improvised weapons.
+describe('general equipment (spec 041)', () => {
+  const featured = (name: string, category: string, features: object, extra: Record<string, unknown> = {}) => ({
+    name,
+    category,
+    features,
+    info: { ...info, stackable: true, lotSize: 10 },
+    ...extra,
+  });
+
+  it('stores and returns a container, a light, a mount and ammunition with their blocks and lot size', async () => {
+    const bodies = [
+      featured('E2E Sack', 'container', { container: { weight: 40, volume: 2, units: null } }),
+      featured('E2E Glowstick', 'light', { light: { radius: 15, durationHours: 3 } }),
+      featured('E2E Pony', 'mount', { transport: { capacity: 150, speed: null } }),
+      featured('E2E Pebble', 'ammunition', { ammunition: { launchers: ['e2e-sling', 'e2e-sling'], sizeAdjustment: 1 } }),
+    ];
+    for (const body of bodies) {
+      const response = await create('owner', body);
+      expect(response.status, body.name).toBe(201);
+    }
+    const sack = (await get('owner', '/v1/items/e2e-sack')).body as ItemBody & { features: object };
+    expect(sack.category).toBe('container');
+    expect(sack.features).toEqual({ container: { weight: 40, volume: 2, liquid: null, units: null } });
+    expect(sack.info.lotSize).toBe(10);
+    const pebble = (await get('owner', '/v1/items/e2e-pebble')).body as ItemBody & { features: object };
+    expect(pebble.features).toEqual({ ammunition: { launchers: ['e2e-sling'], sizeAdjustment: 1 } });
+  });
+
+  it('rejects the blocks on a weapon and ammunition data on other categories', async () => {
+    const onWeapon = await create('owner', weapon('E2E Lamp Sword', { features: { light: { radius: 5, durationHours: 1 } } }));
+    expect(onWeapon.status).toBe(400);
+    const onTool = await create('owner', featured('E2E Bad Bolt', 'tools', { ammunition: { launchers: [], sizeAdjustment: 0 } }));
+    expect(onTool.status).toBe(400);
+    expect((onTool.body as { message: string }).message).toBe('Ammunition info not allowed');
+  });
+
+  it('accepts a tool used as an improvised weapon, with the OB modifier of its mode', async () => {
+    const response = await create('owner', {
+      name: 'E2E Spanner',
+      category: 'tools',
+      weapon: {
+        skillId: 'melee-weapon@hafted',
+        fumble: 4,
+        modes: [
+          {
+            type: 'one-hand',
+            attackTypes: ['melee'],
+            attackTable: 'mace',
+            fumbleTable: 'melee-one-hand',
+            sizeAdjustment: 0,
+            obModifier: -20,
+          },
+        ],
+        tags: ['improvised'],
+      },
+      info,
+    });
+    expect(response.status).toBe(201);
+    const read = (await get('owner', '/v1/items/e2e-spanner')).body as { weapon: { modes: { obModifier: number }[] } };
+    expect(read.weapon.modes[0].obModifier).toBe(-20);
+  });
+
+  it('still rejects weapon data on clothes', async () => {
+    const response = await create('owner', { ...weapon('E2E Armed Hat'), category: 'clothes' });
+    expect(response.status).toBe(400);
+    expect((response.body as { message: string }).message).toBe('Weapon info not allowed');
+  });
+
+  it('stores the coverage of a full suit and the class of a piece', async () => {
+    const suit = await create('owner', {
+      ...armor('E2E Full Suit'),
+      armor: { ...armor('x').armor, coverage: ['body', 'head', 'arms', 'legs'] },
+    });
+    expect(suit.status).toBe(201);
+    expect((suit.body as ItemBody & { armor: { coverage: string[] } }).armor.coverage).toEqual(['body', 'head', 'arms', 'legs']);
+    const helmet = await create('owner', {
+      ...armor('E2E Medium Helmet'),
+      armor: { ...armor('x').armor, slot: 'head', at: 5, class: 'medium' },
+    });
+    expect(helmet.status).toBe(201);
+    expect((helmet.body as ItemBody & { armor: { class: string } }).armor.class).toBe('medium');
+  });
+
+  it('rejects a coverage without the slot of the piece and an unknown class', async () => {
+    const coverage = await create('owner', { ...armor('E2E Odd Suit'), armor: { ...armor('x').armor, coverage: ['head'] } });
+    expect(coverage.status).toBe(400);
+    const klass = await create('owner', { ...armor('E2E Odd Helmet'), armor: { ...armor('x').armor, class: 'huge' } });
+    expect(klass.status).toBe(400);
+  });
+
+  it('replaces the blocks on update and removes them with null', async () => {
+    await create('owner', featured('E2E Lantern Box', 'light', { light: { radius: 10, durationHours: 4 } }));
+    const changed = await patch('owner', 'e2e-lantern-box', { features: { light: { radius: 25, durationHours: 6 } } });
+    expect(changed.status).toBe(200);
+    expect((changed.body as { features: object }).features).toEqual({ light: { radius: 25, durationHours: 6 } });
+    const removed = await patch('owner', 'e2e-lantern-box', { features: null });
+    expect(removed.status).toBe(200);
+    expect((removed.body as { features: object | null }).features).toBeNull();
+  });
+});

@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNumber } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsIn, IsNumber, IsOptional } from 'class-validator';
 import { ARMOR_SLOTS, type ArmorSlot } from '../../../domain/value-objects/armor-slot.vo.js';
 import { DIFFICULTY_CODES, type DifficultyCode } from '../../../domain/value-objects/difficulty-code.vo.js';
 import type { ItemArmor } from '../../../domain/value-objects/item-armor.vo.js';
+import { ARMOR_CLASSES, type ArmorClass } from '../../../domain/value-objects/item-features.vo.js';
 
 export class ItemArmorDto {
   @ApiProperty({ description: 'Armor slot', type: String, enum: ARMOR_SLOTS, example: 'body' })
@@ -33,6 +34,31 @@ export class ItemArmorDto {
   @IsIn(DIFFICULTY_CODES)
   baseDifficulty: DifficultyCode;
 
+  @ApiProperty({
+    description: 'Slots it covers, its slot among them (a full suit covers all four)',
+    type: String,
+    enum: ARMOR_SLOTS,
+    isArray: true,
+    required: false,
+    example: ['body', 'head', 'arms', 'legs'],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(ARMOR_SLOTS.length)
+  @IsIn(ARMOR_SLOTS, { each: true })
+  coverage?: ArmorSlot[] | null;
+
+  @ApiProperty({
+    description: 'Light, medium or heavy helmet, vambraces or greaves',
+    type: String,
+    enum: ARMOR_CLASSES,
+    required: false,
+    example: 'heavy',
+  })
+  @IsOptional()
+  @IsIn(ARMOR_CLASSES)
+  class?: ArmorClass | null;
+
   static toEntity(dto: ItemArmorDto): ItemArmor {
     return {
       slot: dto.slot,
@@ -42,6 +68,8 @@ export class ItemArmorDto {
       rangedPenalty: dto.rangedPenalty,
       perceptionPenalty: dto.perceptionPenalty,
       baseDifficulty: dto.baseDifficulty,
+      ...(dto.coverage?.length ? { coverage: [...new Set(dto.coverage)] } : {}),
+      ...(dto.class ? { class: dto.class } : {}),
     };
   }
 
@@ -54,6 +82,8 @@ export class ItemArmorDto {
     dto.rangedPenalty = entity.rangedPenalty;
     dto.perceptionPenalty = entity.perceptionPenalty;
     dto.baseDifficulty = entity.baseDifficulty;
+    if (entity.coverage?.length) dto.coverage = [...entity.coverage];
+    if (entity.class) dto.class = entity.class;
     return dto;
   }
 }

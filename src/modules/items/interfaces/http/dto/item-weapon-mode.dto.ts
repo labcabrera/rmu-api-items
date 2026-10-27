@@ -45,6 +45,16 @@ export class ItemWeaponModeDto {
   @IsString()
   alternativeTable: AttackTable | undefined;
 
+  @ApiProperty({
+    type: Number,
+    description: 'OB modifier of the mode, such as an improvised weapon penalty (spec 041)',
+    required: false,
+    example: -30,
+  })
+  @IsOptional()
+  @IsNumber()
+  obModifier?: number;
+
   static fromEntity(entity: ItemWeaponMode): ItemWeaponModeDto {
     const dto = new ItemWeaponModeDto();
     dto.type = entity.type;
@@ -54,6 +64,7 @@ export class ItemWeaponModeDto {
     dto.attackTypes = entity.attackTypes;
     dto.ranges = entity.ranges?.map(range => ItemWeaponRangeDto.fromEntity(range));
     dto.alternativeTable = entity.alternativeTable;
+    if (entity.obModifier) dto.obModifier = entity.obModifier;
     return dto;
   }
 
@@ -66,6 +77,7 @@ export class ItemWeaponModeDto {
       dto.sizeAdjustment,
       dto.ranges?.map(range => ItemWeaponRangeDto.toEntity(range)),
       dto.alternativeTable,
+      dto.obModifier || undefined,
     );
   }
 }

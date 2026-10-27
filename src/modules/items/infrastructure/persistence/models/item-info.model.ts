@@ -27,4 +27,7 @@ export class ItemInfo {
 
   @Prop({ type: Boolean, required: true })
   unique: boolean;
+
+  @Prop({ type: Number, required: false })
+  lotSize?: number | null;
 }
