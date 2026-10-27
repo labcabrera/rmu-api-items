@@ -6,6 +6,7 @@ import { ItemArmorDto } from './item-armor.dto.js';
 import { ItemInfoDto } from './item-info.dto.js';
 import { ItemModifierDto } from './item-modifier.dto.js';
 import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemFeaturesDto } from './item-features.dto.js';
 import { ItemWeaponDto } from './item-weapon.dto.js';
 
 /**
@@ -40,6 +41,17 @@ export class UpdateItemDto {
   @ValidateNested()
   @Type(() => ItemShieldDto)
   shield: ItemShieldDto | undefined;
+
+  @ApiProperty({
+    type: ItemFeaturesDto,
+    description: 'Container, light, transport or ammunition info (spec 041); null removes them',
+    required: false,
+  })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ItemFeaturesDto)
+  features: ItemFeaturesDto | null | undefined;
 
   @ApiProperty({ type: ItemInfoDto, description: 'Generic item information', required: false })
   @IsOptional()
@@ -78,6 +90,7 @@ export class UpdateItemDto {
       dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : undefined,
       dto.armor ? ItemArmorDto.toEntity(dto.armor) : undefined,
       dto.shield ? ItemShieldDto.toEntity(dto.shield) : undefined,
+      dto.features === undefined ? undefined : dto.features ? ItemFeaturesDto.toEntity(dto.features) : null,
       dto.info ? ItemInfoDto.toEntity(dto.info) : undefined,
       dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : undefined,
       dto.description,

@@ -4,6 +4,7 @@ import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Matches, ValidateN
 import { ItemArmorDto } from './item-armor.dto.js';
 import { ItemInfoDto } from './item-info.dto.js';
 import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemFeaturesDto } from './item-features.dto.js';
 import { ItemWeaponDto } from './item-weapon.dto.js';
 import { ItemModifierDto } from './item-modifier.dto.js';
 import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
@@ -51,6 +52,13 @@ export class CreateItemDto {
   @Type(() => ItemShieldDto)
   shield: ItemShieldDto | null;
 
+  @ApiProperty({ type: ItemFeaturesDto, description: 'Container, light, transport or ammunition info (spec 041)', required: false })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ItemFeaturesDto)
+  features: ItemFeaturesDto | null;
+
   @ApiProperty({ type: ItemInfoDto, description: 'Generic item information', required: true })
   @IsObject()
   @ValidateNested()
@@ -82,6 +90,7 @@ export class CreateItemDto {
       dto.weapon ? ItemWeaponDto.toEntity(dto.weapon) : null,
       dto.armor ? ItemArmorDto.toEntity(dto.armor) : null,
       dto.shield ? ItemShieldDto.toEntity(dto.shield) : null,
+      dto.features ? ItemFeaturesDto.toEntity(dto.features) : null,
       ItemInfoDto.toEntity(dto.info),
       dto.modifiers ? dto.modifiers.map(m => ItemModifierDto.toEntity(m)) : null,
       dto.description,

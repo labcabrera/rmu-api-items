@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import type { HydratedDocument } from 'mongoose';
-import { ItemArmor, ItemShield } from './item-childs.model.js';
+import { ItemArmor, ItemFeatures, ItemShield } from './item-childs.model.js';
 import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
 import { ItemWeapon } from './item-weapon.model.js';
 import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
@@ -34,6 +34,9 @@ export class ItemModel {
 
   @Prop({ type: ItemShield, required: false })
   shield: ItemShield | null;
+
+  @Prop({ type: ItemFeatures, required: false })
+  features: ItemFeatures | null;
 
   @Prop({ type: ItemInfo, required: true })
   info: ItemInfo;

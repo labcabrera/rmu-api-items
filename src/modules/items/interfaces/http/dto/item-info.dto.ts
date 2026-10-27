@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn, ValidateNested } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsBoolean, IsIn, IsInt, Min, ValidateNested } from 'class-validator';
 import type { ItemCost } from '../../../domain/value-objects/item-cost.vo.js';
 import type { ItemInfo } from '../../../domain/value-objects/item-info.vo.js';
 import { ITEM_RARITIES, type ItemRarity } from '../../../domain/value-objects/item-rarity.vo.js';
@@ -71,6 +71,17 @@ export class ItemInfoDto {
   @IsBoolean()
   unique: boolean;
 
+  @ApiProperty({
+    type: Number,
+    description: 'Units of the lot the book sells; cost and weight are per unit (spec 041)',
+    required: false,
+    example: 20,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  lotSize?: number | null;
+
   static fromEntity(entity: ItemInfo): ItemInfoDto {
     const dto = new ItemInfoDto();
     dto.cost = entity.cost;
@@ -81,6 +92,7 @@ export class ItemInfoDto {
     dto.stackable = entity.stackable;
     dto.rarity = entity.rarity;
     dto.unique = entity.unique;
+    if (entity.lotSize) dto.lotSize = entity.lotSize;
     return dto;
   }
 
@@ -94,6 +106,7 @@ export class ItemInfoDto {
       stackable: dto.stackable,
       rarity: dto.rarity,
       unique: dto.unique,
+      ...(dto.lotSize ? { lotSize: dto.lotSize } : {}),
     };
   }
 }

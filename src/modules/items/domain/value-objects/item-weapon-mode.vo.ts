@@ -13,6 +13,8 @@ export class ItemWeaponMode {
     public readonly sizeAdjustment: number,
     public readonly ranges: ItemWeaponRange[] | undefined,
     public readonly alternativeTable: AttackTable | undefined,
+    /** OB modifier of the mode, such as the penalty of an improvised weapon (spec 041, decision 5). */
+    public readonly obModifier?: number,
   ) {
     if (ranges && ranges.length === 0) {
       this.ranges = undefined;

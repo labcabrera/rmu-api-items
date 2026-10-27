@@ -10,4 +10,6 @@ export interface ItemInfo {
   stackable: boolean;
   rarity: ItemRarity;
   unique: boolean;
+  /** Units of the lot the book sells (20 arrows): cost and weight are per unit (spec 041, decision 2). */
+  lotSize?: number | null;
 }

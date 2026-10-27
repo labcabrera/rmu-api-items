@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ItemArmorDto } from './item-armor.dto.js';
 import { ItemInfoDto } from './item-info.dto.js';
 import { ItemShieldDto } from './item-shield.dto.js';
+import { ItemFeaturesDto } from './item-features.dto.js';
 import { ItemWeaponDto } from './item-weapon.dto.js';
 import { ItemModifierDto } from './item-modifier.dto.js';
 import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
@@ -29,6 +30,9 @@ export class ItemDto {
 
   @ApiProperty({ description: 'Shield info if available' })
   shield: ItemShieldDto | null;
+
+  @ApiProperty({ type: ItemFeaturesDto, description: 'Container, light, transport or ammunition info (spec 041)', required: false })
+  features: ItemFeaturesDto | null;
 
   @ApiProperty({ description: 'Generic item information' })
   info: ItemInfoDto;
@@ -58,6 +62,7 @@ export class ItemDto {
     dto.weapon = entity.weapon ? ItemWeaponDto.fromEntity(entity.weapon) : null;
     dto.armor = entity.armor ? ItemArmorDto.fromEntity(entity.armor) : null;
     dto.shield = entity.shield ? ItemShieldDto.fromEntity(entity.shield) : null;
+    dto.features = ItemFeaturesDto.fromEntity(entity.features);
     dto.info = ItemInfoDto.fromEntity(entity.info);
     dto.modifiers = entity.modifiers ? entity.modifiers.map(m => ItemModifierDto.fromEntity(m)) : null;
     dto.description = entity.description;

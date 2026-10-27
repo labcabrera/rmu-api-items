@@ -1,5 +1,6 @@
 import type { ItemArmor } from '../value-objects/item-armor.vo.js';
 import type { ItemCategory } from '../value-objects/item-category.vo.js';
+import type { ItemFeatures } from '../value-objects/item-features.vo.js';
 import type { ItemInfo } from '../value-objects/item-info.vo.js';
 import { ItemShield } from '../value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
@@ -22,6 +23,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     public weapon: ItemWeapon | null,
     public armor: ItemArmor | null,
     public shield: ItemShield | null,
+    public features: ItemFeatures | null,
     public info: ItemInfo,
     public modifiers: ItemModifier[] | null,
     public description: string | null,
@@ -44,21 +46,19 @@ export class Item extends BaseAggregateRoot<ItemProps> {
    */
   public static checkCategoryData(
     category: ItemCategory,
-    data: { weapon?: ItemWeapon | null; armor?: ItemArmor | null; shield?: ItemShield | null },
+    data: { weapon?: ItemWeapon | null; armor?: ItemArmor | null; shield?: ItemShield | null; features?: ItemFeatures | null },
   ): void {
-    const { weapon, armor, shield } = data;
+    const { weapon, armor, shield, features } = data;
+    // The general equipment blocks are for the general equipment (spec 041, decision 4)
+    if (features && Object.values(features).some(value => !!value) && ['weapon', 'armor', 'shield'].includes(category)) {
+      throw new ValidationError('Container, light, transport or ammunition info not allowed');
+    }
+    if (features?.ammunition && category !== 'ammunition') throw new ValidationError('Ammunition info not allowed');
     switch (category) {
       case 'weapon':
         if (!weapon) throw new ValidationError('Required weapon info');
         if (armor) throw new ValidationError('Armor info not allowed');
         if (shield) throw new ValidationError('Shield info not allowed');
-        if (!weapon.modes || weapon.modes.length === 0) {
-          throw new ValidationError('At least one weapon mode is required for weapon items');
-        }
-        weapon.modes.forEach(mode => {
-          if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
-          if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
-        });
         break;
       case 'armor':
         if (!armor) throw new ValidationError('Required armor info');
@@ -70,18 +70,47 @@ export class Item extends BaseAggregateRoot<ItemProps> {
         if (weapon) throw new ValidationError('Weapon info not allowed');
         if (armor) throw new ValidationError('Armor info not allowed');
         break;
+      case 'tools':
+      case 'other':
+        // Spec 041, decision 5: a tool may be an improvised weapon
+        if (armor) throw new ValidationError('Armor info not allowed');
+        if (shield) throw new ValidationError('Shield info not allowed');
+        break;
       case 'clothes':
       case 'ammunition':
-      case 'other':
       case 'coins':
       case 'food':
-      case 'tools':
+      case 'container':
+      case 'light':
+      case 'mount':
+      case 'vehicle':
+      case 'service':
+      case 'instrument':
         if (weapon) throw new ValidationError('Weapon info not allowed');
         if (armor) throw new ValidationError('Armor info not allowed');
         if (shield) throw new ValidationError('Shield info not allowed');
         break;
       default:
         throw new ValidationError('Invalid item category');
+    }
+    if (armor) Item.checkArmor(armor);
+    if (weapon) Item.checkWeapon(weapon);
+  }
+
+  private static checkWeapon(weapon: ItemWeapon): void {
+    if (!weapon.modes || weapon.modes.length === 0) {
+      throw new ValidationError('At least one weapon mode is required for weapon items');
+    }
+    weapon.modes.forEach(mode => {
+      if (!mode.attackTable) throw new ValidationError('Attack table is required for each weapon mode');
+      if (!mode.fumbleTable) throw new ValidationError('Fumble table is required for each weapon mode');
+    });
+  }
+
+  /** A piece covers at least its own slot (spec 041, decision 6). */
+  private static checkArmor(armor: ItemArmor): void {
+    if (armor.coverage && armor.coverage.length > 0 && !armor.coverage.includes(armor.slot)) {
+      throw new ValidationError('The armor coverage must include its slot');
     }
   }
 
@@ -98,6 +127,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       props.weapon,
       props.armor,
       props.shield,
+      props.features ?? null,
       props.info,
       props.modifiers,
       props.description,
@@ -120,6 +150,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       props.weapon,
       props.armor,
       props.shield,
+      props.features ?? null,
       props.info,
       props.modifiers,
       props.description,
@@ -131,11 +162,12 @@ export class Item extends BaseAggregateRoot<ItemProps> {
   }
 
   update(props: ItemUpdateProps): void {
-    const { name, weapon, armor, shield, info, modifiers, description, imageUrl } = props;
+    const { name, weapon, armor, shield, features, info, modifiers, description, imageUrl } = props;
     if (name) this.name = name;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
     if (shield) this.shield = shield;
+    if (features !== undefined) this.features = features;
     if (info) this.info = info;
     if (modifiers !== undefined) this.modifiers = modifiers;
     if (description !== undefined) this.description = description;
@@ -170,6 +202,12 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'coins':
       case 'food':
       case 'tools':
+      case 'container':
+      case 'light':
+      case 'mount':
+      case 'vehicle':
+      case 'service':
+      case 'instrument':
         break;
       default:
         throw new ValidationError('Invalid item category');
@@ -209,6 +247,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       weapon: this.weapon,
       armor: this.armor,
       shield: this.shield,
+      features: this.features,
       info: this.info,
       modifiers: this.modifiers,
       description: this.description,
