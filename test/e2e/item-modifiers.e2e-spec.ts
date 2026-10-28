@@ -130,6 +130,63 @@ describe('item modifiers', () => {
   });
 });
 
+// Spec 044, decision 10 (F-items-23): the creation and the PATCH check the modifiers they send like POST .../modifiers.
+describe('modifiers sent with the item', () => {
+  const create = (name: string, modifiers: object[]) =>
+    request(e2e.server).post('/v1/items').set('Authorization', auth('owner')).send({ name, category: 'armor', armor, info, modifiers });
+  const patch = (body: object) => request(e2e.server).patch('/v1/items/e2e-checked-armor').set('Authorization', auth('owner')).send(body);
+
+  const invalid: [object, string][] = [
+    [{ id: 'm1', type: 'material', value: 3, modifier: 'mithril' }, 'A material modifier does not allow a value'],
+    [{ id: 'm1', type: 'slayer' }, 'A slayer modifier requires a modifier'],
+    [{ id: 'm1', type: 'bonus', value: null, modifier: null }, 'A bonus modifier requires a value'],
+    [{ id: 'm1', type: 'item-damage', value: 1, modifier: 'animals' }, 'A item-damage modifier does not allow a modifier'],
+    [{ id: 'm1', type: 'skill-bonus', value: 5 }, 'A skill-bonus modifier requires a modifier'],
+  ];
+
+  it.each(invalid)('rejects the creation with %j [F-items-23]', async (modifier, message) => {
+    const response = await create('E2E Rejected Armor', [{ id: 'm0', type: 'bonus', value: 5 }, modifier]);
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ code: 'validation', message });
+    expect((await request(e2e.server).get('/v1/items/e2e-rejected-armor').set('Authorization', auth('owner'))).status).toBe(404);
+  });
+
+  it('creates an item whose modifiers follow their options', async () => {
+    const response = await create('E2E Checked Armor', [
+      { id: 'm1', type: 'bonus', value: 5, modifier: null },
+      { id: 'm2', type: 'slayer', modifier: 'dragons', value: null },
+    ]);
+    expect(response.status).toBe(201);
+    expect((response.body as ItemBody).modifiers!.map(m => m.type)).toEqual(['bonus', 'slayer']);
+  });
+
+  it.each(invalid)('rejects a PATCH with %j and keeps the stored modifiers [F-items-23]', async (modifier, message) => {
+    const response = await patch({ modifiers: [modifier] });
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ code: 'validation', message });
+    const read = await request(e2e.server).get('/v1/items/e2e-checked-armor').set('Authorization', auth('owner'));
+    expect((read.body as ItemBody).modifiers!.map(m => m.id)).toEqual(['m1', 'm2']);
+  });
+
+  it('accepts a PATCH with valid modifiers, and one without modifiers', async () => {
+    const valid = await patch({ modifiers: [{ id: 'm3', type: 'skill-bonus', value: 5, modifier: 'climbing' }] });
+    expect(valid.status).toBe(200);
+    expect((valid.body as ItemBody).modifiers).toMatchObject([{ id: 'm3', type: 'skill-bonus', value: 5, modifier: 'climbing' }]);
+    expect((await patch({ description: 'No modifiers sent' })).status).toBe(200);
+  });
+
+  it('lets a PATCH that does not send the modifiers change an item whose stored modifiers break the rules', async () => {
+    await e2e.connection
+      .collection('items')
+      .updateOne(
+        { _id: 'e2e-checked-armor' as never },
+        { $set: { modifiers: [{ id: 'old', type: 'bonus', value: null, modifier: null }] } },
+      );
+    expect((await patch({ description: 'Legacy item' })).status).toBe(200);
+    expect((await patch({ modifiers: [{ id: 'old', type: 'bonus', value: null, modifier: null }] })).status).toBe(400);
+  });
+});
+
 describe('update of the category data', () => {
   beforeAll(async () => {
     expect((await createArmor('E2E Plain Armor')).status).toBe(201);

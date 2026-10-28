@@ -47,4 +47,8 @@ Errors answer `{ statusCode, error, code, message, timestamp, path }`. Responses
 Permissions (spec 021): the catalog is readable by every authenticated user and `GET /v1/item-modifiers/options` is
 public; creating needs `rmu-user` or `rmu-admin`; changing, deleting and the modifiers are for the owner or `rmu-admin`
 (403 otherwise). A `PATCH` without changes neither writes nor publishes.
+The modifiers sent with `POST /v1/items`, a `PATCH` or `POST .../modifiers` follow `GET /v1/item-modifiers/options`
+(400 otherwise, spec 044). `scripts/check-item-modifiers.mjs` lists, read-only, the stored items that break those rules
+(`RMU_MONGO_ITEMS_URI` from the environment, `DRY_RUN=1 node scripts/check-item-modifiers.mjs`): fix them before
+deploying, or a `PATCH` that sends their modifiers back answers 400.
 Open problems found during the migration are listed in `docs/reports/api-template-rollout-findings.md` of the workspace.
