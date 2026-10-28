@@ -31,6 +31,6 @@ export function configureHttp(app: NestExpressApplication) {
   if (origins.length > 0) app.enableCors({ origin: origins });
   app.enableShutdownHooks();
   // Unknown body fields are dropped, not rejected (whitelist without forbidNonWhitelisted).
-  app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: { enableImplicitConversion: true }, whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
 }
