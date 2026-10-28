@@ -127,8 +127,17 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     }
   }
 
+  /**
+   * The modifiers sent with the creation or a PATCH follow the same options as POST .../modifiers (spec 044, decision
+   * 10; F-items-23).
+   */
+  public static checkModifiers(modifiers: ItemModifier[] | null | undefined): void {
+    modifiers?.forEach(m => checkItemModifier(m.type, m.modifier, m.value));
+  }
+
   public static create(props: ItemCreationProps): Item {
     Item.checkCategoryData(props.category, props);
+    Item.checkModifiers(props.modifiers);
     // The id is the name in lower case with dashes, unique across users and realms: a second item with the same name
     // is a 409 duplicate-key. Strategic and tactical store these ids, so they do not change (spec 021, decision 5).
     const id = props.name.toLowerCase().replace(/\s+/g, '-');
@@ -176,6 +185,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
 
   update(props: ItemUpdateProps): void {
     const { name, weapon, armor, shield, features, info, modifiers, description, imageUrl } = props;
+    // Only the modifiers the PATCH sends are checked: a stored item that breaks the rules can still change other fields.
+    Item.checkModifiers(modifiers);
     if (name) this.name = name;
     if (weapon) this.weapon = weapon;
     if (armor) this.armor = armor;
