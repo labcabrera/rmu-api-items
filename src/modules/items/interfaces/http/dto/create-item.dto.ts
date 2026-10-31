@@ -52,7 +52,7 @@ export class CreateItemDto {
   @Type(() => ItemShieldDto)
   shield: ItemShieldDto | null;
 
-  @ApiProperty({ type: ItemFeaturesDto, description: 'Container, light, transport or ammunition info (spec 041)', required: false })
+  @ApiProperty({ type: ItemFeaturesDto, description: 'Category blocks (specs 041, 042, 062)', required: false })
   @IsOptional()
   @IsObject()
   @ValidateNested()

@@ -607,3 +607,143 @@ describe('general equipment (spec 041)', () => {
     expect((removed.body as { features: object | null }).features).toBeNull();
   });
 });
+
+// Workspace spec 062: herbs, acids, intoxicants, gems, jewelry, animals and properties. Synthetic values only.
+describe('treasure goods (spec 062)', () => {
+  const herb = {
+    group: 'general',
+    biomes: ['F', 'D'],
+    highAltitude: true,
+    find: 'h',
+    form: 'leaf',
+    prep: 'brew',
+    season: 'Spring',
+    effectDelay: 'rounds',
+    magical: true,
+    addictionFactor: null,
+    effects: { heal: { min: 2, max: 12 }, stunRelief: null, treats: ['bone', 'any'], recoveryBonus: 5 },
+  };
+  const acid = {
+    strength: 'mild',
+    splash: { severity: 'A', modifier: -40 },
+    immersion: { severity: 'B', count: 2, everyRounds: 1 },
+    ingestion: { level: 4, penalty: -2, perFailure: 5 },
+    breakageMod: 5,
+    craftDifficulty: 'm',
+    targets: 'any',
+  };
+  const gem = {
+    grade: 'precious',
+    mineral: 'test-stone',
+    valuePerCarat: 7.5,
+    hardness: { min: 6, max: 6.5 },
+    specificGravity: { min: 2.1, max: 2.4 },
+    luster: 'V',
+    caratsPerCm: 3.2,
+    magic: { spells: 'Synthetic list', stats: ['in'], skills: null, other: null },
+  };
+  const jewelry = { value: { min: 1, max: 50, dice: '1d50', openEnded: true }, slot: 'finger' };
+  const animal = { npcId: 'e2e-creature', trained: true, stage: 'young', domesticated: true };
+  const property = { rent: 4, size: '10x10 ft', height: null };
+  const intoxicant = { addictionFactor: 7, form: 'root', prep: 'ingest' };
+  const goods: [string, string, object][] = [
+    ['E2E Greenleaf', 'herb', { herb, antidote: { categories: ['any'], level: 2, withinHours: null } }],
+    ['E2E Sourwash', 'acid', { acid }],
+    ['E2E Dreamroot', 'intoxicant', { intoxicant }],
+    ['E2E Bluestone', 'gem', { gem }],
+    ['E2E Plain Ring', 'jewelry', { jewelry }],
+    ['E2E Young Goat', 'animal', { animal }],
+    ['E2E Trained Pony', 'mount', { animal: { ...animal, stage: 'adult' }, transport: { capacity: 100, speed: 30 } }],
+    ['E2E Hut', 'property', { property }],
+  ];
+
+  beforeAll(async () => {
+    for (const [name, category, features] of goods) {
+      const response = await create('owner', { name, category, features, info: category === 'gem' ? { ...info, cost: null } : info });
+      expect(response.status, JSON.stringify(response.body)).toBe(201);
+    }
+  });
+
+  it('stores and returns every block as sent', async () => {
+    for (const [name, category, features] of goods) {
+      const id = name.toLowerCase().replaceAll(' ', '-');
+      const read = (await get('owner', `/v1/items/${id}`)).body as ItemBody & { features: object };
+      expect(read.category).toBe(category);
+      expect(read.features).toEqual(features);
+    }
+    const gemItem = (await get('owner', '/v1/items/e2e-bluestone')).body as ItemBody;
+    expect(gemItem.info.cost).toBeNull();
+  });
+
+  it('carries the blocks in the item.created event', () => {
+    const [event] = eventsOf('e2e-bluestone');
+    expect(event.topic).toBe('internal.rmu-items.item.created.v1');
+    expect(event.message.data.features).toEqual({ gem });
+  });
+
+  it('filters herbs by group and biome, and gems by grade', async () => {
+    const byGroup = await get('owner', '/v1/items?q=category==herb;features.herb.group==general&size=100');
+    expect(byGroup.status).toBe(200);
+    expect(ids(byGroup.body)).toEqual(['e2e-greenleaf']);
+    const byBiome = await get('owner', '/v1/items?q=features.herb.biomes=in=(D,J)&size=100');
+    expect(ids(byBiome.body)).toEqual(['e2e-greenleaf']);
+    const otherBiome = await get('owner', '/v1/items?q=features.herb.biomes==J&size=100');
+    expect(ids(otherBiome.body)).toEqual([]);
+    const byGrade = await get('owner', '/v1/items?q=features.gem.grade==precious&size=100');
+    expect(ids(byGrade.body)).toEqual(['e2e-bluestone']);
+  });
+
+  it('keeps each block in its category', async () => {
+    const cases: [string, object, string][] = [
+      ['food', { herb }, 'Herb info not allowed'],
+      ['poison', { poison: { category: 'nerve', level: 1, form: 'paste' }, acid }, 'Acid info not allowed'],
+      ['food', { intoxicant }, 'Intoxicant info not allowed'],
+      ['jewelry', { gem, jewelry }, 'Gem info not allowed'],
+      ['gem', { gem, jewelry }, 'Jewelry info not allowed'],
+      ['vehicle', { animal }, 'Animal info not allowed'],
+      ['service', { property }, 'Property info not allowed'],
+    ];
+    for (const [index, [category, features, message]] of cases.entries()) {
+      const response = await create('owner', { name: `E2E Misplaced ${index}`, category, features, info });
+      expect(response.status).toBe(400);
+      expect((response.body as { message: string }).message).toBe(message);
+    }
+    const onWeapon = await create('owner', weapon('E2E Gem Sword', { features: { gem } }));
+    expect(onWeapon.status).toBe(400);
+  });
+
+  it('rejects invalid values and inverted ranges', async () => {
+    const invalid: [string, object][] = [
+      ['herb', { herb: { ...herb, biomes: ['Q'] } }],
+      ['herb', { herb: { ...herb, find: 'zz' } }],
+      ['herb', { herb: { ...herb, form: 'Big Leaf' } }],
+      ['herb', { herb: { ...herb, effects: { ...herb.effects, treats: ['fracture'] } } }],
+      ['acid', { acid: { ...acid, targets: 'elves' } }],
+      ['acid', { acid: { ...acid, splash: { severity: 'Z', modifier: 0 } } }],
+      ['gem', { gem: { ...gem, grade: 'common' } }],
+      ['animal', { animal: { ...animal, stage: 'old' } }],
+      ['jewelry', { jewelry: { slot: 'finger' } }],
+    ];
+    for (const [index, [category, features]] of invalid.entries()) {
+      const response = await create('owner', { name: `E2E Invalid ${index}`, category, features, info });
+      expect(response.status, JSON.stringify(features)).toBe(400);
+    }
+    const ranges: [string, object, string][] = [
+      ['herb', { herb: { ...herb, effects: { ...herb.effects, heal: { min: 9, max: 1 } } } }, 'Invalid herb heal range'],
+      ['gem', { gem: { ...gem, hardness: { min: 8, max: 7 } } }, 'Invalid gem hardness range'],
+      ['jewelry', { jewelry: { ...jewelry, value: { ...jewelry.value, min: 90 } } }, 'Invalid jewelry value range'],
+    ];
+    for (const [index, [category, features, message]] of ranges.entries()) {
+      const response = await create('owner', { name: `E2E Inverted ${index}`, category, features, info });
+      expect((response.body as { message: string }).message).toBe(message);
+    }
+  });
+
+  it('changes a block with a PATCH and checks it against the category', async () => {
+    const changed = await patch('owner', 'e2e-hut', { features: { property: { rent: 9, size: null, height: '1 floor' } } });
+    expect(changed.status).toBe(200);
+    expect((changed.body as { features: object }).features).toEqual({ property: { rent: 9, size: null, height: '1 floor' } });
+    const misplaced = await patch('owner', 'e2e-hut', { features: { gem } });
+    expect(misplaced.status).toBe(400);
+  });
+});
