@@ -62,7 +62,7 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
   private features(features: ItemModel['features'] | undefined): ItemFeatures | null {
     if (!features) return null;
     const result: ItemFeatures = {};
-    const { container, light, transport, ammunition, poison, antidote } = features;
+    const { container, light, transport, ammunition, poison, antidote, herb, acid, intoxicant, gem, jewelry, animal, property } = features;
     if (container)
       result.container = {
         weight: container.weight ?? null,
@@ -85,6 +85,84 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
       };
     if (antidote)
       result.antidote = { categories: [...(antidote.categories ?? [])], level: antidote.level, withinHours: antidote.withinHours ?? null };
+    // Spec 062
+    if (herb)
+      result.herb = {
+        group: herb.group,
+        biomes: [...(herb.biomes ?? [])],
+        highAltitude: herb.highAltitude ?? false,
+        find: herb.find,
+        form: herb.form,
+        prep: herb.prep,
+        season: herb.season ?? null,
+        effectDelay: herb.effectDelay,
+        magical: herb.magical ?? false,
+        addictionFactor: herb.addictionFactor ?? null,
+        effects: herb.effects
+          ? {
+              heal: range(herb.effects.heal),
+              stunRelief: herb.effects.stunRelief ?? null,
+              treats: herb.effects.treats ? [...herb.effects.treats] : null,
+              recoveryBonus: herb.effects.recoveryBonus ?? null,
+            }
+          : null,
+      };
+    if (acid)
+      result.acid = {
+        strength: acid.strength,
+        splash: acid.splash ? { severity: acid.splash.severity, modifier: acid.splash.modifier } : null,
+        immersion: acid.immersion
+          ? { severity: acid.immersion.severity, count: acid.immersion.count, everyRounds: acid.immersion.everyRounds }
+          : null,
+        ingestion: acid.ingestion
+          ? { level: acid.ingestion.level, penalty: acid.ingestion.penalty, perFailure: acid.ingestion.perFailure }
+          : null,
+        breakageMod: acid.breakageMod ?? 0,
+        craftDifficulty: acid.craftDifficulty,
+        targets: acid.targets ?? 'any',
+      };
+    if (intoxicant)
+      result.intoxicant = {
+        addictionFactor: intoxicant.addictionFactor ?? null,
+        form: intoxicant.form ?? null,
+        prep: intoxicant.prep ?? null,
+      };
+    if (gem)
+      result.gem = {
+        grade: gem.grade,
+        mineral: gem.mineral,
+        valuePerCarat: gem.valuePerCarat,
+        hardness: range(gem.hardness),
+        specificGravity: range(gem.specificGravity),
+        luster: gem.luster ?? null,
+        caratsPerCm: gem.caratsPerCm ?? null,
+        magic: gem.magic
+          ? {
+              spells: gem.magic.spells ?? null,
+              stats: [...(gem.magic.stats ?? [])],
+              skills: gem.magic.skills ?? null,
+              other: gem.magic.other ?? null,
+            }
+          : null,
+      };
+    if (jewelry)
+      result.jewelry = {
+        value: {
+          min: jewelry.value.min,
+          max: jewelry.value.max,
+          dice: jewelry.value.dice ?? null,
+          openEnded: jewelry.value.openEnded ?? false,
+        },
+        slot: jewelry.slot ?? null,
+      };
+    if (animal)
+      result.animal = {
+        npcId: animal.npcId ?? null,
+        trained: animal.trained ?? false,
+        stage: animal.stage,
+        domesticated: animal.domesticated ?? false,
+      };
+    if (property) result.property = { rent: property.rent ?? null, size: property.size ?? null, height: property.height ?? null };
     return Object.keys(result).length > 0 ? result : null;
   }
 }

@@ -1,6 +1,6 @@
 import type { ItemArmor } from '../value-objects/item-armor.vo.js';
 import type { ItemCategory } from '../value-objects/item-category.vo.js';
-import type { ItemFeatures, ItemPoison } from '../value-objects/item-features.vo.js';
+import type { ItemFeatures, ItemGem, ItemHerb, ItemJewelry, ItemPoison } from '../value-objects/item-features.vo.js';
 import type { ItemInfo } from '../value-objects/item-info.vo.js';
 import { ItemShield } from '../value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
@@ -13,6 +13,17 @@ import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props
 import { NotFoundError, ValidationError } from '../../../shared/domain/errors/errors.js';
 import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
 import type { AccessType } from '../../../shared/domain/entities/access-type.js';
+
+/** Categories each block of spec 062 is allowed in. */
+const FEATURE_BLOCK_CATEGORIES: Partial<Record<keyof ItemFeatures, readonly ItemCategory[]>> = {
+  herb: ['herb'],
+  acid: ['acid'],
+  intoxicant: ['intoxicant'],
+  gem: ['gem'],
+  jewelry: ['jewelry'],
+  animal: ['animal', 'mount'],
+  property: ['property'],
+};
 
 export class Item extends BaseAggregateRoot<ItemProps> {
   constructor(
@@ -59,6 +70,15 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     if (features?.antidote && category !== 'herb') throw new ValidationError('Antidote info not allowed');
     if (category === 'poison' && !features?.poison) throw new ValidationError('Required poison info');
     if (features?.poison) Item.checkPoison(features.poison);
+    // Spec 062: each block in its own category; an animal block also fits a mount
+    for (const [block, categories] of Object.entries(FEATURE_BLOCK_CATEGORIES)) {
+      if (features?.[block as keyof ItemFeatures] && !categories.includes(category)) {
+        throw new ValidationError(`${block.charAt(0).toUpperCase()}${block.slice(1)} info not allowed`);
+      }
+    }
+    if (features?.herb) Item.checkHerb(features.herb);
+    if (features?.gem) Item.checkGem(features.gem);
+    if (features?.jewelry) Item.checkJewelry(features.jewelry);
     switch (category) {
       case 'weapon':
         if (!weapon) throw new ValidationError('Required weapon info');
@@ -93,6 +113,12 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'instrument':
       case 'poison':
       case 'herb':
+      case 'acid':
+      case 'intoxicant':
+      case 'gem':
+      case 'jewelry':
+      case 'animal':
+      case 'property':
         if (weapon) throw new ValidationError('Weapon info not allowed');
         if (armor) throw new ValidationError('Armor info not allowed');
         if (shield) throw new ValidationError('Shield info not allowed');
@@ -108,6 +134,21 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     for (const [name, range] of Object.entries({ 'immediate hits': poison.immediateHits, onset: poison.onsetRounds })) {
       if (range && range.min > range.max) throw new ValidationError(`Invalid poison ${name} range`);
     }
+  }
+
+  private static checkHerb(herb: ItemHerb): void {
+    const heal = herb.effects?.heal;
+    if (heal && heal.min > heal.max) throw new ValidationError('Invalid herb heal range');
+  }
+
+  private static checkGem(gem: ItemGem): void {
+    for (const [name, range] of Object.entries({ hardness: gem.hardness, 'specific gravity': gem.specificGravity })) {
+      if (range && range.min > range.max) throw new ValidationError(`Invalid gem ${name} range`);
+    }
+  }
+
+  private static checkJewelry(jewelry: ItemJewelry): void {
+    if (jewelry.value.min > jewelry.value.max) throw new ValidationError('Invalid jewelry value range');
   }
 
   private static checkWeapon(weapon: ItemWeapon): void {
@@ -234,6 +275,12 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'instrument':
       case 'poison':
       case 'herb':
+      case 'acid':
+      case 'intoxicant':
+      case 'gem':
+      case 'jewelry':
+      case 'animal':
+      case 'property':
         break;
       default:
         throw new ValidationError('Invalid item category');
