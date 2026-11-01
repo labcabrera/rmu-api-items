@@ -53,6 +53,8 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
       modifiers: modifiers,
       imageUrl: doc.imageUrl,
       owner: doc.owner,
+      // A missing field is never system (spec 063)
+      entitySource: doc.entitySource ?? 'user',
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });

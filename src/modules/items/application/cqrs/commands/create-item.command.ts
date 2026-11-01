@@ -5,6 +5,7 @@ import type { ItemFeatures } from '../../../domain/value-objects/item-features.v
 import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../../../domain/value-objects/item-weapon.vo.js';
 import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
+import type { EntitySource } from '../../../../shared/domain/entities/entity-source.js';
 
 export class CreateItemCommand {
   public constructor(
@@ -21,5 +22,7 @@ export class CreateItemCommand {
     public readonly imageUrl: string | null,
     public readonly userId: string,
     public readonly roles: string[],
+    /** Undefined stores `user` (spec 063). */
+    public readonly entitySource?: EntitySource,
   ) {}
 }

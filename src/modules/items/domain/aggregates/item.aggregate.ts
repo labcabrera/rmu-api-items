@@ -13,6 +13,7 @@ import type { ItemCreationProps, ItemProps, ItemUpdateProps } from './item-props
 import { NotFoundError, ValidationError } from '../../../shared/domain/errors/errors.js';
 import { BaseAggregateRoot } from '../../../shared/domain/aggregates/base-aggregate.js';
 import type { AccessType } from '../../../shared/domain/entities/access-type.js';
+import type { EntitySource } from '../../../shared/domain/entities/entity-source.js';
 
 /** Categories each block of spec 062 is allowed in. */
 const FEATURE_BLOCK_CATEGORIES: Partial<Record<keyof ItemFeatures, readonly ItemCategory[]>> = {
@@ -40,6 +41,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     public description: string | null,
     public imageUrl: string | null,
     public owner: string,
+    public entitySource: EntitySource,
     public createdAt: Date,
     public updatedAt: Date | null,
   ) {
@@ -196,6 +198,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       props.description,
       props.imageUrl,
       props.owner,
+      props.entitySource ?? 'user',
       new Date(),
       null,
     );
@@ -219,13 +222,14 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       props.description,
       props.imageUrl,
       props.owner,
+      props.entitySource ?? 'user',
       props.createdAt,
       props.updatedAt,
     );
   }
 
   update(props: ItemUpdateProps): void {
-    const { name, weapon, armor, shield, features, info, modifiers, description, imageUrl } = props;
+    const { name, weapon, armor, shield, features, info, modifiers, description, imageUrl, entitySource } = props;
     // Only the modifiers the PATCH sends are checked: a stored item that breaks the rules can still change other fields.
     Item.checkModifiers(modifiers);
     if (name) this.name = name;
@@ -237,6 +241,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     if (modifiers !== undefined) this.modifiers = modifiers;
     if (description !== undefined) this.description = description;
     if (imageUrl !== undefined) this.imageUrl = imageUrl;
+    // The guard checks it before (spec 063, decision 3); the owner never changes.
+    if (entitySource) this.entitySource = entitySource;
     // Weapon, armor or shield data on an item of another category is a 400, as in the creation (F-items-13).
     Item.checkCategoryData(this.category, this);
     this.validate();
@@ -326,6 +332,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       description: this.description,
       imageUrl: this.imageUrl,
       owner: this.owner,
+      entitySource: this.entitySource,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

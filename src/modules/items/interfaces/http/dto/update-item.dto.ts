@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsIn, IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 import { UpdateItemCommand } from '../../../application/cqrs/commands/update-item.command.js';
 import { ItemArmorDto } from './item-armor.dto.js';
 import { ItemInfoDto } from './item-info.dto.js';
@@ -8,6 +8,7 @@ import { ItemModifierDto } from './item-modifier.dto.js';
 import { ItemShieldDto } from './item-shield.dto.js';
 import { ItemFeaturesDto } from './item-features.dto.js';
 import { ItemWeaponDto } from './item-weapon.dto.js';
+import { ENTITY_SOURCES, type EntitySource } from '../../../../shared/domain/entities/entity-source.js';
 
 /**
  * A partial change: absent (or null) objects keep their stored value. The nested objects are validated as in the
@@ -83,6 +84,15 @@ export class UpdateItemDto {
   @IsOptional()
   version?: number;
 
+  @ApiPropertyOptional({
+    enum: ENTITY_SOURCES,
+    description: 'New source: only an admin may send system; the owner does not change (spec 063)',
+    example: 'user',
+  })
+  @IsOptional()
+  @IsIn(ENTITY_SOURCES)
+  entitySource?: EntitySource;
+
   static toCommand(itemId: string, dto: UpdateItemDto, userId: string, roles: string[]): UpdateItemCommand {
     return new UpdateItemCommand(
       itemId,
@@ -98,6 +108,7 @@ export class UpdateItemDto {
       userId,
       roles,
       dto.version,
+      dto.entitySource,
     );
   }
 }

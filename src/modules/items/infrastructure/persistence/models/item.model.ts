@@ -5,6 +5,7 @@ import type { ItemCategory } from '../../../domain/value-objects/item-category.v
 import { ItemWeapon } from './item-weapon.model.js';
 import { ItemModifier } from '../../../domain/value-objects/item-modifier.vo.js';
 import { ItemInfo } from './item-info.model.js';
+import { ENTITY_SOURCES, type EntitySource } from '../../../../shared/domain/entities/entity-source.js';
 
 export type ItemDocument = HydratedDocument<ItemModel>;
 
@@ -52,6 +53,10 @@ export class ItemModel {
 
   @Prop({ type: String, required: true })
   owner: string;
+
+  /** Spec 063: documents stored before it existed have none, and are read as `user`. */
+  @Prop({ type: String, enum: ENTITY_SOURCES, required: true, default: 'user' })
+  entitySource: EntitySource;
 
   @Prop({ type: Date, required: true })
   createdAt: Date;

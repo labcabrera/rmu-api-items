@@ -56,7 +56,7 @@ export class ItemController {
   @ApiCreatedResponse({ type: ItemDto, description: 'Created' })
   @ApiErrors({
     400: 'Bad request, invalid data',
-    403: 'Without rmu-user or rmu-admin',
+    403: 'Without rmu-user or rmu-admin, or system source without rmu-admin',
     409: 'An item with the same name (id) already exists',
     502: 'Core did not answer the realm check',
     504: 'Core did not answer the realm check in time',
@@ -73,7 +73,7 @@ export class ItemController {
   @ApiErrors({
     404: 'Item not found',
     400: 'Bad request, invalid data',
-    403: 'Not the owner or an admin',
+    403: 'Not the owner or an admin (system entities: admin only)',
     409: 'The item changed since the version sent',
   })
   async updateItem(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto, @CurrentUser() user: AuthenticatedUser) {
@@ -86,7 +86,7 @@ export class ItemController {
   @HttpCode(204)
   @ApiOperation({ operationId: 'deleteItem', summary: 'Delete item by id' })
   @ApiNoContentResponse({ description: 'Deleted' })
-  @ApiErrors({ 404: 'Item not found', 403: 'Not the owner or an admin' })
+  @ApiErrors({ 404: 'Item not found', 403: 'Not the owner or an admin (system entities: admin only)' })
   async delete(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
     const command = new DeleteItemCommand(id, undefined, user.id, user.roles);
     await this.commandBus.execute(command);
@@ -95,7 +95,7 @@ export class ItemController {
   @Post(':id/modifiers')
   @ApiOperation({ operationId: 'addItemModifier', summary: 'Add a modifier to an item' })
   @ApiCreatedResponse({ type: ItemDto, description: 'The item with the new modifier' })
-  @ApiErrors({ 404: 'Item not found', 400: 'Bad request, invalid data', 403: 'Not the owner or an admin' })
+  @ApiErrors({ 404: 'Item not found', 400: 'Bad request, invalid data', 403: 'Not the owner or an admin (system entities: admin only)' })
   async addModifier(@Param('id') id: string, @Body() modifierDto: AddItemModifierDto, @CurrentUser() user: AuthenticatedUser) {
     const command = AddItemModifierDto.toCommand(id, modifierDto, user.id, user.roles);
     const item = await this.commandBus.execute<AddItemModifierCommand, Item>(command);
@@ -105,7 +105,7 @@ export class ItemController {
   @Delete(':id/modifiers/:modifierId')
   @ApiOperation({ operationId: 'removeItemModifier', summary: 'Remove a modifier from an item' })
   @ApiOkResponse({ type: ItemDto, description: 'The item without the modifier' })
-  @ApiErrors({ 404: 'Item or modifier not found', 403: 'Not the owner or an admin' })
+  @ApiErrors({ 404: 'Item or modifier not found', 403: 'Not the owner or an admin (system entities: admin only)' })
   async removeModifier(@Param('id') id: string, @Param('modifierId') modifierId: string, @CurrentUser() user: AuthenticatedUser) {
     const command = new DeleteItemModifierCommand(id, modifierId, user.id, user.roles);
     const item = await this.commandBus.execute<DeleteItemModifierCommand, Item>(command);

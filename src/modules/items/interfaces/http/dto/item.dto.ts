@@ -8,6 +8,7 @@ import { ItemModifierDto } from './item-modifier.dto.js';
 import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
 import { Item } from '../../../domain/aggregates/item.aggregate.js';
 import { PaginationDto } from '../../../../shared/interfaces/http/dto/page.dto.js';
+import { ENTITY_SOURCES, type EntitySource } from '../../../../shared/domain/entities/entity-source.js';
 
 export class ItemDto {
   @ApiProperty({ description: 'Item identifier', example: 'dagger' })
@@ -49,6 +50,9 @@ export class ItemDto {
   @ApiProperty({ description: 'Owner of the item', example: 'user123' })
   owner: string;
 
+  @ApiProperty({ enum: ENTITY_SOURCES, description: 'Rulebook (system, admin only) or user content (spec 063)', example: 'system' })
+  entitySource: EntitySource;
+
   @ApiProperty({ description: 'Version of optimistic concurrency: send it back in the PATCH to detect a concurrent change', example: 0 })
   version: number;
 
@@ -68,6 +72,7 @@ export class ItemDto {
     dto.description = entity.description;
     dto.imageUrl = entity.imageUrl;
     dto.owner = entity.owner;
+    dto.entitySource = entity.entitySource;
     return dto;
   }
 }

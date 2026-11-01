@@ -21,6 +21,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       throw new NotFoundError('Item', command.id);
     }
     this.itemGuard.checkUpdate(item, command.userId, command.roles);
+    this.itemGuard.checkEntitySource(command.roles, command.entitySource);
     item.checkVersion(command.expectedVersion);
     item.update({
       name: command.name,
@@ -32,6 +33,7 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
       modifiers: command.modifiers,
       description: command.description,
       imageUrl: command.imageUrl,
+      entitySource: command.entitySource,
     });
     // A PATCH without changes neither writes nor publishes (spec 021, decision 9).
     if (!item.hasChanges()) return item;
