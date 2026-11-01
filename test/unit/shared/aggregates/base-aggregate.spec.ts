@@ -14,6 +14,7 @@ const props = (): ItemProps => ({
   description: 'A sack',
   imageUrl: null,
   owner: 'u1',
+  entitySource: 'user',
   createdAt: new Date('2026-01-01T00:00:00Z'),
   updatedAt: null,
 });

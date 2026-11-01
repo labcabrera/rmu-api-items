@@ -5,6 +5,7 @@ import type { ItemInfo } from '../value-objects/item-info.vo.js';
 import { ItemModifier } from '../value-objects/item-modifier.vo.js';
 import { ItemShield } from '../value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
+import type { EntitySource } from '../../../shared/domain/entities/entity-source.js';
 
 export interface ItemProps {
   id: string;
@@ -21,10 +22,12 @@ export interface ItemProps {
   description: string | null;
   imageUrl: string | null;
   owner: string;
+  /** Rulebook (`system`, admin only) or user content (spec 063). */
+  entitySource: EntitySource;
   createdAt: Date;
   updatedAt: Date | null;
 }
 
 export type ItemCreationProps = Omit<ItemProps, 'id' | 'createdAt' | 'updatedAt'>;
 
-export type ItemUpdateProps = Partial<Omit<ItemProps, 'id' | 'realmId' | 'category' | 'createdAt' | 'updatedAt'>>;
+export type ItemUpdateProps = Partial<Omit<ItemProps, 'id' | 'realmId' | 'category' | 'owner' | 'createdAt' | 'updatedAt'>>;

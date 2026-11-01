@@ -19,6 +19,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
 
   async execute(command: CreateItemCommand): Promise<Item> {
     this.itemGuard.checkCreate(command.roles);
+    this.itemGuard.checkEntitySource(command.roles, command.entitySource);
     // Before asking core for the realm, so invalid data is a 400 without a call.
     Item.checkCategoryData(command.category, command);
 
@@ -41,6 +42,7 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
       description: command.description,
       imageUrl: command.imageUrl,
       owner: command.userId,
+      entitySource: command.entitySource ?? 'user',
     });
     const saved = await this.itemRepository.save(item);
     await this.eventPublisher.publishChanges('item', item);
