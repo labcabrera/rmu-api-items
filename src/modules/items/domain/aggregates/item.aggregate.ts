@@ -1,6 +1,7 @@
 import type { ItemArmor } from '../value-objects/item-armor.vo.js';
 import type { ItemCategory } from '../value-objects/item-category.vo.js';
 import type { ItemFeatures, ItemGem, ItemHerb, ItemJewelry, ItemPoison } from '../value-objects/item-features.vo.js';
+import { checkMagicItemFeature } from '../value-objects/item-magic.vo.js';
 import type { ItemInfo } from '../value-objects/item-info.vo.js';
 import { ItemShield } from '../value-objects/item-shield.vo.js';
 import { ItemWeapon } from '../value-objects/item-weapon.vo.js';
@@ -62,8 +63,10 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     data: { weapon?: ItemWeapon | null; armor?: ItemArmor | null; shield?: ItemShield | null; features?: ItemFeatures | null },
   ): void {
     const { weapon, armor, shield, features } = data;
-    // The general equipment blocks are for the general equipment (spec 041, decision 4)
-    if (features && Object.values(features).some(value => !!value) && ['weapon', 'armor', 'shield'].includes(category)) {
+    // The general equipment blocks are for the general equipment (spec 041, decision 4); the magic block is for any
+    // category (spec 067, decision 3)
+    const equipment = features ? Object.entries(features).filter(([block]) => block !== 'magic') : [];
+    if (equipment.some(([, value]) => !!value) && ['weapon', 'armor', 'shield'].includes(category)) {
       throw new ValidationError('Container, light, transport or ammunition info not allowed');
     }
     if (features?.ammunition && category !== 'ammunition') throw new ValidationError('Ammunition info not allowed');
@@ -81,6 +84,7 @@ export class Item extends BaseAggregateRoot<ItemProps> {
     if (features?.herb) Item.checkHerb(features.herb);
     if (features?.gem) Item.checkGem(features.gem);
     if (features?.jewelry) Item.checkJewelry(features.jewelry);
+    if (features?.magic) checkMagicItemFeature(features.magic);
     switch (category) {
       case 'weapon':
         if (!weapon) throw new ValidationError('Required weapon info');
@@ -121,6 +125,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'jewelry':
       case 'animal':
       case 'property':
+      case 'potion':
+      case 'spell-item':
         if (weapon) throw new ValidationError('Weapon info not allowed');
         if (armor) throw new ValidationError('Armor info not allowed');
         if (shield) throw new ValidationError('Shield info not allowed');
@@ -287,6 +293,8 @@ export class Item extends BaseAggregateRoot<ItemProps> {
       case 'jewelry':
       case 'animal':
       case 'property':
+      case 'potion':
+      case 'spell-item':
         break;
       default:
         throw new ValidationError('Invalid item category');

@@ -1,4 +1,5 @@
 import type { DifficultyCode } from './difficulty-code.vo.js';
+import type { MagicItemFeature } from './item-magic.vo.js';
 
 /**
  * What an item of the general equipment does besides being carried (workspace spec 041, decision 4): optional blocks
@@ -230,6 +231,8 @@ export interface ItemFeatures {
   jewelry?: ItemJewelry | null;
   animal?: ItemAnimal | null;
   property?: ItemProperty | null;
+  /** Spec 067: allowed in every category, weapon, armor and shield included */
+  magic?: MagicItemFeature | null;
 }
 
 export const ARMOR_CLASSES = ['light', 'medium', 'heavy'] as const;
