@@ -1,1 +1,30 @@
-export type ItemCategory = 'weapon' | 'armor' | 'shield' | 'clothes' | 'coins' | 'tools' | 'food' | 'ammunition' | 'other';
+/** Spec 067 adds potion and spell-item (wands, rods, staves, rune paper...). Spec 062 adds acid, intoxicant, gem, jewelry, animal and property. Spec 042 adds poison and herb (antidotes). Spec 041 adds the general equipment categories: container, light, mount, vehicle, service and instrument. */
+export const ITEM_CATEGORIES = [
+  'weapon',
+  'armor',
+  'shield',
+  'clothes',
+  'coins',
+  'tools',
+  'food',
+  'ammunition',
+  'container',
+  'light',
+  'mount',
+  'vehicle',
+  'service',
+  'instrument',
+  'poison',
+  'herb',
+  'acid',
+  'intoxicant',
+  'gem',
+  'jewelry',
+  'animal',
+  'property',
+  'potion',
+  'spell-item',
+  'other',
+] as const;
+
+export type ItemCategory = (typeof ITEM_CATEGORIES)[number];

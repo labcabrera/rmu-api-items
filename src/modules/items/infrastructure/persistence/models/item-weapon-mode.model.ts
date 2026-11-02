@@ -1,9 +1,9 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import type { AttackTable } from 'src/modules/items/domain/value-objects/attack-table.vo';
-import type { FumbleTable } from 'src/modules/items/domain/value-objects/fumble-table.vo';
-import type { WeaponMode } from 'src/modules/items/domain/value-objects/weapon-mode.vo';
-import type { AttackType } from 'src/modules/items/domain/value-objects/attack-type.vo';
-import { ItemWeaponRange } from './item-childs.model';
+import type { AttackTable } from '../../../domain/value-objects/attack-table.vo.js';
+import type { FumbleTable } from '../../../domain/value-objects/fumble-table.vo.js';
+import type { WeaponMode } from '../../../domain/value-objects/weapon-mode.vo.js';
+import type { AttackType } from '../../../domain/value-objects/attack-type.vo.js';
+import { ItemWeaponRange } from './item-childs.model.js';
 
 @Schema({ _id: false })
 export class ItemWeaponMode {
@@ -27,4 +27,7 @@ export class ItemWeaponMode {
 
   @Prop({ type: String, required: false })
   alternativeTable: AttackTable | undefined;
+
+  @Prop({ type: Number, required: false })
+  obModifier?: number;
 }

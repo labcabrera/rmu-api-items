@@ -1,0 +1,24 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
+import { ItemShield } from '../../../domain/value-objects/item-shield.vo.js';
+
+export class ItemShieldDto {
+  @ApiProperty({ description: 'Defensive bonus of the shield', example: 20 })
+  @IsNumber()
+  db: number;
+
+  @ApiProperty({ description: 'Number of attacks the shield can block', example: 1 })
+  @IsNumber()
+  blockCount: number;
+
+  static fromEntity(entity: ItemShield): ItemShieldDto {
+    const dto = new ItemShieldDto();
+    dto.db = entity.db;
+    dto.blockCount = entity.blockCount;
+    return dto;
+  }
+
+  static toEntity(dto: ItemShieldDto): ItemShield {
+    return new ItemShield(dto.db, dto.blockCount);
+  }
+}

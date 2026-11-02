@@ -1,83 +1,51 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import { CreateItemCommand } from '../commands/create-item.command';
-import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
-import type { ItemRepository } from '../../ports/item.repository';
-import type { RealmPort } from '../../ports/realm.port';
-import { NamedEntity } from 'src/modules/shared/domain/entities/named-entity';
-import { ConflictError, ValidationError } from 'src/modules/shared/domain/errors/errors';
+import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { CreateItemCommand } from '../commands/create-item.command.js';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { type ItemGuardPort, ITEM_GUARD } from '../../ports/item-guard.port.js';
+import { type RealmPort, REALM_PORT } from '../../ports/realm.port.js';
+import { ValidationError } from '../../../../shared/domain/errors/errors.js';
 
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Item> {
   constructor(
-    @Inject('ItemRepository') private readonly itemRepository: ItemRepository,
-    @Inject('RealmPort') private readonly realmPort: RealmPort,
-    @Inject('ItemEventProducer') private readonly itemEventBus: ItemEventBusPort,
+    @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(ITEM_GUARD) private readonly itemGuard: ItemGuardPort,
+    @Inject(REALM_PORT) private readonly realmPort: RealmPort,
+    @Inject(DOMAIN_EVENT_PUBLISHER) private readonly eventPublisher: DomainEventPublisher,
   ) {}
 
   async execute(command: CreateItemCommand): Promise<Item> {
-    this.validate(command);
+    this.itemGuard.checkCreate(command.roles);
+    this.itemGuard.checkEntitySource(command.roles, command.entitySource);
+    // Before asking core for the realm, so invalid data is a 400 without a call.
+    Item.checkCategoryData(command.category, command);
 
-    const current = await this.itemRepository.findById(command.id);
-    if (current) throw new ConflictError(`Item ${command.id} already exists`);
-
-    let realm: NamedEntity | null = null;
+    // realmId is validated by checking existence; store only realmId on the item
     if (command.realmId) {
       const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
       if (!realmEntity) throw new ValidationError(`Realm ${command.realmId} does not exist`);
-      realm = new NamedEntity(realmEntity.id, realmEntity.name);
     }
 
     const item = Item.create({
-      id: command.id,
-      realm: realm,
+      name: command.name,
+      realmId: command.realmId || null,
       category: command.category,
       weapon: command.weapon,
       armor: command.armor,
       shield: command.shield,
+      features: command.features,
       info: command.info,
       modifiers: command.modifiers,
       description: command.description,
       imageUrl: command.imageUrl,
       owner: command.userId,
+      entitySource: command.entitySource ?? 'user',
     });
     const saved = await this.itemRepository.save(item);
-    item.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
+    await this.eventPublisher.publishChanges('item', item);
     return saved;
-  }
-
-  validate(command: CreateItemCommand) {
-    switch (command.category) {
-      case 'weapon':
-        if (!command.weapon) {
-          throw new ValidationError('Required weapon info');
-        } else if (command.armor) {
-          throw new ValidationError('Armor info not allowed');
-        } else if (command.shield) {
-          throw new ValidationError('Armor info not allowed');
-        }
-        break;
-      case 'armor':
-        if (!command.armor) {
-          throw new ValidationError('Required armor info');
-        } else if (command.weapon) {
-          throw new ValidationError('Weapon info not allowed');
-        } else if (command.shield) {
-          throw new ValidationError('Weapon info not allowed');
-        }
-        break;
-      case 'shield':
-        if (!command.shield) {
-          throw new ValidationError('Required shield info');
-        } else if (command.weapon) {
-          throw new ValidationError('Weapon info not allowed');
-        } else if (command.armor) {
-          throw new ValidationError('Armor info not allowed');
-        }
-        break;
-      default:
-        break;
-    }
   }
 }

@@ -1,16 +1,18 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdateItemCommand } from '../commands/update-item.command';
-import { Item } from 'src/modules/items/domain/aggregates/item.aggregate';
-import type { ItemEventBusPort } from '../../ports/item-event-bus.port';
-import type { ItemRepository } from '../../ports/item.repository';
-import { NotFoundError } from 'src/modules/shared/domain/errors/errors';
+import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
+import { UpdateItemCommand } from '../commands/update-item.command.js';
+import { Item } from '../../../domain/aggregates/item.aggregate.js';
+import { type DomainEventPublisher, DOMAIN_EVENT_PUBLISHER } from '../../../../shared/application/ports/domain-event-publisher.port.js';
+import { type ItemRepository, ITEM_REPOSITORY } from '../../ports/item-repository.port.js';
+import { type ItemGuardPort, ITEM_GUARD } from '../../ports/item-guard.port.js';
+import { NotFoundError } from '../../../../shared/domain/errors/errors.js';
 
 @CommandHandler(UpdateItemCommand)
 export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Item> {
   constructor(
-    @Inject('ItemRepository') private readonly itemRepository: ItemRepository,
-    @Inject('ItemEventProducer') private readonly itemEventBus: ItemEventBusPort,
+    @Inject(ITEM_REPOSITORY) private readonly itemRepository: ItemRepository,
+    @Inject(ITEM_GUARD) private readonly itemGuard: ItemGuardPort,
+    @Inject(DOMAIN_EVENT_PUBLISHER) private readonly eventPublisher: DomainEventPublisher,
   ) {}
 
   async execute(command: UpdateItemCommand): Promise<Item> {
@@ -18,17 +20,26 @@ export class UpdateItemHandler implements ICommandHandler<UpdateItemCommand, Ite
     if (!item) {
       throw new NotFoundError('Item', command.id);
     }
+    this.itemGuard.checkUpdate(item, command.userId, command.roles);
+    this.itemGuard.checkEntitySource(command.roles, command.entitySource);
+    item.checkVersion(command.expectedVersion);
     item.update({
+      name: command.name,
       weapon: command.weapon,
       armor: command.armor,
       shield: command.shield,
+      features: command.features,
       info: command.info,
       modifiers: command.modifiers,
       description: command.description,
       imageUrl: command.imageUrl,
+      entitySource: command.entitySource,
     });
-    const updated = await this.itemRepository.update(command.id, item);
-    updated.getUncommittedEvents().forEach(event => this.itemEventBus.publish(event));
+    // A PATCH without changes neither writes nor publishes (spec 021, decision 9).
+    if (!item.hasChanges()) return item;
+    const updated = await this.itemRepository.update(item);
+    // The events are those of the loaded aggregate: `updated` is the copy read back from Mongo (F-items-03).
+    await this.eventPublisher.publishChanges('item', item);
     return updated;
   }
 }

@@ -1,26 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import * as Joi from 'joi';
+import { envSchema } from './config/env.schema.js';
 
-import { AuthModule } from './modules/auth/auth.module';
-import { ItemsModule } from './modules/items/items.module';
-import { SharedModule } from './modules/shared/shared.module';
+import { AuthModule } from './modules/shared/infrastructure/security/auth.module.js';
+import { ItemsModule } from './modules/items/items.module.js';
+import { SharedModule } from './modules/shared/shared.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      validationSchema: Joi.object({
-        PORT: Joi.number().positive().default(3001),
-        RMU_MONGO_ITEMS_URI: Joi.string().required(),
-        RMU_API_CORE_URI: Joi.string().required(),
-        RMU_IAM_JWK_URI: Joi.string().uri().required(),
-        RMU_KAFKA_BROKERS: Joi.string().required(),
-        RMU_KAFKA_CLIENT_ID: Joi.string().required(),
-        RMU_KAFKA_DEFAULT_PARTITIONS: Joi.number().integer().min(1).default(1),
-      }),
+      validationSchema: envSchema,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

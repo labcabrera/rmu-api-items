@@ -6,3 +6,5 @@ export class Realm {
 export interface RealmPort {
   fetchRealmById(realmId: string): Promise<Realm | null>;
 }
+
+export const REALM_PORT = Symbol('RealmPort');
