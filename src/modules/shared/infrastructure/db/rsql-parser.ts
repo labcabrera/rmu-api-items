@@ -62,12 +62,16 @@ export class RsqlParser {
         if (value === null) return { [field]: { $ne: null, $exists: true } };
         return { [field]: { $ne: value } };
       case '>':
+      case '=gt=':
         return { [field]: { $gt: value } };
       case '>=':
+      case '=ge=':
         return { [field]: { $gte: value } };
       case '<':
+      case '=lt=':
         return { [field]: { $lt: value } };
       case '<=':
+      case '=le=':
         return { [field]: { $lte: value } };
       case '=in=':
         return { [field]: { $in: toArray(raw).map(coerce) } };
