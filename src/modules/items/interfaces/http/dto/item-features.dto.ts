@@ -62,6 +62,7 @@ import {
   type PoisonForm,
   type PoisonSeverity,
 } from '../../../domain/value-objects/item-features.vo.js';
+import { ItemMagicDto } from './item-magic.dto.js';
 
 export class ItemContainerDto {
   @ApiProperty({ type: Number, description: 'Pounds it holds', required: false, example: 20 })
@@ -771,6 +772,13 @@ export class ItemFeaturesDto {
   @Type(() => ItemPropertyDto)
   property?: ItemPropertyDto | null;
 
+  @ApiProperty({ type: ItemMagicDto, required: false, description: 'Magic item data, any category (spec 067)' })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ItemMagicDto)
+  magic?: ItemMagicDto | null;
+
   /** Only the blocks it has; null when it has none. */
   static toEntity(dto: ItemFeaturesDto): ItemFeatures | null {
     const features: ItemFeatures = {};
@@ -787,6 +795,7 @@ export class ItemFeaturesDto {
     if (dto.jewelry) features.jewelry = ItemJewelryDto.toEntity(dto.jewelry);
     if (dto.animal) features.animal = ItemAnimalDto.toEntity(dto.animal);
     if (dto.property) features.property = ItemPropertyDto.toEntity(dto.property);
+    if (dto.magic) features.magic = ItemMagicDto.toEntity(dto.magic);
     return Object.keys(features).length > 0 ? features : null;
   }
 
@@ -806,6 +815,7 @@ export class ItemFeaturesDto {
     if (entity.jewelry) dto.jewelry = structuredClone(entity.jewelry);
     if (entity.animal) dto.animal = structuredClone(entity.animal);
     if (entity.property) dto.property = structuredClone(entity.property);
+    if (entity.magic) dto.magic = structuredClone(entity.magic);
     return Object.keys(dto).length > 0 ? dto : null;
   }
 }

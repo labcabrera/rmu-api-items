@@ -17,6 +17,7 @@ import type {
   PoisonForm,
   PoisonSeverity,
 } from '../../../domain/value-objects/item-features.vo.js';
+import type { MagicBonusKind, MagicItemKind, MagicSpellUse } from '../../../domain/value-objects/item-magic.vo.js';
 
 @Schema({ _id: false })
 export class ItemWeaponRange {
@@ -377,6 +378,76 @@ export class ItemProperty {
   height: string | null;
 }
 
+@Schema({ _id: false })
+export class MagicItemBonus {
+  @Prop({ type: String, required: true })
+  kind: MagicBonusKind;
+
+  @Prop({ type: Number, required: true })
+  value: number;
+
+  @Prop({ type: String, required: false })
+  target?: string | null;
+
+  @Prop({ type: String, required: false })
+  against?: string | null;
+}
+
+@Schema({ _id: false })
+export class MagicItemSpell {
+  @Prop({ type: String, required: true })
+  name: string;
+
+  @Prop({ type: Number, required: true })
+  level: number;
+
+  @Prop({ type: String, required: false })
+  list?: string | null;
+
+  @Prop({ type: String, required: true })
+  use: MagicSpellUse;
+
+  @Prop({ type: Number, required: false })
+  perDay?: number | null;
+}
+
+/** Spec 067 */
+@Schema({ _id: false })
+export class ItemMagic {
+  @Prop({ type: Number, required: true })
+  itemLevel: number;
+
+  @Prop({ type: String, required: true })
+  kind: MagicItemKind;
+
+  @Prop({ type: Number, required: false })
+  days: number | null;
+
+  @Prop({ type: Number, required: false })
+  standardPrice: number | null;
+
+  @Prop({ type: Number, required: false })
+  basePrice: number | null;
+
+  @Prop({ type: Boolean, required: true })
+  attunement: boolean;
+
+  @Prop({ type: Number, required: false })
+  charges: number | null;
+
+  @Prop({ type: String, required: false })
+  realm: string | null;
+
+  @Prop({ type: [MagicItemBonus], required: false })
+  bonuses: MagicItemBonus[];
+
+  @Prop({ type: [MagicItemSpell], required: false })
+  spells: MagicItemSpell[];
+
+  @Prop({ type: String, required: false })
+  section: string | null;
+}
+
 /** Spec 041, decision 4; spec 042 adds poison and antidote, spec 062 the rest. */
 @Schema({ _id: false })
 export class ItemFeatures {
@@ -418,4 +489,7 @@ export class ItemFeatures {
 
   @Prop({ type: ItemProperty, required: false })
   property?: ItemProperty | null;
+
+  @Prop({ type: ItemMagic, required: false })
+  magic?: ItemMagic | null;
 }

@@ -64,7 +64,8 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
   private features(features: ItemModel['features'] | undefined): ItemFeatures | null {
     if (!features) return null;
     const result: ItemFeatures = {};
-    const { container, light, transport, ammunition, poison, antidote, herb, acid, intoxicant, gem, jewelry, animal, property } = features;
+    const { container, light, transport, ammunition, poison, antidote, herb, acid, intoxicant, gem, jewelry, animal, property, magic } =
+      features;
     if (container)
       result.container = {
         weight: container.weight ?? null,
@@ -165,6 +166,27 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
         domesticated: animal.domesticated ?? false,
       };
     if (property) result.property = { rent: property.rent ?? null, size: property.size ?? null, height: property.height ?? null };
+    // Spec 067
+    if (magic)
+      result.magic = {
+        itemLevel: magic.itemLevel,
+        kind: magic.kind,
+        days: magic.days ?? null,
+        standardPrice: magic.standardPrice ?? null,
+        basePrice: magic.basePrice ?? null,
+        attunement: magic.attunement ?? false,
+        charges: magic.charges ?? null,
+        realm: magic.realm ?? null,
+        bonuses: (magic.bonuses ?? []).map(b => ({ kind: b.kind, value: b.value, target: b.target ?? null, against: b.against ?? null })),
+        spells: (magic.spells ?? []).map(s => ({
+          name: s.name,
+          level: s.level,
+          list: s.list ?? null,
+          use: s.use,
+          perDay: s.perDay ?? null,
+        })),
+        section: magic.section ?? null,
+      };
     return Object.keys(result).length > 0 ? result : null;
   }
 }

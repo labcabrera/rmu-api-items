@@ -747,3 +747,107 @@ describe('treasure goods (spec 062)', () => {
     expect(misplaced.status).toBe(400);
   });
 });
+
+// Workspace spec 067: the magic block and the potion and spell-item categories. Invented values only.
+describe('magic items (spec 067)', () => {
+  const magic = {
+    itemLevel: 6,
+    kind: 'weapon',
+    days: 14,
+    standardPrice: 300,
+    basePrice: 4,
+    attunement: true,
+    charges: null,
+    realm: 'channeling',
+    bonuses: [{ kind: 'ob', value: 15, target: null, against: 'test-wyrm' }],
+    spells: [{ name: 'Test Ward', level: 5, list: 'test-list', use: 'daily', perDay: 1 }],
+    section: '9.1',
+  };
+  const wand = {
+    itemLevel: 2,
+    kind: 'charged',
+    days: null,
+    standardPrice: null,
+    basePrice: null,
+    attunement: false,
+    charges: 10,
+    realm: 'essence',
+    bonuses: [],
+    spells: [{ name: 'Test Bolt', level: 2, list: null, use: 'charges', perDay: null }],
+    section: null,
+  };
+
+  beforeAll(async () => {
+    const sword = await create('owner', weapon('E2E Wyrm Blade', { features: { magic } }));
+    expect(sword.status, JSON.stringify(sword.body)).toBe(201);
+    const stick = await create('owner', { name: 'E2E Test Wand', category: 'spell-item', features: { magic: wand }, info });
+    expect(stick.status, JSON.stringify(stick.body)).toBe(201);
+    const potion = await create('owner', {
+      name: 'E2E Test Draught',
+      category: 'potion',
+      features: { magic: { itemLevel: 1, kind: 'potion' } },
+      info,
+    });
+    expect(potion.status, JSON.stringify(potion.body)).toBe(201);
+  });
+
+  it('stores and returns the block, filling the optional fields', async () => {
+    const sword = (await get('owner', '/v1/items/e2e-wyrm-blade')).body as ItemBody & { features: object };
+    expect(sword.category).toBe('weapon');
+    expect(sword.weapon?.skillId).toBe('dagger');
+    expect(sword.features).toEqual({ magic });
+    const stick = (await get('owner', '/v1/items/e2e-test-wand')).body as ItemBody & { features: object };
+    expect(stick.features).toEqual({ magic: wand });
+    const potion = (await get('owner', '/v1/items/e2e-test-draught')).body as ItemBody & { features: { magic: object } };
+    expect(potion.category).toBe('potion');
+    expect(potion.features.magic).toEqual({
+      itemLevel: 1,
+      kind: 'potion',
+      days: null,
+      standardPrice: null,
+      basePrice: null,
+      attunement: false,
+      charges: null,
+      realm: null,
+      bonuses: [],
+      spells: [],
+      section: null,
+    });
+  });
+
+  it('filters by magic kind and item level', async () => {
+    const byKind = await get('owner', '/v1/items?q=features.magic.kind==weapon&size=100');
+    expect(byKind.status).toBe(200);
+    expect(ids(byKind.body)).toEqual(['e2e-wyrm-blade']);
+    const byLevel = await get('owner', '/v1/items?q=features.magic.itemLevel=le=2&size=100');
+    expect(ids(byLevel.body).sort()).toEqual(['e2e-test-draught', 'e2e-test-wand']);
+    const byCategory = await get('owner', '/v1/items?q=category==spell-item&size=100');
+    expect(ids(byCategory.body)).toEqual(['e2e-test-wand']);
+  });
+
+  it('rejects an invalid block', async () => {
+    const invalid: object[] = [
+      { ...magic, kind: 'flying' },
+      { ...magic, bonuses: [{ kind: 'speed', value: 1 }] },
+      { ...magic, spells: [{ name: 'X', level: 1, use: 'often' }] },
+      { ...magic, realm: 'arcane' },
+    ];
+    for (const [index, block] of invalid.entries()) {
+      const response = await create('owner', { name: `E2E Bad Magic ${index}`, category: 'other', features: { magic: block }, info });
+      expect(response.status, JSON.stringify(block)).toBe(400);
+    }
+    const priced = await create('owner', {
+      name: 'E2E Bad Magic Price',
+      category: 'other',
+      features: { magic: { ...magic, basePrice: 999 } },
+      info,
+    });
+    expect((priced.body as { message: string }).message).toBe('The magic item base price exceeds its standard price');
+  });
+
+  it('changes the block with a PATCH', async () => {
+    const changed = await patch('owner', 'e2e-test-wand', { features: { magic: { ...wand, charges: 20 } } });
+    expect(changed.status).toBe(200);
+    expect((changed.body as { features: { magic: { charges: number } } }).features.magic.charges).toBe(20);
+  });
+});
