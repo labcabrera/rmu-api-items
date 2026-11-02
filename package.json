@@ -1,6 +1,6 @@
 {
   "name": "rmu-api-items",
-  "version": "0.3.2",
+  "version": "0.3.3-SNAPSHOT",
   "description": "Items API for RMU",
   "author": {
     "name": "Luis Cabrera",
