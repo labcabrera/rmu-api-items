@@ -8,7 +8,7 @@ HOST_PORT      ?= 3006
 CONTAINER_PORT ?= 3006
 NETWORK        ?= rmu-network
 REMOTE         ?= origin
-MASTER_BRANCH  ?= main
+MASTER_BRANCH  ?= master
 DEVELOP_BRANCH ?= develop
 RELEASE_BUMP   ?=
 
@@ -55,7 +55,7 @@ docker-push: ## Build multi-platform image with buildx and push it to Docker Hub
 		.
 	@echo "Buildx push completed: $(IMAGE):$(TAG)"
 
-create-release: ## Release develop to main with semantic-release (tag + CHANGELOG), push, and bump develop to next -SNAPSHOT. Optional RELEASE_BUMP=patch|minor|major
+create-release: ## Release develop to master with semantic-release (tag + CHANGELOG), push, and bump develop to next -SNAPSHOT. Optional RELEASE_BUMP=patch|minor|major
 	@test "$$(git branch --show-current)" = "$(DEVELOP_BRANCH)" || { echo "Releases must start from '$(DEVELOP_BRANCH)' (current: $$(git branch --show-current))" >&2; exit 1; }
 	@test -z "$$(git status --porcelain)" || { echo "Working directory is not clean:" >&2; git status --short >&2; exit 1; }
 	git fetch --tags $(REMOTE)
