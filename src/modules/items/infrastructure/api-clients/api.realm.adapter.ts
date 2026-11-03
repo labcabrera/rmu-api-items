@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpClient, isUpstreamHttpError } from '../../../shared/infrastructure/http/http-client.js';
 import { TokenService } from '../../../shared/infrastructure/security/token.service.js';
-import { Realm, type RealmPort } from '../../application/ports/realm.port.js';
+import { Realm, type RealmAccessLevel, type RealmPort } from '../../application/ports/realm.port.js';
 
 @Injectable()
 export class ApiRealmAdapter implements RealmPort {
@@ -22,6 +22,19 @@ export class ApiRealmAdapter implements RealmPort {
     const uri = `${this.configService.get<string>('RMU_API_CORE_URI')}/realms/${encodeURIComponent(realmId)}`;
     try {
       return await this.httpClient.get<Realm>(uri, { token });
+    } catch (err) {
+      if (isUpstreamHttpError(err) && err.status === 404) return null;
+      throw err;
+    }
+  }
+
+  /** Spec 071: `GET /realms/:id/access/:userId` of core, with the service token. */
+  async fetchUserAccess(realmId: string, userId: string): Promise<RealmAccessLevel | null> {
+    const token = await this.tokenService.getToken();
+    const base = this.configService.get<string>('RMU_API_CORE_URI');
+    const uri = `${base}/realms/${encodeURIComponent(realmId)}/access/${encodeURIComponent(userId)}`;
+    try {
+      return (await this.httpClient.get<{ level: RealmAccessLevel }>(uri, { token })).level;
     } catch (err) {
       if (isUpstreamHttpError(err) && err.status === 404) return null;
       throw err;
