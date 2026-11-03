@@ -1,3 +1,4 @@
+import { RMU_ADMIN } from '../../../../shared/domain/entities/user-roles.js';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
 import { Item } from '../../../domain/aggregates/item.aggregate.js';
@@ -27,6 +28,11 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     if (command.realmId) {
       const realmEntity = await this.realmPort.fetchRealmById(command.realmId);
       if (!realmEntity) throw new ValidationError(`Realm ${command.realmId} does not exist`);
+      // Spec 071, decision 1: the user must read the realm (an admin reads them all).
+      if (!command.roles.includes(RMU_ADMIN)) {
+        const level = await this.realmPort.fetchUserAccess(command.realmId, command.userId);
+        if (!level || level === 'none') throw new ValidationError('You cannot read the realm of the item', 'realm-not-readable');
+      }
     }
 
     const item = Item.create({

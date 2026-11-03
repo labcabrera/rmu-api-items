@@ -5,7 +5,7 @@ import type { Connection } from 'mongoose';
 import { getConnectionToken } from '@nestjs/mongoose';
 import request from 'supertest';
 import { configureHttp } from '../../../src/bootstrap/http.js';
-import { REALM_PORT, type Realm, type RealmPort } from '../../../src/modules/items/application/ports/realm.port.js';
+import { REALM_PORT, type Realm, type RealmAccessLevel, type RealmPort } from '../../../src/modules/items/application/ports/realm.port.js';
 import { KafkaProducerService } from '../../../src/modules/shared/infrastructure/messaging/kafka-producer.service.js';
 import { AUDIENCE, ISSUER, LocalJwks } from './jwks.js';
 
@@ -26,6 +26,9 @@ export type SentEvent = { topic: string; message: { eventType: string; producer:
 
 /** The realms core knows about in the suite; any other id answers 404 (null). */
 export const REALMS = new Map<string, Realm>([['e2e-realm', { id: 'e2e-realm', name: 'E2E realm' }]]);
+
+/** Spec 071: what core answers for `realmId:userId`; `read` when not set. Tests set and clear it. */
+export const REALM_ACCESS = new Map<string, RealmAccessLevel>();
 
 export type E2eApp = {
   app: NestExpressApplication;
@@ -74,6 +77,8 @@ export async function startApp(env: Record<string, string> = {}): Promise<E2eApp
       realmLookups.push(realmId);
       return Promise.resolve(REALMS.get(realmId) ?? null);
     },
+    fetchUserAccess: (realmId: string, userId: string) =>
+      Promise.resolve(REALMS.has(realmId) ? (REALM_ACCESS.get(`${realmId}:${userId}`) ?? 'read') : null),
   };
   const { AppModule } = await import('../../../src/app.module.js');
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })

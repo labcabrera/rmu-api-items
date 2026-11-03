@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { ids, startApp, type E2eApp, type UserName } from './support/app.js';
+import { ids, REALM_ACCESS, startApp, type E2eApp, type UserName } from './support/app.js';
 
 type ItemBody = {
   id: string;
@@ -139,6 +139,19 @@ describe('create', () => {
     expect(response.status).toBe(201);
     expect((response.body as ItemBody).realmId).toBe('e2e-realm');
     expect(e2e.realmLookups).toContain('e2e-realm');
+  });
+
+  it('needs the user to read the realm, unless an admin (spec 071)', async () => {
+    REALM_ACCESS.set('e2e-realm:e2e-owner', 'none');
+    try {
+      const response = await create('owner', weapon('E2E Hidden Dagger', { realmId: 'e2e-realm' }));
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({ code: 'realm-not-readable' });
+      REALM_ACCESS.set('e2e-realm:e2e-admin', 'none');
+      expect((await create('admin', weapon('E2E Admin Dagger', { realmId: 'e2e-realm' }))).status).toBe(201);
+    } finally {
+      REALM_ACCESS.clear();
+    }
   });
 
   it('rejects a realm core does not know', async () => {
