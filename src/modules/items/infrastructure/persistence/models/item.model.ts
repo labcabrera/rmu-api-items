@@ -21,7 +21,8 @@ export class ItemModel {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: String, required: false })
+  // Indexed: lists filter by it and realm.deleted deletes by it (spec 073).
+  @Prop({ type: String, required: false, index: true })
   realmId: string | null;
 
   @Prop({ type: String, required: true })

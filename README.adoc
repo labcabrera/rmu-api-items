@@ -44,9 +44,19 @@ no answer in `RMU_HTTP_TIMEOUT_MS` (`10000`) is a 504 `upstream-timeout`, core d
 
 Errors answer `{ statusCode, error, code, message, timestamp, path }`. Responses carry the `version` of the entity and a
 `PATCH` may send it back: a stale one is a 409 `version-conflict`. `size` goes up to 100. `GET /v1/items` accepts up to 1000 (`CatalogPagedQueryDto`), because the item selector of rmu-mfe-strategic loads 250.
-Permissions (spec 021): the catalog is readable by every authenticated user and `GET /v1/item-modifiers/options` is
-public; creating needs `rmu-user` or `rmu-admin`; changing, deleting and the modifiers are for the owner or `rmu-admin`
-(403 otherwise). A `PATCH` without changes neither writes nor publishes.
+Permissions (specs 021, 063 and 073): `GET /v1/item-modifiers/options` is public and creating needs `rmu-user` or
+`rmu-admin`. An item with a `realmId` is a child of the realm: the caller's level on the realm decides (`read` reads and
+lists it; `write` creates in the realm, changes and deletes the item and its modifiers; `manage` on the realm counts as
+`write`), its `owner` gives nothing, a `system` item is read only and `rmu-admin` manages everything. Creating in a realm
+the user does not read is a 400 `realm-not-readable`, in one they only read a 403 `realm-not-writable`. The levels come
+from core (`GET /realms/access?userId=`, service token), kept 30 s per user in memory: a removed share takes up to that
+long to count, and a failure of core is a 502 (access is never granted on error). Admins never ask core. Items without
+realm (the global catalog) are readable by every authenticated user and changed by their owner or `rmu-admin`; a
+`system` one only by `rmu-admin` (403 `system-entity-admin-only`). `GET /v1/items` lists the global catalog and the
+realms the caller reads (an admin lists everything), and every item answers `access` (`manage`, `write` or `read`): what
+the caller can do with it. A `PATCH` without changes neither writes nor publishes.
+The API consumes `internal.rmu-core.realm.deleted.v1` (consumer group `RMU_KAFKA_CONSUMER_GROUP_ID`) and deletes the
+items of the realm, publishing an `item.deleted` for each one; repeating the message does nothing.
 The modifiers sent with `POST /v1/items`, a `PATCH` or `POST .../modifiers` follow `GET /v1/item-modifiers/options`
 (400 otherwise, spec 044). `scripts/check-item-modifiers.mjs` lists, read-only, the stored items that break those rules
 (`RMU_MONGO_ITEMS_URI` from the environment, `DRY_RUN=1 node scripts/check-item-modifiers.mjs`): fix them before

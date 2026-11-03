@@ -3,7 +3,7 @@ import { startApp, type E2eApp, type UserName } from './support/app.js';
 
 // The permission matrix of items (spec 021, decision 2, F-items-06): the catalog is readable by everyone; creating
 // needs rmu-user or rmu-admin; changing, deleting and the modifiers are for the owner or an admin.
-type Caller = UserName | 'anonymous';
+type Caller = Exclude<UserName, 'writer' | 'reader'> | 'anonymous';
 
 const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
 const armor = (name: string) => ({
