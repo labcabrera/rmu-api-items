@@ -6,6 +6,7 @@ import { getConnectionToken } from '@nestjs/mongoose';
 import request from 'supertest';
 import { configureHttp } from '../../../src/bootstrap/http.js';
 import { REALM_PORT, type Realm, type RealmAccessLevel, type RealmPort } from '../../../src/modules/items/application/ports/realm.port.js';
+import { RealmAccessService } from '../../../src/modules/items/application/services/realm-access.service.js';
 import { KafkaProducerService } from '../../../src/modules/shared/infrastructure/messaging/kafka-producer.service.js';
 import { AUDIENCE, ISSUER, LocalJwks } from './jwks.js';
 
@@ -16,6 +17,9 @@ export const USERS = {
   admin: { sub: 'e2e-admin', groups: ['rmu-admin'] },
   owner: { sub: 'e2e-owner', groups: ['rmu-user'] },
   other: { sub: 'e2e-other', groups: ['rmu-user'] },
+  // Spec 073: friends of the owner on a shared realm
+  writer: { sub: 'e2e-writer', groups: ['rmu-user'] },
+  reader: { sub: 'e2e-reader', groups: ['rmu-user'] },
   noRole: { sub: 'e2e-guest', groups: [] as string[] },
 } as const;
 
@@ -27,7 +31,10 @@ export type SentEvent = { topic: string; message: { eventType: string; producer:
 /** The realms core knows about in the suite; any other id answers 404 (null). */
 export const REALMS = new Map<string, Realm>([['e2e-realm', { id: 'e2e-realm', name: 'E2E realm' }]]);
 
-/** Spec 071: what core answers for `realmId:userId`; `read` when not set. Tests set and clear it. */
+/**
+ * Spec 073: the level core answers for `realmId:userId` (`GET /realms/access?userId=` lists every realm of REALMS whose
+ * level is not `none`); `write` when not set. Tests set and clear it, and clear the cache of RealmAccessService.
+ */
 export const REALM_ACCESS = new Map<string, RealmAccessLevel>();
 
 export type E2eApp = {
@@ -38,6 +45,10 @@ export type E2eApp = {
   events: SentEvent[];
   /** The realm ids the realm port was asked for, in order. */
   realmLookups: string[];
+  /** The users whose realm levels the realm port was asked for, in order. */
+  accessLookups: string[];
+  /** Forgets the realm levels kept 30 s by RealmAccessService, after changing REALM_ACCESS. */
+  clearRealmAccess: () => void;
   auth: (user: UserName) => string;
   connection: Connection;
   stop: () => Promise<void>;
@@ -72,13 +83,17 @@ export async function startApp(env: Record<string, string> = {}): Promise<E2eApp
 
   const events: SentEvent[] = [];
   const realmLookups: string[] = [];
+  const accessLookups: string[] = [];
   const realmPort: RealmPort = {
     fetchRealmById: (realmId: string) => {
       realmLookups.push(realmId);
       return Promise.resolve(REALMS.get(realmId) ?? null);
     },
-    fetchUserAccess: (realmId: string, userId: string) =>
-      Promise.resolve(REALMS.has(realmId) ? (REALM_ACCESS.get(`${realmId}:${userId}`) ?? 'read') : null),
+    fetchUserRealms: (userId: string) => {
+      accessLookups.push(userId);
+      const levels = [...REALMS.keys()].map(realmId => ({ realmId, level: REALM_ACCESS.get(`${realmId}:${userId}`) ?? 'write' }));
+      return Promise.resolve(levels.filter(({ level }) => level !== 'none'));
+    },
   };
   const { AppModule } = await import('../../../src/app.module.js');
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
@@ -102,6 +117,8 @@ export async function startApp(env: Record<string, string> = {}): Promise<E2eApp
     jwks,
     events,
     realmLookups,
+    accessLookups,
+    clearRealmAccess: () => app.get(RealmAccessService).clear(),
     auth: user => `Bearer ${jwks.token(USERS[user])}`,
     connection: app.get<Connection>(getConnectionToken()),
     stop: async () => {

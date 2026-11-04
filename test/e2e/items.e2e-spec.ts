@@ -52,7 +52,14 @@ afterAll(async () => {
   await e2e?.stop();
 });
 
-const create = (user: UserName, body: object) => request(e2e.server).post('/v1/items').set('Authorization', e2e.auth(user)).send(body);
+// Spec 073, decision 3: only an admin creates items without realm, so the items of the suite live in e2e-realm, which
+// every user writes unless REALM_ACCESS says otherwise. A body with its own realmId (also null) keeps it.
+const REALM = 'e2e-realm';
+const create = (user: UserName, body: object) =>
+  request(e2e.server)
+    .post('/v1/items')
+    .set('Authorization', e2e.auth(user))
+    .send({ realmId: REALM, ...body });
 const get = (user: UserName, path: string) => request(e2e.server).get(path).set('Authorization', e2e.auth(user));
 const patch = (user: UserName, id: string, body: object) =>
   request(e2e.server).patch(`/v1/items/${id}`).set('Authorization', e2e.auth(user)).send(body);
@@ -107,7 +114,7 @@ describe('create', () => {
     expect(item).toMatchObject({
       id: 'e2e-long-dagger',
       name: 'E2E Long Dagger',
-      realmId: null,
+      realmId: REALM,
       category: 'weapon',
       armor: null,
       shield: null,
@@ -151,6 +158,8 @@ describe('create', () => {
       expect((await create('admin', weapon('E2E Admin Dagger', { realmId: 'e2e-realm' }))).status).toBe(201);
     } finally {
       REALM_ACCESS.clear();
+      // The create asked core fresh and kept "none" for the owner
+      e2e.clearRealmAccess();
     }
   });
 
@@ -205,8 +214,8 @@ describe('create', () => {
     expect(response.body).toMatchObject({ statusCode: 409, error: 'ConflictError', code: 'duplicate-key' });
   });
 
-  it('answers 409 duplicate-key to the same name in another realm [F-items-08]', async () => {
-    const response = await create('other', { ...armor('E2E Twin Armor'), realmId: 'e2e-realm' });
+  it('answers 409 duplicate-key to the same name in another realm (here the global catalog) [F-items-08]', async () => {
+    const response = await create('admin', { ...armor('E2E Twin Armor'), realmId: null });
     expect(response.status).toBe(409);
     expect((response.body as { code: string }).code).toBe('duplicate-key');
   });
@@ -421,9 +430,16 @@ describe('update', () => {
     expect(response.status).toBe(404);
   });
 
-  it("rejects a change to another user's item [F-items-06]", async () => {
-    const response = await patch('other', 'e2e-patch-sword', { description: 'Changed by another user' });
-    expect(response.status).toBe(403);
+  it('rejects a change from a user who only reads the realm [F-items-06]', async () => {
+    REALM_ACCESS.set(`${REALM}:e2e-other`, 'read');
+    e2e.clearRealmAccess();
+    try {
+      const response = await patch('other', 'e2e-patch-sword', { description: 'Changed by another user' });
+      expect(response.status).toBe(403);
+    } finally {
+      REALM_ACCESS.clear();
+      e2e.clearRealmAccess();
+    }
   });
 });
 
@@ -444,10 +460,18 @@ describe('delete', () => {
     expect(response.status).toBe(404);
   });
 
-  it("rejects the deletion of another user's item [F-items-06]", async () => {
+  it('rejects the deletion from a user who only reads the realm [F-items-06]', async () => {
     await create('owner', armor('E2E Kept Armor'));
-    const response = await remove('other', 'e2e-kept-armor');
-    expect(response.status).toBe(403);
+    REALM_ACCESS.set(`${REALM}:e2e-other`, 'read');
+    e2e.clearRealmAccess();
+    try {
+      const response = await remove('other', 'e2e-kept-armor');
+      expect(response.status).toBe(403);
+      expect((await get('owner', '/v1/items/e2e-kept-armor')).status).toBe(200);
+    } finally {
+      REALM_ACCESS.clear();
+      e2e.clearRealmAccess();
+    }
   });
 });
 

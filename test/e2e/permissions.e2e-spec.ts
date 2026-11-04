@@ -1,9 +1,10 @@
 import request from 'supertest';
 import { startApp, type E2eApp, type UserName } from './support/app.js';
 
-// The permission matrix of items (spec 021, decision 2, F-items-06): the catalog is readable by everyone; creating
-// needs rmu-user or rmu-admin; changing, deleting and the modifiers are for the owner or an admin.
-type Caller = UserName | 'anonymous';
+// The permission matrix of the global catalog (items without realm): it is readable by everyone with a token (spec 021,
+// decision 2, F-items-06); creating, changing, deleting and the modifiers are only for an admin (spec 073, decision 3),
+// whoever created the item. Items with a realm follow the realm level: see realm-access.e2e-spec.ts.
+type Caller = Exclude<UserName, 'writer' | 'reader'> | 'anonymous';
 
 const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
 const armor = (name: string) => ({
@@ -27,24 +28,26 @@ afterAll(async () => {
 
 const as = (caller: Caller, test: request.Test) => (caller === 'anonymous' ? test : test.set('Authorization', e2e.auth(caller)));
 
-/** A new item of the owner, with a modifier, for each case. */
-async function ownerItem(): Promise<{ id: string; modifierId: string }> {
+/** A new global item created by the admin, with a modifier, for each case. */
+async function globalItem(): Promise<{ id: string; modifierId: string }> {
   const name = `E2E Perm Armor ${++counter}`;
-  const created = await request(e2e.server).post('/v1/items').set('Authorization', e2e.auth('owner')).send(armor(name));
+  const created = await request(e2e.server).post('/v1/items').set('Authorization', e2e.auth('admin')).send(armor(name));
   expect(created.status).toBe(201);
   const withModifier = await request(e2e.server)
     .post(`/v1/items/${slug(name)}/modifiers`)
-    .set('Authorization', e2e.auth('owner'))
+    .set('Authorization', e2e.auth('admin'))
     .send({ type: 'bonus', value: 5 });
   expect(withModifier.status).toBe(201);
   return { id: slug(name), modifierId: (withModifier.body as { modifiers: { id: string }[] }).modifiers[0].id };
 }
 
-const expected: Record<Caller, { read: number; create: number; write: number; remove: number; modifier: number }> = {
-  owner: { read: 200, create: 201, write: 200, remove: 204, modifier: 201 },
+type Expected = { read: number; create: number; createCode?: string; write: number; remove: number; modifier: number };
+
+const expected: Record<Caller, Expected> = {
   admin: { read: 200, create: 201, write: 200, remove: 204, modifier: 201 },
-  other: { read: 200, create: 201, write: 403, remove: 403, modifier: 403 },
-  noRole: { read: 200, create: 403, write: 403, remove: 403, modifier: 403 },
+  owner: { read: 200, create: 403, createCode: 'global-entity-admin-only', write: 403, remove: 403, modifier: 403 },
+  other: { read: 200, create: 403, createCode: 'global-entity-admin-only', write: 403, remove: 403, modifier: 403 },
+  noRole: { read: 200, create: 403, createCode: 'forbidden', write: 403, remove: 403, modifier: 403 },
   anonymous: { read: 401, create: 401, write: 401, remove: 401, modifier: 401 },
 };
 
@@ -52,34 +55,39 @@ describe.each(Object.keys(expected) as Caller[])('as %s', caller => {
   const status = expected[caller];
 
   it(`reads the catalog: ${status.read}`, async () => {
-    const { id } = await ownerItem();
+    const { id } = await globalItem();
     expect((await as(caller, request(e2e.server).get(`/v1/items/${id}`))).status).toBe(status.read);
     expect((await as(caller, request(e2e.server).get('/v1/items'))).status).toBe(status.read);
   });
 
-  it(`creates an item: ${status.create}`, async () => {
-    const response = await as(caller, request(e2e.server).post('/v1/items')).send(armor(`E2E Perm New ${caller}`));
+  it(`creates an item without realm: ${status.create}`, async () => {
+    const name = `E2E Perm New ${caller}`;
+    const response = await as(caller, request(e2e.server).post('/v1/items')).send(armor(name));
     expect(response.status).toBe(status.create);
-    if (status.create === 403) expect((response.body as { code: string }).code).toBe('forbidden');
+    if (status.createCode) expect((response.body as { code: string }).code).toBe(status.createCode);
+    const stored = await request(e2e.server)
+      .get(`/v1/items/${slug(name)}`)
+      .set('Authorization', e2e.auth('admin'));
+    expect(stored.status).toBe(status.create === 201 ? 200 : 404);
   });
 
-  it(`changes the owner's item: ${status.write}`, async () => {
-    const { id } = await ownerItem();
+  it(`changes a global item: ${status.write}`, async () => {
+    const { id } = await globalItem();
     const response = await as(caller, request(e2e.server).patch(`/v1/items/${id}`)).send({ description: `By ${caller}` });
     expect(response.status).toBe(status.write);
-    const stored = await request(e2e.server).get(`/v1/items/${id}`).set('Authorization', e2e.auth('owner'));
+    const stored = await request(e2e.server).get(`/v1/items/${id}`).set('Authorization', e2e.auth('admin'));
     expect((stored.body as { description: string | null }).description === `By ${caller}`).toBe(status.write === 200);
   });
 
-  it(`deletes the owner's item: ${status.remove}`, async () => {
-    const { id } = await ownerItem();
+  it(`deletes a global item: ${status.remove}`, async () => {
+    const { id } = await globalItem();
     expect((await as(caller, request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(status.remove);
-    const stored = await request(e2e.server).get(`/v1/items/${id}`).set('Authorization', e2e.auth('owner'));
+    const stored = await request(e2e.server).get(`/v1/items/${id}`).set('Authorization', e2e.auth('admin'));
     expect(stored.status).toBe(status.remove === 204 ? 404 : 200);
   });
 
-  it(`adds and removes a modifier of the owner's item: ${status.modifier}`, async () => {
-    const { id, modifierId } = await ownerItem();
+  it(`adds and removes a modifier of a global item: ${status.modifier}`, async () => {
+    const { id, modifierId } = await globalItem();
     const added = await as(caller, request(e2e.server).post(`/v1/items/${id}/modifiers`)).send({ type: 'bonus', value: 1 });
     expect(added.status).toBe(status.modifier);
     const removed = await as(caller, request(e2e.server).delete(`/v1/items/${id}/modifiers/${modifierId}`));

@@ -55,4 +55,20 @@ describe('ApiRealmAdapter', () => {
     answer(status, { message: 'Boom' });
     await expect(adapter.fetchRealmById('lotr')).rejects.toMatchObject({ statusCode: 502, code: 'bad-gateway', status });
   });
+
+  it('lists the realm levels of a user with the service token (spec 073)', async () => {
+    answer(200, [{ realmId: 'lotr', level: 'write' }]);
+    await expect(adapter.fetchUserRealms('user 1')).resolves.toEqual([{ realmId: 'lotr', level: 'write' }]);
+    expect(paths).toEqual(['/v1/realms/access?userId=user%201']);
+  });
+
+  it.each([404, 500, 403])('never grants access when core answers %i to the realm levels', async status => {
+    answer(status, { message: 'Boom' });
+    await expect(adapter.fetchUserRealms('u1')).rejects.toMatchObject({ statusCode: 502 });
+  });
+
+  it('answers 502 when core does not answer a list of realm levels', async () => {
+    answer(200, { realmId: 'lotr' });
+    await expect(adapter.fetchUserRealms('u1')).rejects.toMatchObject({ statusCode: 502, code: 'bad-gateway' });
+  });
 });

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpClient, isUpstreamHttpError } from '../../../shared/infrastructure/http/http-client.js';
+import { BadGatewayError } from '../../../shared/domain/errors/errors.js';
 import { TokenService } from '../../../shared/infrastructure/security/token.service.js';
-import { Realm, type RealmAccessLevel, type RealmPort } from '../../application/ports/realm.port.js';
+import { Realm, type RealmLevel, type RealmPort } from '../../application/ports/realm.port.js';
 
 @Injectable()
 export class ApiRealmAdapter implements RealmPort {
@@ -28,16 +29,15 @@ export class ApiRealmAdapter implements RealmPort {
     }
   }
 
-  /** Spec 071: `GET /realms/:id/access/:userId` of core, with the service token. */
-  async fetchUserAccess(realmId: string, userId: string): Promise<RealmAccessLevel | null> {
+  /**
+   * Spec 073: `GET /realms/access?userId=` of core, with the service token. Every error is the HttpClient's (502 or
+   * 504): access is never granted because core failed.
+   */
+  async fetchUserRealms(userId: string): Promise<RealmLevel[]> {
     const token = await this.tokenService.getToken();
-    const base = this.configService.get<string>('RMU_API_CORE_URI');
-    const uri = `${base}/realms/${encodeURIComponent(realmId)}/access/${encodeURIComponent(userId)}`;
-    try {
-      return (await this.httpClient.get<{ level: RealmAccessLevel }>(uri, { token })).level;
-    } catch (err) {
-      if (isUpstreamHttpError(err) && err.status === 404) return null;
-      throw err;
-    }
+    const uri = `${this.configService.get<string>('RMU_API_CORE_URI')}/realms/access?userId=${encodeURIComponent(userId)}`;
+    const levels = await this.httpClient.get<RealmLevel[]>(uri, { token });
+    if (!Array.isArray(levels)) throw new BadGatewayError('Core answered the realm access of a user without a list');
+    return levels;
   }
 }
