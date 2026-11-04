@@ -61,11 +61,11 @@ describe('ItemGuardAdapter (spec 073)', () => {
   });
 
   describe('an item of the global catalog', () => {
-    it('is read by everyone and changed by its owner or an admin', () => {
+    it('is read by everyone and changed only by an admin, not by its owner', () => {
       expect(guard.checkRead(item(null), caller('u-other'))).toBe('read');
-      expect(guard.checkRead(item(null), caller('u-owner'))).toBe('manage');
+      expect(guard.checkRead(item(null), caller('u-owner'))).toBe('read');
       expect(codeOf(() => guard.checkUpdate(item(null), caller('u-other')))).toBe('forbidden');
-      expect(codeOf(() => guard.checkUpdate(item(null), caller('u-owner')))).toBeNull();
+      expect(codeOf(() => guard.checkUpdate(item(null), caller('u-owner')))).toBe('forbidden');
       expect(codeOf(() => guard.checkDelete(item(null), caller('a', {}, ['rmu-admin'])))).toBeNull();
     });
 

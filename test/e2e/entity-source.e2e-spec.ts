@@ -1,8 +1,10 @@
 import request from 'supertest';
-import { startApp, type E2eApp, type UserName } from './support/app.js';
+import { REALM_ACCESS, startApp, type E2eApp, type UserName } from './support/app.js';
 
-// Spec 063: rulebook (system) items are changed only by an admin, even by their owner; user items by their owner or an
-// admin. Only an admin asks for system, on create or in a PATCH. A document without the field is a user item.
+// Spec 063: rulebook (system) items are changed only by an admin, even by their owner or a writer of their realm; user
+// items by whoever writes their realm (spec 073) or an admin. Only an admin asks for system, on create or in a PATCH. A
+// document without the field is a user item. Items without realm (global) are changed only by an admin (spec 073,
+// decision 3), whatever their source or owner.
 type ItemBody = { id: string; owner: string; entitySource: string; description: string | null; modifiers: { id: string }[] | null };
 type ErrorBody = { statusCode: number; code: string };
 
@@ -29,12 +31,26 @@ afterAll(async () => {
 
 const as = (user: UserName, test: request.Test) => test.set('Authorization', e2e.auth(user));
 
-/** An item created by the owner, with a modifier; system when an admin then marks it so (the owner stays). */
+/** The realm of the suite: every user writes it unless REALM_ACCESS says otherwise. */
+const REALM = 'e2e-realm';
+
+/** Makes `e2e-other` a reader of the realm, for the cases that deny another user. */
+const otherOnlyReads = () => {
+  REALM_ACCESS.set(`${REALM}:e2e-other`, 'read');
+  e2e.clearRealmAccess();
+};
+
+afterEach(() => {
+  REALM_ACCESS.clear();
+  e2e.clearRealmAccess();
+});
+
+/** An item created by the owner in the realm, with a modifier; system when an admin then marks it so (the owner stays). */
 async function ownerItem(source: 'system' | 'user'): Promise<{ id: string; modifierId: string }> {
   const name = `E2E Source Armor ${++counter}`;
   const id = slug(name);
   const created = await as('owner', request(e2e.server).post('/v1/items')).send(
-    armor(name, { modifiers: [{ id: 'm1', type: 'bonus', value: 5 }] }),
+    armor(name, { realmId: REALM, modifiers: [{ id: 'm1', type: 'bonus', value: 5 }] }),
   );
   expect(created.status).toBe(201);
   expect((created.body as ItemBody).entitySource).toBe('user');
@@ -71,9 +87,11 @@ describe('a system item', () => {
     expectSystemAdminOnly(await as('owner', request(e2e.server).delete(`/v1/items/${id}/modifiers/${modifierId}`)));
   });
 
-  it('cannot be changed by another rmu-user', async () => {
+  it('cannot be changed by another rmu-user, even a writer of the realm', async () => {
     const { id } = await ownerItem('system');
     expectSystemAdminOnly(await as('other', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By other' }));
+    otherOnlyReads();
+    expectSystemAdminOnly(await as('other', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By reader' }));
   });
 
   it('is changed and deleted by an admin', async () => {
@@ -96,12 +114,12 @@ describe('a system item', () => {
 });
 
 describe('a user item', () => {
-  it('is changed and deleted by its owner', async () => {
+  it('is changed and deleted by a writer of the realm', async () => {
     const { id } = await ownerItem('user');
-    const changed = await as('owner', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By owner' });
+    const changed = await as('other', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By writer' });
     expect(changed.status).toBe(200);
     expect((changed.body as ItemBody).entitySource).toBe('user');
-    expect((await as('owner', request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(204);
+    expect((await as('other', request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(204);
   });
 
   it('is changed and deleted by an admin', async () => {
@@ -110,14 +128,15 @@ describe('a user item', () => {
     expect((await as('admin', request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(204);
   });
 
-  it('keeps the plain forbidden code for another rmu-user', async () => {
+  it('keeps the plain forbidden code for an rmu-user who only reads the realm', async () => {
     const { id } = await ownerItem('user');
+    otherOnlyReads();
     const response = await as('other', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By other' });
     expect(response.status).toBe(403);
     expect((response.body as ErrorBody).code).toBe('forbidden');
   });
 
-  it('cannot be made system by its rmu-user owner', async () => {
+  it('cannot be made system by its rmu-user owner, a writer of the realm', async () => {
     const { id } = await ownerItem('user');
     expectSystemAdminOnly(await as('owner', request(e2e.server).patch(`/v1/items/${id}`)).send({ entitySource: 'system' }));
     expect(((await as('owner', request(e2e.server).get(`/v1/items/${id}`))).body as ItemBody).entitySource).toBe('user');
@@ -127,7 +146,9 @@ describe('a user item', () => {
 describe('creation', () => {
   it('rejects system from an rmu-user with system-entity-admin-only', async () => {
     const name = 'E2E Source User System';
-    expectSystemAdminOnly(await as('owner', request(e2e.server).post('/v1/items')).send(armor(name, { entitySource: 'system' })));
+    expectSystemAdminOnly(
+      await as('owner', request(e2e.server).post('/v1/items')).send(armor(name, { realmId: REALM, entitySource: 'system' })),
+    );
     expect((await as('owner', request(e2e.server).get(`/v1/items/${slug(name)}`))).status).toBe(404);
   });
 
@@ -172,9 +193,47 @@ describe('a document stored without the field', () => {
     expect((page.body as { content: ItemBody[] }).content.map(item => item.entitySource)).toEqual(['user']);
   });
 
-  it('is changed by its owner, as a user item', async () => {
+  it('is changed by a writer of the realm, as a user item', async () => {
     const response = await as('owner', request(e2e.server).patch(`/v1/items/${legacyId}`)).send({ description: 'Legacy' });
     expect(response.status).toBe(200);
     expect((response.body as ItemBody).entitySource).toBe('user');
+  });
+});
+
+// Spec 073, decision 3: an item without realm belongs to the global catalog; its owner and its source give nothing, and
+// only an admin creates, changes or deletes it or its modifiers.
+describe('a global item', () => {
+  async function globalItem(source: 'system' | 'user'): Promise<string> {
+    const name = `E2E Source Global ${++counter}`;
+    const created = await as('admin', request(e2e.server).post('/v1/items')).send(
+      armor(name, { entitySource: source, modifiers: [{ id: 'm1', type: 'bonus', value: 5 }] }),
+    );
+    expect(created.status).toBe(201);
+    expect(created.body as ItemBody).toMatchObject({ entitySource: source, owner: 'e2e-admin' });
+    return slug(name);
+  }
+
+  it('of the user source is changed by no rmu-user, not even one who owns it, with forbidden', async () => {
+    const id = await globalItem('user');
+    // Even when the document says the rmu-user owns it
+    await e2e.connection.collection('items').updateOne({ _id: id as never }, { $set: { owner: 'e2e-owner' } });
+    for (const user of ['owner', 'other'] as UserName[]) {
+      const patched = await as(user, request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'x' });
+      expect(patched.status).toBe(403);
+      expect((patched.body as ErrorBody).code).toBe('forbidden');
+      expect((await as(user, request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(403);
+      expect((await as(user, request(e2e.server).post(`/v1/items/${id}/modifiers`)).send({ type: 'bonus', value: 1 })).status).toBe(403);
+      expect((await as(user, request(e2e.server).delete(`/v1/items/${id}/modifiers/m1`))).status).toBe(403);
+    }
+    expect((await as('admin', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By admin' })).status).toBe(200);
+  });
+
+  it('of the system source answers system-entity-admin-only to an rmu-user and is changed by an admin', async () => {
+    const id = await globalItem('system');
+    expectSystemAdminOnly(await as('owner', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'x' }));
+    expectSystemAdminOnly(await as('owner', request(e2e.server).delete(`/v1/items/${id}`)));
+    const changed = await as('admin', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By admin' });
+    expect(changed.status).toBe(200);
+    expect((await as('admin', request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(204);
   });
 });

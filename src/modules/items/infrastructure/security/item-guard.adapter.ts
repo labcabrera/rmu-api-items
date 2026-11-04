@@ -2,14 +2,14 @@ import { QueryCriteria } from '../../../shared/application/criteria/query-criter
 import type { EntitySource } from '../../../shared/domain/entities/entity-source.js';
 import { RMU_ADMIN, RMU_USER } from '../../../shared/domain/entities/user-roles.js';
 import { ForbiddenError } from '../../../shared/domain/errors/errors.js';
-import { assertCanChangeEntity, checkEntitySource, SYSTEM_ENTITY_ADMIN_ONLY } from '../../../shared/domain/services/entity-permissions.js';
+import { checkEntitySource, SYSTEM_ENTITY_ADMIN_ONLY } from '../../../shared/domain/services/entity-permissions.js';
 import type { ItemGuardPort } from '../../application/ports/item-guard.port.js';
 import type { Item } from '../../domain/aggregates/item.aggregate.js';
 import { type AccessCaller, atLeast, type ItemAccess, resolveItemAccess } from '../../domain/services/realm-child-access.js';
 
 /**
  * Spec 073: an item with a realm is a child of the realm (read to read it, write to change, delete it or its
- * modifiers); an item without realm keeps the rules of spec 021 and 063 (`assertCanChangeEntity`).
+ * modifiers); an item without realm is global: every user reads it and only an admin changes it (decision 3).
  */
 export class ItemGuardAdapter implements ItemGuardPort {
   checkCreate(roles: readonly string[]): void {
@@ -44,10 +44,6 @@ export class ItemGuardAdapter implements ItemGuardPort {
   }
 
   private checkChange(item: Item, caller: AccessCaller, action: 'update' | 'delete'): void {
-    if (!item.realmId) {
-      assertCanChangeEntity(item, caller.userId, [...caller.roles], action);
-      return;
-    }
     if (atLeast(resolveItemAccess(item, caller), 'write')) return;
     // As assertAccess of core: a system item says it is for admins, whatever the realm level.
     if (item.entitySource === 'system') {

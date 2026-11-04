@@ -15,6 +15,9 @@ import { RMU_ADMIN } from '../../../../shared/domain/entities/user-roles.js';
 /** 403 to create an item in a realm the user only reads (spec 073, decision 4). */
 export const REALM_NOT_WRITABLE = 'realm-not-writable';
 
+/** 403 to create an item without realm (global) without being an admin (spec 073, decision 3). */
+export const GLOBAL_ENTITY_ADMIN_ONLY = 'global-entity-admin-only';
+
 @CommandHandler(CreateItemCommand)
 export class CreateItemHandler implements ICommandHandler<CreateItemCommand, ItemWithAccess> {
   constructor(
@@ -30,6 +33,10 @@ export class CreateItemHandler implements ICommandHandler<CreateItemCommand, Ite
     this.itemGuard.checkEntitySource(command.roles, command.entitySource);
     // Before asking core for the realm, so invalid data is a 400 without a call.
     Item.checkCategoryData(command.category, command);
+
+    if (!command.realmId && !command.roles.includes(RMU_ADMIN)) {
+      throw new ForbiddenError('Only an admin can create an item without realm', GLOBAL_ENTITY_ADMIN_ONLY);
+    }
 
     let caller: AccessCaller = { userId: command.userId, roles: command.roles, realmLevels: new Map() };
     // realmId is validated by checking existence; store only realmId on the item

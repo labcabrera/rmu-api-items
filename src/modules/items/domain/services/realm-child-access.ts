@@ -37,17 +37,15 @@ export function resolveRealmChildAccess(child: AccessSubject, realmLevel: Access
 }
 
 /**
- * The access to an item of the global catalog (`realmId: null`, spec 073, decision 3), from the rules of spec 063:
- * every user reads it, its owner manages a user item, an admin manages everything and a system item is read only.
+ * The access to an item of the global catalog (`realmId: null`, spec 073, decision 3): every user reads it and only an
+ * admin manages it. The owner and the source of the item give nothing.
  */
-export function resolveGlobalItemAccess(item: AccessSubject, userId: string, roles: readonly string[]): ItemAccess {
-  if (isAdmin(roles)) return 'manage';
-  if ((item.entitySource ?? 'user') === 'system') return 'read';
-  return !!item.owner && item.owner === userId ? 'manage' : 'read';
+export function resolveGlobalItemAccess(roles: readonly string[]): ItemAccess {
+  return isAdmin(roles) ? 'manage' : 'read';
 }
 
 /** The access of the caller to an item: of its realm when it has one, of the global catalog otherwise. */
 export function resolveItemAccess(item: AccessSubject, caller: AccessCaller): AccessLevel {
-  if (!item.realmId) return resolveGlobalItemAccess(item, caller.userId, caller.roles);
+  if (!item.realmId) return resolveGlobalItemAccess(caller.roles);
   return resolveRealmChildAccess(item, caller.realmLevels.get(item.realmId) ?? 'none', caller.roles);
 }

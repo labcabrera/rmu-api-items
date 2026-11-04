@@ -41,20 +41,12 @@ describe('resolveRealmChildAccess (spec 073, decision 1)', () => {
 });
 
 describe('resolveGlobalItemAccess (spec 073, decision 3)', () => {
-  it('an admin manages everything', () => {
-    expect(resolveGlobalItemAccess({ owner: 'u1', entitySource: 'system' }, 'admin', ADMIN)).toBe('manage');
-    expect(resolveGlobalItemAccess({ owner: 'u1', entitySource: 'user' }, 'admin', ADMIN)).toBe('manage');
+  it('an admin manages a global item', () => {
+    expect(resolveGlobalItemAccess(ADMIN)).toBe('manage');
   });
 
-  it('a system item is read only, also for its owner', () => {
-    expect(resolveGlobalItemAccess({ owner: 'u1', entitySource: 'system' }, 'u1', USER)).toBe('read');
-  });
-
-  it('the owner manages a user item and everyone else reads it', () => {
-    expect(resolveGlobalItemAccess({ owner: 'u1', entitySource: 'user' }, 'u1', USER)).toBe('manage');
-    expect(resolveGlobalItemAccess({ owner: 'u1' }, 'u1', USER)).toBe('manage');
-    expect(resolveGlobalItemAccess({ owner: 'u1', entitySource: 'user' }, 'u2', USER)).toBe('read');
-    expect(resolveGlobalItemAccess({ owner: null }, 'u2', USER)).toBe('read');
+  it('any other user only reads it, also its owner', () => {
+    expect(resolveGlobalItemAccess(USER)).toBe('read');
   });
 });
 
@@ -66,8 +58,8 @@ describe('resolveItemAccess', () => {
     expect(resolveItemAccess({ realmId: 'r-other', owner: 'u1' }, caller)).toBe('none');
   });
 
-  it('uses the global rules without realm', () => {
-    expect(resolveItemAccess({ realmId: null, owner: 'u1' }, caller)).toBe('manage');
+  it('a global item is read by a user, even its owner', () => {
+    expect(resolveItemAccess({ realmId: null, owner: 'u1' }, caller)).toBe('read');
     expect(resolveItemAccess({ owner: 'u2' }, caller)).toBe('read');
   });
 });

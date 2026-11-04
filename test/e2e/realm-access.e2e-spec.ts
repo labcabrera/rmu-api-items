@@ -7,7 +7,7 @@ import { ids, REALM_ACCESS, REALMS, startApp, type E2eApp, type UserName } from 
 
 // Spec 073: an item of a realm takes the access of the caller to the realm (read to read and list it, write to create,
 // change and delete it); its owner gives nothing; a system item is read only; an admin manages everything without
-// asking core. The global catalog keeps its rules.
+// asking core. The global catalog (no realm) is read by everyone and created and changed only by an admin (decision 3).
 type ItemBody = { id: string; realmId: string | null; owner: string; entitySource: string; access: string; description?: string };
 type ErrorBody = { statusCode: number; code: string };
 
@@ -163,21 +163,57 @@ describe('a system item of a realm', () => {
   });
 });
 
-describe('the global catalog', () => {
-  it('keeps its rules and answers the access', async () => {
-    const id = await newItem(null);
-    expect(((await get('owner', id)).body as ItemBody).access).toBe('manage');
-    expect(((await get('other', id)).body as ItemBody).access).toBe('read');
+describe('the global catalog (decision 3)', () => {
+  it('answers 403 global-entity-admin-only to a user who creates without realm', async () => {
+    const name = `E2E Global By User ${++counter}`;
+    for (const realmId of [null, undefined]) {
+      const response = await as('owner', request(e2e.server).post('/v1/items')).send(armor(name, realmId === null ? { realmId } : {}));
+      expect(response.status).toBe(403);
+      expect(response.body as ErrorBody).toMatchObject({ statusCode: 403, code: 'global-entity-admin-only' });
+    }
+    expect((await get('admin', slug(name))).status).toBe(404);
+  });
+
+  it('is created by an admin, who manages it', async () => {
+    const created = await as('admin', request(e2e.server).post('/v1/items')).send(armor(`E2E Global By Admin ${++counter}`));
+    expect(created.status).toBe(201);
+    expect(created.body as ItemBody).toMatchObject({ realmId: null, owner: 'e2e-admin', access: 'manage' });
+  });
+
+  it('is listed and read by every user with read access, without asking core to read it', async () => {
+    const id = await newItem(null, { user: 'admin' });
+    e2e.accessLookups.length = 0;
+    for (const user of ['owner', 'other', 'reader', 'noRole'] as UserName[]) {
+      expect(((await get(user, id)).body as ItemBody).access).toBe('read');
+    }
     expect(((await get('admin', id)).body as ItemBody).access).toBe('manage');
-    expect((await as('other', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'x' })).status).toBe(403);
     // Reading a global item needs no call to core
-    expect(e2e.accessLookups).not.toContain('e2e-other');
+    expect(e2e.accessLookups).toEqual([]);
+    const listed = await list('other', `id==${id}`);
+    expect(listed.content.map(item => [item.id, item.access])).toEqual([[id, 'read']]);
+  });
+
+  it('is changed and deleted only by an admin, also when a user owns it', async () => {
+    const id = await newItem(null, { user: 'admin' });
+    await e2e.connection.collection('items').updateOne({ _id: id as never }, { $set: { owner: 'e2e-owner' } });
+    expect(((await get('owner', id)).body as ItemBody).access).toBe('read');
+    for (const user of ['owner', 'other'] as UserName[]) {
+      const patched = await as(user, request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'x' });
+      expect(patched.status).toBe(403);
+      expect((patched.body as ErrorBody).code).toBe('forbidden');
+      const deleted = await as(user, request(e2e.server).delete(`/v1/items/${id}`));
+      expect(deleted.status).toBe(403);
+      expect((deleted.body as ErrorBody).code).toBe('forbidden');
+    }
+    expect(((await get('admin', id)).body as ItemBody).description).not.toBe('x');
+    expect((await as('admin', request(e2e.server).patch(`/v1/items/${id}`)).send({ description: 'By admin' })).status).toBe(200);
+    expect((await as('admin', request(e2e.server).delete(`/v1/items/${id}`))).status).toBe(204);
   });
 });
 
 describe('lists', () => {
   it('show the global catalog and the realms the caller reads, with the access of each row', async () => {
-    const global = await newItem(null);
+    const global = await newItem(null, { user: 'admin' });
     const privateItem = await newItem(PRIVATE);
     const publicItem = await newItem(PUBLIC);
     const hidden = await newItem(OTHER_REALM);
@@ -276,7 +312,7 @@ describe('realm.deleted (decision 9)', () => {
     const first = await newItem(DOOMED);
     const second = await newItem(DOOMED, { system: true });
     const kept = await newItem(PRIVATE);
-    const global = await newItem(null);
+    const global = await newItem(null, { user: 'admin' });
     e2e.events.length = 0;
 
     await deleteRealm(DOOMED);
