@@ -6,6 +6,8 @@ import { envSchema } from './config/env.schema.js';
 import { AuthModule } from './modules/shared/infrastructure/security/auth.module.js';
 import { ItemsModule } from './modules/items/items.module.js';
 import { SharedModule } from './modules/shared/shared.module.js';
+import { TradingTablesModule } from './modules/trading-tables/trading-tables.module.js';
+import { TreasureTablesModule } from './modules/treasure-tables/treasure-tables.module.js';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { SharedModule } from './modules/shared/shared.module.js';
     AuthModule,
     SharedModule,
     ItemsModule,
+    TradingTablesModule,
+    TreasureTablesModule,
   ],
 })
 export class AppModule {}

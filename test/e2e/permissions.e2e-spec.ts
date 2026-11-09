@@ -4,7 +4,7 @@ import { startApp, type E2eApp, type UserName } from './support/app.js';
 // The permission matrix of the global catalog (items without realm): it is readable by everyone with a token (spec 021,
 // decision 2, F-items-06); creating, changing, deleting and the modifiers are only for an admin (spec 073, decision 3),
 // whoever created the item. Items with a realm follow the realm level: see realm-access.e2e-spec.ts.
-type Caller = Exclude<UserName, 'writer' | 'reader'> | 'anonymous';
+type Caller = Exclude<UserName, 'writer' | 'reader' | 'coreLaw' | 'treasureLaw'> | 'anonymous';
 
 const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
 const armor = (name: string) => ({
