@@ -17,6 +17,11 @@ export class MongoItemRepository extends MongoBaseRepository<Item, ItemModel> im
     super(itemModel, rsqlParser);
   }
 
+  async findByRealmId(realmId: string): Promise<Item[]> {
+    const docs = await this.model.find({ realmId });
+    return docs.map(doc => this.toEntity(doc));
+  }
+
   protected mapToEntity(doc: ItemDocument): Item {
     const weapon = doc.weapon
       ? new ItemWeapon(

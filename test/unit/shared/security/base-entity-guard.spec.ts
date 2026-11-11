@@ -3,8 +3,6 @@ import type { RbacEntity } from '../../../../src/modules/shared/domain/entities/
 import { ForbiddenError } from '../../../../src/modules/shared/domain/errors/errors.js';
 import { SYSTEM_ENTITY_ADMIN_ONLY } from '../../../../src/modules/shared/domain/services/entity-permissions.js';
 import { BaseEntityGuard } from '../../../../src/modules/shared/infrastructure/security/base-entity-guard.js';
-import type { Item } from '../../../../src/modules/items/domain/aggregates/item.aggregate.js';
-import { ItemGuardAdapter } from '../../../../src/modules/items/infrastructure/security/item-guard.adapter.js';
 
 class TestGuard extends BaseEntityGuard<RbacEntity> {}
 
@@ -63,12 +61,5 @@ describe('BaseEntityGuard (spec 063)', () => {
     expect(codeOf(() => guard.checkRead(entity('system'), 'u-other', ['rmu-user']))).toBeNull();
     expect(codeOf(() => guard.checkCreate(['rmu-user']))).toBeNull();
     expect(codeOf(() => guard.checkCreate([]))).toBe('forbidden');
-  });
-
-  it('the item guard inherits the rules and keeps the empty query predicate', () => {
-    const itemGuard = new ItemGuardAdapter();
-    expect(codeOf(() => itemGuard.checkUpdate(entity('system') as unknown as Item, OWNER, ['rmu-user']))).toBe(SYSTEM_ENTITY_ADMIN_ONLY);
-    expect(codeOf(() => itemGuard.checkEntitySource(['rmu-user'], 'system'))).toBe(SYSTEM_ENTITY_ADMIN_ONLY);
-    expect(itemGuard.buildQueryPredicate()).toEqual({ type: 'empty' });
   });
 });

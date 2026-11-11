@@ -20,6 +20,9 @@ import { ItemModifierOptionService } from './domain/services/item-modifier-optio
 import { ITEM_REPOSITORY } from './application/ports/item-repository.port.js';
 import { REALM_PORT } from './application/ports/realm.port.js';
 import { ITEM_GUARD } from './application/ports/item-guard.port.js';
+import { DeleteItemsByRealmHandler } from './application/cqrs/handlers/delete-items-by-realm.handler.js';
+import { RealmAccessService } from './application/services/realm-access.service.js';
+import { KafkaRealmEventConsumer } from './interfaces/messaging/kafka.realm-event-consumer.js';
 import { ItemGuardAdapter } from './infrastructure/security/item-guard.adapter.js';
 
 @Module({
@@ -30,7 +33,7 @@ import { ItemGuardAdapter } from './infrastructure/security/item-guard.adapter.j
     AuthModule,
     SharedModule,
   ],
-  controllers: [ItemController, ItemModifierController],
+  controllers: [ItemController, ItemModifierController, KafkaRealmEventConsumer],
   providers: [
     ItemModifierOptionService,
     GetItemHandler,
@@ -40,6 +43,8 @@ import { ItemGuardAdapter } from './infrastructure/security/item-guard.adapter.j
     DeleteItemHandler,
     AddItemModifierHandler,
     DeleteItemModifierHandler,
+    DeleteItemsByRealmHandler,
+    RealmAccessService,
     {
       provide: ITEM_REPOSITORY,
       useClass: MongoItemRepository,

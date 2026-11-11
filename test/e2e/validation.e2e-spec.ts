@@ -8,6 +8,8 @@ describe('explicit conversion', () => {
   const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
   const item = (extra: Record<string, unknown> = {}) => ({
     name: 'Conversion shield',
+    // Spec 073: without realm only an admin creates
+    realmId: 'e2e-realm',
     category: 'shield',
     shield: { db: 20, blockCount: 1 },
     info,

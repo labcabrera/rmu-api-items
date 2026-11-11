@@ -1,10 +1,13 @@
 import request from 'supertest';
-import { startApp, type E2eApp, type UserName } from './support/app.js';
+import { REALM_ACCESS, startApp, type E2eApp, type UserName } from './support/app.js';
 
 type Modifier = { id: string; type: string; modifier?: string; value?: number };
 type ItemBody = { id: string; category: string; weapon: unknown; armor: unknown; modifiers: Modifier[] | null };
 
 const info = { weight: 1, stackable: false, rarity: 'common', unique: false };
+// Spec 073, decision 3: only an admin creates items without realm, so these live in e2e-realm (written by every user
+// unless REALM_ACCESS says otherwise).
+const realmId = 'e2e-realm';
 const armor = { slot: 'body', at: 5, enc: 10, maneuverPenalty: -10, rangedPenalty: 0, perceptionPenalty: 0, baseDifficulty: 'm' };
 
 let e2e: E2eApp;
@@ -19,7 +22,7 @@ afterAll(async () => {
 
 const auth = (user: UserName) => e2e.auth(user);
 const createArmor = (name: string) =>
-  request(e2e.server).post('/v1/items').set('Authorization', auth('owner')).send({ name, category: 'armor', armor, info });
+  request(e2e.server).post('/v1/items').set('Authorization', auth('owner')).send({ name, realmId, category: 'armor', armor, info });
 const addModifier = (user: UserName, itemId: string, body: object) =>
   request(e2e.server).post(`/v1/items/${itemId}/modifiers`).set('Authorization', auth(user)).send(body);
 const removeModifier = (user: UserName, itemId: string, modifierId: string) =>
@@ -124,16 +127,26 @@ describe('item modifiers', () => {
     expect((await removeModifier('owner', 'missing-item', 'x')).status).toBe(404);
   });
 
-  it("rejects a modifier on another user's item [F-items-06]", async () => {
-    const response = await addModifier('other', 'e2e-magic-armor', { type: 'bonus', value: 1 });
-    expect(response.status).toBe(403);
+  it('rejects a modifier from a user who only reads the realm [F-items-06]', async () => {
+    REALM_ACCESS.set(`${realmId}:e2e-other`, 'read');
+    e2e.clearRealmAccess();
+    try {
+      const response = await addModifier('other', 'e2e-magic-armor', { type: 'bonus', value: 1 });
+      expect(response.status).toBe(403);
+    } finally {
+      REALM_ACCESS.clear();
+      e2e.clearRealmAccess();
+    }
   });
 });
 
 // Spec 044, decision 10 (F-items-23): the creation and the PATCH check the modifiers they send like POST .../modifiers.
 describe('modifiers sent with the item', () => {
   const create = (name: string, modifiers: object[]) =>
-    request(e2e.server).post('/v1/items').set('Authorization', auth('owner')).send({ name, category: 'armor', armor, info, modifiers });
+    request(e2e.server)
+      .post('/v1/items')
+      .set('Authorization', auth('owner'))
+      .send({ name, realmId, category: 'armor', armor, info, modifiers });
   const patch = (body: object) => request(e2e.server).patch('/v1/items/e2e-checked-armor').set('Authorization', auth('owner')).send(body);
 
   const invalid: [object, string][] = [
@@ -235,7 +248,7 @@ describe('update of the category data', () => {
     const created = await request(e2e.server)
       .post('/v1/items')
       .set('Authorization', auth('owner'))
-      .send({ name: 'E2E Patched Knife', category: 'weapon', weapon: { skillId: 'dagger', fumble: 1, modes: [mode] }, info });
+      .send({ name: 'E2E Patched Knife', realmId, category: 'weapon', weapon: { skillId: 'dagger', fumble: 1, modes: [mode] }, info });
     expect(created.status).toBe(201);
     const response = await request(e2e.server)
       .patch('/v1/items/e2e-patched-knife')

@@ -8,6 +8,8 @@ import { ItemModifierDto } from './item-modifier.dto.js';
 import type { ItemCategory } from '../../../domain/value-objects/item-category.vo.js';
 import { Item } from '../../../domain/aggregates/item.aggregate.js';
 import { PaginationDto } from '../../../../shared/interfaces/http/dto/page.dto.js';
+import type { ItemAccess } from '../../../domain/services/realm-child-access.js';
+import type { ItemWithAccess } from '../../../application/cqrs/item-with-access.js';
 import { ENTITY_SOURCES, type EntitySource } from '../../../../shared/domain/entities/entity-source.js';
 
 export class ItemDto {
@@ -53,10 +55,17 @@ export class ItemDto {
   @ApiProperty({ enum: ENTITY_SOURCES, description: 'Rulebook (system, admin only) or user content (spec 063)', example: 'system' })
   entitySource: EntitySource;
 
+  @ApiProperty({
+    enum: ['manage', 'write', 'read'],
+    description: 'What the caller can do with the item (spec 073): write changes and deletes it, read only reads it',
+    example: 'write',
+  })
+  access: ItemAccess;
+
   @ApiProperty({ description: 'Version of optimistic concurrency: send it back in the PATCH to detect a concurrent change', example: 0 })
   version: number;
 
-  static fromEntity(entity: Item): ItemDto {
+  static fromEntity(entity: Item, access: ItemAccess): ItemDto {
     const dto = new ItemDto();
     dto.id = entity.id;
     dto.version = entity.version;
@@ -73,7 +82,12 @@ export class ItemDto {
     dto.imageUrl = entity.imageUrl;
     dto.owner = entity.owner;
     dto.entitySource = entity.entitySource;
+    dto.access = access;
     return dto;
+  }
+
+  static fromResult(result: ItemWithAccess): ItemDto {
+    return ItemDto.fromEntity(result.item, result.access);
   }
 }
 
