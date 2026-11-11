@@ -1,3 +1,26 @@
+# [0.5.0](https://github.com/labcabrera/rmu-api-items/compare/0.4.0...0.5.0) (2026-11-11)
+
+
+* feat!: global items only for admins (spec 073) ([d718f79](https://github.com/labcabrera/rmu-api-items/commit/d718f797282727b9c029801ceda72b09e2a422a4))
+* feat!: realm scoped access for items ([859b524](https://github.com/labcabrera/rmu-api-items/commit/859b5244c56731297407505f0ac3ca59c980635f))
+
+
+### Features
+
+* items with a realm need the user to read it (spec 071) ([9a47152](https://github.com/labcabrera/rmu-api-items/commit/9a47152556f7ab775f9bca6b841ba8faa54a6b17))
+* serve the superior materials ([cea71d1](https://github.com/labcabrera/rmu-api-items/commit/cea71d140f79808429c4cf00d6c9b6236f5247e3))
+* serve the trading and treasure tables ([b4e4412](https://github.com/labcabrera/rmu-api-items/commit/b4e44122e60223194c5973c2ef430bee7c5f1f4e))
+
+
+### BREAKING CHANGES
+
+* non-admins can no longer create or change items without realm; their owner no
+longer manages them.
+* items of a realm are no longer listed or readable without access to the
+realm, their owner can no longer change them without write on the realm, creating in a
+realm needs write (403 realm-not-writable) and responses carry access. Requires core with
+GET /v1/realms/access.
+
 # [0.4.0](https://github.com/labcabrera/rmu-api-items/compare/0.3.2...0.4.0) (2026-11-02)
 
 
